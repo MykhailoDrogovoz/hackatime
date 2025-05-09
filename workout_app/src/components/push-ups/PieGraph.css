@@ -1,0 +1,66 @@
+.pie-graph-container {
+    width: 300px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.pie-graph-container h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.pie-graph {
+    width: 150px;
+    height: 150px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    background: conic-gradient(
+        #4caf50 0% var(--percentage),
+        #e0e0e0 var(--percentage) 100%
+    );
+    position: relative;
+}
+
+.pie-graph-container p {
+    margin: 5px 0;
+    font-size: 14px;
+}
+
+.pie-graph-container button {
+    margin-top: 15px;
+    padding: 10px 20px;
+    background-color: #673ab7;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.pie-graph-container button:hover{
+    background-color: #5e35b1;
+}
+
+.coin{
+    width: 50px;
+    height: 50px;
+    background-color: gold;
+    border-radius: 50%;
+    margin: 20px 0;
+    box-shadow: inset 0 0 10px #c1a000, 0 0 10px #ffeb3b;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 20px;
+    
+}
+
+.coin-container{
+    margin: 20px;
+}
