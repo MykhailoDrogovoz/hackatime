@@ -4,12 +4,13 @@ import viteLogo from '/vite.svg'
 import './App.css'
 import PieGraph from './components/push-ups/PieGraph'
 import Category from './components/category/Category'
+import WheelWrapper from "./components/wheel/WheelWrapper";
 
 function App() {
 
   return (
     <>
-      <div id="main-frame">
+      {/* <div id="main-frame">
         <PieGraph percentage={0}></PieGraph>
         <PieGraph percentage={25}></PieGraph>
         <PieGraph percentage={50}></PieGraph>
@@ -17,7 +18,8 @@ function App() {
         <PieGraph percentage={75}></PieGraph>
         <PieGraph percentage={100}></PieGraph>
       </div>
-        <Category />
+        <Category /> */}
+        <WheelWrapper></WheelWrapper>
     </>
   );
 }
