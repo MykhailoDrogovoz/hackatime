@@ -3,9 +3,9 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 import PieGraph from './components/push-ups/PieGraph'
+import Category from './components/category/Category'
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
     <>
@@ -17,6 +17,7 @@ function App() {
         <PieGraph percentage={75}></PieGraph>
         <PieGraph percentage={100}></PieGraph>
       </div>
+        <Category />
     </>
   );
 }
