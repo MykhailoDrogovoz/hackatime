@@ -1,4 +1,4 @@
-#roulette-wheel-wrapper {
+#main-frame {
     width: 100vw;
     height: 100vh;
     background: radial-gradient(ellipse at center,  #63856a 1%,#3c5a40 100%);
@@ -7,7 +7,7 @@
     align-items: center;
 }
 
-#roulette-wheel-wrapper button{
+button{
     border-radius: 10px;
     border: none;
     font-size: 18px;

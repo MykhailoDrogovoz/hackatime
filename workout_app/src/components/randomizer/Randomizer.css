@@ -1,0 +1,16 @@
+#range div{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+#range{
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+#main-frame div{
+    text-align: center;
+}

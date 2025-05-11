@@ -4,8 +4,7 @@ import viteLogo from '/vite.svg'
 import './App.css'
 import PieGraph from './components/push-ups/PieGraph'
 import Category from './components/category/Category'
-import WheelWrapper from "./components/wheel/WheelWrapper";
-import DiceWrapper from "./components/dice/DiceWrapper";
+import Options from './components/choice/Options'
 
 function App() {
 
@@ -20,8 +19,7 @@ function App() {
         <PieGraph percentage={100}></PieGraph>
       </div>
         <Category /> */}
-        {/* <WheelWrapper></WheelWrapper> */}
-        <DiceWrapper></DiceWrapper>
+        <Options></Options>
     </>
   );
 }
