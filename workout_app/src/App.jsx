@@ -5,6 +5,7 @@ import './App.css'
 import PieGraph from './components/push-ups/PieGraph'
 import Category from './components/category/Category'
 import WheelWrapper from "./components/wheel/WheelWrapper";
+import DiceWrapper from "./components/dice/DiceWrapper";
 
 function App() {
 
@@ -19,7 +20,8 @@ function App() {
         <PieGraph percentage={100}></PieGraph>
       </div>
         <Category /> */}
-        <WheelWrapper></WheelWrapper>
+        {/* <WheelWrapper></WheelWrapper> */}
+        <DiceWrapper></DiceWrapper>
     </>
   );
 }
