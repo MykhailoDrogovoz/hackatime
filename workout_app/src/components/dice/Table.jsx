@@ -16,12 +16,12 @@ function Table(props) {
   );
 
   https: return (
-    <mesh ref={meshRef} position={props.position}>
+    <mesh ref={meshRef} position={props.position} scale={0.6}>
       {/* Group to combine all table elements */}
       <group>
         {/* Table base */}
         <mesh position={[0, -0.7, 2]}>
-          <boxGeometry args={[10, 0.3, 1]} />
+          <boxGeometry args={[10, 0.3, 5]} />
           <meshStandardMaterial map={texture} />
         </mesh>
 
@@ -30,16 +30,16 @@ function Table(props) {
           <boxGeometry args={[10, 1.7, 1]} />
           <meshStandardMaterial map={textureBottom} />
         </mesh>
-        <mesh position={[5, 0, 2]}>
-          <boxGeometry args={[1, 1.7, 1]} />
+        <mesh position={[5, 0, 3]}>
+          <boxGeometry args={[1, 1.7, 3]} />
           <meshStandardMaterial map={textureBottom} />
         </mesh>
-        <mesh position={[-5, 0, 2]}>
-          <boxGeometry args={[1, 1.7, 1]} />
+        <mesh position={[-5, 0, 3]}>
+          <boxGeometry args={[1, 1.7, 3]} />
           <meshStandardMaterial map={textureBottom} />
         </mesh>
-        <mesh position={[0, -0.9, 2.5]}>
-          <boxGeometry args={[10.85, 0.7, 0.1]} />
+        <mesh position={[0, -0.9, 4.46]}>
+          <boxGeometry args={[11, 0.7, 0.1]} />
           <meshStandardMaterial map={textureBottom} />
         </mesh>
       </group>

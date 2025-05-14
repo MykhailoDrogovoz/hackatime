@@ -9,10 +9,10 @@ function Dice(props) {
   const faceRotations = [
     [0, 0, 0],
     [0, Math.PI, 0],
-    [0, -Math.PI / 2, 0], 
-    [0, Math.PI / 2, 0], 
-    [-Math.PI / 2, 0, 0], 
-    [Math.PI / 2, 0, 0], 
+    [0, -Math.PI / 2, 0],
+    [0, Math.PI / 2, 0],
+    [-Math.PI / 2, 0, 0],
+    [Math.PI / 2, 0, 0],
   ];
 
   useFrame(() => {
@@ -92,7 +92,7 @@ function Dice(props) {
   }
 
   return (
-    <mesh ref={meshRef} position={props.position}>
+    <mesh ref={meshRef} position={props.position} scale={0.6}>
       <boxGeometry args={[1, 1, 1]} />
       <meshStandardMaterial color="white" />
       {faceTransforms.map(({ face, position, rotation }) => (

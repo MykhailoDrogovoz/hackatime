@@ -1,13 +1,12 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import PieGraph from './components/push-ups/PieGraph'
-import Category from './components/category/Category'
-import Options from './components/choice/Options'
+import { useState } from "react";
+import reactLogo from "./assets/react.svg";
+import viteLogo from "/vite.svg";
+import "./App.css";
+import PieGraph from "./components/push-ups/PieGraph";
+import Category from "./components/category/Category";
+import Options from "./components/choice/Options";
 
 function App() {
-
   return (
     <>
       {/* <div id="main-frame">
@@ -19,9 +18,10 @@ function App() {
         <PieGraph percentage={100}></PieGraph>
       </div>
         <Category /> */}
-        <Options></Options>
+      <Options></Options>
+      {/* <div>ejlsdjf</div> */}
     </>
   );
 }
 
-export default App
+export default App;

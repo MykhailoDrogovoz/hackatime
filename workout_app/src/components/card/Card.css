@@ -1,0 +1,55 @@
+.card-deck {
+  width: 100vw;
+  height: 50vh;
+}
+
+.card {
+  background: #000000;
+  color: #fff;
+  width: 300px;
+  min-height: 500px;
+  border-radius: 15px;
+  border: 2px solid #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  /* align-items: center;
+  text-align: center; */
+  padding: 40px;
+  position: relative;
+  font-family: Arial, sans-serif;
+}
+
+.card h1 {
+  font-size: 3rem;
+  margin: 10px;
+  width: 100%;
+}
+
+.card-value {
+  display: flex;
+  /* justify-content: center; */
+  align-items: center;
+}
+
+.card-value-reverse {
+  display: flex;
+  /* flex-direction: row-reverse; */
+  justify-content: end;
+  align-items: center;
+}
+
+.card .card-value span {
+  margin-left: 10px;
+  font-size: 2rem;
+  color: white;
+}
+
+.card .main-part {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  width: 100%;
+  gap: 20px 70px;
+}

@@ -1,0 +1,45 @@
+.options_list li {
+  list-style: none;
+  padding: 0;
+  background: #c8d8bc;
+  margin: 20px;
+  font-size: 20px;
+  border-radius: 10px;
+  width: 500px;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #5e2b2b;
+}
+
+.options_title {
+  font-size: 40px;
+  text-align: center;
+}
+
+.options_list {
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.options_list .fas {
+  font-size: 30px;
+  margin-left: 20px;
+}
+
+.icon-button {
+  background: transparent;
+  box-shadow: none;
+  color: #fff;
+  font-size: 50px;
+}
+
+.icon-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  margin: 30px 50px;
+}

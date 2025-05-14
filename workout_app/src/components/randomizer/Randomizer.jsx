@@ -1,21 +1,43 @@
 import "./Randomizer.css";
 import { useState } from "react";
 
-function Randomizer() {
-    const [valueFirst, setValueFirst] = useState(0);
-    const [valueLast, setValueLast] = useState(100);
+function Randomizer({ onBack }) {
+  const [randomNumber, setRandomNumber] = useState(
+    Math.floor(Math.random() * 100)
+  );
+  const [valueFirst, setValueFirst] = useState(0);
+  const [valueLast, setValueLast] = useState(100);
 
-    function handleChangeValue(e) {
-        if (e.target.name === "first") {setValueFirst(e.target.value);}
-        else {setValueLast(e.target.value);}
-        // setValueFirst(e.target.value);
+  const handleChangeValue = (e) => {
+    const { name, value } = e.target;
+    if (name === "first") {
+      setValueFirst(Number(value));
+    } else {
+      setValueLast(Number(value));
     }
+  };
+
+  const handleAgain = () => {
+    const min = Math.min(valueFirst, valueLast);
+    const max = Math.max(valueFirst, valueLast);
+    const newNumber = Math.floor(Math.random() * (max - min + 1)) + min;
+    setRandomNumber(newNumber);
+  };
 
   return (
-    <div id="main-frame">
-      <div>
-        <i class="fa fa-repeat"></i>
-        <h1>You got 1</h1>
+    <div>
+      <div id="roulette-wheel-wrapper" className="randomizer">
+        {/* Top icon/button bar */}
+        <div className="icon-bar">
+          <button className="icon-button" onClick={onBack} title="Back">
+            <i className="fas fa-arrow-left"></i>
+          </button>
+          <button className="icon-button" onClick={handleAgain} title="Again">
+            <i className="fas fa-rotate-right"></i>
+          </button>
+        </div>
+        <h1>You got {randomNumber}</h1>
+
         <div id="range">
           <div>
             <label htmlFor="first">First number: {valueFirst}</label>
@@ -40,8 +62,11 @@ function Randomizer() {
             />
           </div>
         </div>
-        <button>Home</button>
-        <button className="main-button">Take</button>
+
+        <div>
+          <button onClick={onBack}>Back to Home</button>
+          <button className="main-button">Take</button>
+        </div>
       </div>
     </div>
   );
