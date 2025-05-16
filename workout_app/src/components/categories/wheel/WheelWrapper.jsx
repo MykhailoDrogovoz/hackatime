@@ -1,8 +1,11 @@
 import "./WheelWrapper.css";
 import Wheel from "./Wheel";
 import { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 
-function WheelWrapper({ onBack }) {
+function WheelWrapper(props) {
+  const navigate = useNavigate();
+
   const wheelRef = useRef();
   const [returnedNumber, setReturnedNumber] = useState(null);
 
@@ -19,7 +22,7 @@ function WheelWrapper({ onBack }) {
   return (
     <div>
       <div className="icon-bar">
-        <button className="icon-button" onClick={onBack} title="Back">
+        <button className="icon-button" onClick={props.onBack} title="Back">
           <i className="fas fa-arrow-left"></i>
         </button>
         <button
@@ -40,8 +43,21 @@ function WheelWrapper({ onBack }) {
 
         <div>
           <h1>You got: {returnedNumber}</h1>
-          <button onClick={onBack}>Back to Home</button>
-          <button className="main-button">Take</button>
+          <button
+            onClick={() => {
+              navigate("/");
+            }}
+          >
+            Back to Home
+          </button>
+          <button
+            className="main-button"
+            onClick={() => {
+              props.handleTake(returnedNumber);
+            }}
+          >
+            Take
+          </button>
         </div>
       </div>
     </div>

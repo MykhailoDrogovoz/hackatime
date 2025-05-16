@@ -36,6 +36,9 @@ function Dice(props) {
           finalFaceRef.current = randomIndex;
           const [x, y, z] = faceRotations[randomIndex];
           meshRef.current.rotation.set(x, y, z);
+
+          const finalPipCount = getPipPositions(randomIndex + 1).length;
+          props.pipsHandle(finalPipCount);
         }
       }
     } else {
@@ -83,8 +86,8 @@ function Dice(props) {
     { face: 2, position: [0, 0, -0.5] },
     { face: 3, position: [0.5, 0, 0] },
     { face: 4, position: [-0.5, 0, 0] },
-    { face: 5, position: [0, 0.5, 0] },
-    { face: 6, position: [0, -0.5, 0] },
+    { face: 5, position: [0, -0.5, 0] },
+    { face: 6, position: [0, 0.5, 0] },
   ];
 
   for (let i = 0; i < faceTransforms.length; i++) {
@@ -110,3 +113,8 @@ function Dice(props) {
 }
 
 export default Dice;
+
+// const [face, setFace] = useState(null);
+// {() => {
+//               setPip(i);
+//             }}

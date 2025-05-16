@@ -3,8 +3,11 @@ import Card from "./Card";
 import { useState, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import CameraAnimation from "./CameraAnimation";
+import { useNavigate } from "react-router-dom";
 
-function CardWrapper({ onBack }) {
+function CardWrapper(props) {
+  const navigate = useNavigate();
+
   const [flipped, setFlipped] = useState(false);
   const [key, setKey] = useState(0);
 
@@ -26,7 +29,7 @@ function CardWrapper({ onBack }) {
   return (
     <div>
       <div className="icon-bar">
-        <button className="icon-button" onClick={onBack} title="Back">
+        <button className="icon-button" onClick={props.onBack} title="Back">
           <i className="fas fa-arrow-left"></i>
         </button>
         <button
@@ -46,8 +49,16 @@ function CardWrapper({ onBack }) {
         </Canvas>
 
         <div>
-          <button onClick={onBack}>Back to Home</button>
-          <button className="main-button">Take</button>
+          <button
+            onClick={() => {
+              navigate("/");
+            }}
+          >
+            Back to Home
+          </button>
+          <button className="main-button" onClick={props.handleTake}>
+            Take
+          </button>
         </div>
       </div>
     </div>

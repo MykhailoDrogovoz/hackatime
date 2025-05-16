@@ -2,25 +2,23 @@ import { useState } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
-import PieGraph from "./components/push-ups/PieGraph";
-import Category from "./components/category/Category";
-import Options from "./components/choice/Options";
+import Options from "./components//categories/choice/Options";
+import Exercise from "./components/exercise/Exercise";
+import Home from "./components/home/Home";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 function App() {
   return (
-    <>
-      {/* <div id="main-frame">
-        <PieGraph percentage={0}></PieGraph>
-        <PieGraph percentage={25}></PieGraph>
-        <PieGraph percentage={50}></PieGraph>
-        <PieGraph percentage={65}></PieGraph>
-        <PieGraph percentage={75}></PieGraph>
-        <PieGraph percentage={100}></PieGraph>
-      </div>
-        <Category /> */}
-      <Options></Options>
-      {/* <div>ejlsdjf</div> */}
-    </>
+    <div className="App">
+      <Router>
+        {/* <Header /> */}
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/options" element={<Options />} />
+          <Route path="/exercise" element={<Exercise />} />
+        </Routes>
+      </Router>
+    </div>
   );
 }
 

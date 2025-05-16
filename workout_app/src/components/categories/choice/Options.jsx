@@ -4,23 +4,42 @@ import WheelWrapper from "../wheel/WheelWrapper";
 import DiceWrapper from "../dice/DiceWrapper";
 import Randomizer from "../randomizer/Randomizer";
 import Card from "../card/CardWrapper";
+import Exercise from "../../exercise/Exercise";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
 function Options() {
+  const location = useLocation();
+  const { exType } = location.state || "";
+  console.log(exType);
   const [activeTab, setActiveTab] = useState("options");
   const [showOptions, setShowOptions] = useState(true);
+  const navigate = useNavigate();
 
   const handleBack = () => {
     setShowOptions(true);
   };
 
+  const handleTake = (exNumber) => {
+    navigate("/exercise", { state: { exType: exType, exNumber: exNumber } });
+  };
+
   const renderContent = () => {
     return (
       <div className="tool-view">
-        {activeTab === "roulette" && <WheelWrapper onBack={handleBack} />}
-        {activeTab === "dice" && <DiceWrapper onBack={handleBack} />}
-        {activeTab === "randomizer" && <Randomizer onBack={handleBack} />}
-        {activeTab === "card" && <Card onBack={handleBack} />}
+        {activeTab === "roulette" && (
+          <WheelWrapper onBack={handleBack} handleTake={handleTake} />
+        )}
+        {activeTab === "dice" && (
+          <DiceWrapper onBack={handleBack} handleTake={handleTake} />
+        )}
+        {activeTab === "randomizer" && (
+          <Randomizer onBack={handleBack} handleTake={handleTake} />
+        )}
+        {activeTab === "card" && (
+          <Card onBack={handleBack} handleTake={handleTake} />
+        )}
       </div>
+      // <Exercise exType={props.exType}></Exercise>
     );
   };
 

@@ -1,15 +1,30 @@
 .chart-container {
-    background-color: #f0f4f8;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    max-width: 800px;
-    margin: 0 auto;
+  background-color: #f0f4f8;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 1300px;
+  margin: 0 auto;
 }
 
 .chart-title {
-    text-align: center;
-    font-size: 24px;
-    margin-bottom: 20px;
-    color: #333;
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.recharts-layer text {
+  font-size: 20px;
+  text-align: center;
+  display: flex;
+  width: 100%;
+}
+
+.recharts-bar-rectangle {
+  border-radius: 20px;
+}
+
+path {
+  border-radius: 20px;
 }

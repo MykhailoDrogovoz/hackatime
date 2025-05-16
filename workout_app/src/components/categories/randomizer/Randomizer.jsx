@@ -1,7 +1,10 @@
+import { useNavigate } from "react-router-dom";
 import "./Randomizer.css";
 import { useState } from "react";
 
-function Randomizer({ onBack }) {
+function Randomizer(props) {
+  const navigate = useNavigate();
+
   const [randomNumber, setRandomNumber] = useState(
     Math.floor(Math.random() * 100)
   );
@@ -29,7 +32,7 @@ function Randomizer({ onBack }) {
       <div id="roulette-wheel-wrapper" className="randomizer">
         {/* Top icon/button bar */}
         <div className="icon-bar">
-          <button className="icon-button" onClick={onBack} title="Back">
+          <button className="icon-button" onClick={props.onBack} title="Back">
             <i className="fas fa-arrow-left"></i>
           </button>
           <button className="icon-button" onClick={handleAgain} title="Again">
@@ -64,8 +67,21 @@ function Randomizer({ onBack }) {
         </div>
 
         <div>
-          <button onClick={onBack}>Back to Home</button>
-          <button className="main-button">Take</button>
+          <button
+            onClick={() => {
+              navigate("/");
+            }}
+          >
+            Back to Home
+          </button>
+          <button
+            className="main-button"
+            onClick={() => {
+              props.handleTake(randomNumber);
+            }}
+          >
+            Take
+          </button>
         </div>
       </div>
     </div>

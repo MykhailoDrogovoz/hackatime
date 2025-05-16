@@ -1,0 +1,60 @@
+.timer-container {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  margin: 0 auto;
+}
+
+.timer {
+  width: 200px;
+  height: 200px;
+  border: 2px dashed #ffffff;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  position: relative;
+  z-index: 1;
+}
+
+.progress-arc {
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  border: solid rgb(60, 194, 105);
+  border-width: var(--borderWidth, 6px);
+  z-index: 2;
+  pointer-events: none;
+  mask: conic-gradient(#000 var(--progress), transparent 0);
+  -webkit-mask: conic-gradient(#000 var(--progress), transparent 0);
+}
+
+.timer-top-1 {
+  position: absolute;
+  left: 0;
+  top: -45px;
+  border: #ff8a8a solid 5px;
+  border-bottom: none;
+  border-radius: 50%;
+  width: 50%;
+  height: 100px;
+  opacity: 0.5;
+  z-index: 3;
+  clip-path: circle(60px at 40% 31%);
+}
+
+.timer-top-2 {
+  position: absolute;
+  left: 50%;
+  top: -45px;
+  border: #ff8a8a solid 5px;
+  border-bottom: none;
+  border-radius: 50%;
+  width: 50%;
+  height: 100px;
+  opacity: 0.5;
+  z-index: 3;
+  clip-path: circle(60px at 60% 32%);
+}

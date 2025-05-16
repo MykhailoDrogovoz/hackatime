@@ -4,3 +4,12 @@
   justify-content: center;
   flex-direction: column;
 }
+
+#charts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 80vw;
+  color: #000;
+  margin-bottom: 200px;
+}
