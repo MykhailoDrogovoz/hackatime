@@ -1,3 +1,12 @@
-.exercise-frame h1 {
-  margin-bottom: 60px;
+.exercise-frame {
+  /* margin-bottom: 60px; */
+  justify-content: space-evenly !important;
+}
+
+.exercise-info {
+  text-align: left !important;
+}
+
+.exercise-info div {
+  text-align: left !important;
 }

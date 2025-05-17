@@ -43,3 +43,7 @@
   justify-content: space-around;
   margin: 30px 50px;
 }
+
+.options {
+  flex-direction: column;
+}

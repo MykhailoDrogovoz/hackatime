@@ -8,14 +8,14 @@ function Timer(props) {
   const [hours, setHours] = useState(0);
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
+
   const intervalRef = useRef(null);
   const defSeconds = 1 * props.exNumber;
 
   const deadline = useRef(new Date(Date.now() + defSeconds * 1000));
+  const [remainingTime, setRemainingTime] = useState(defSeconds * 1000);
 
-  const getTime = (deadline) => {
-    const time = deadline - Date.now();
-
+  const getTime = (time) => {
     const maxBorder = 10;
     const minBorder = 1;
     const ratio = time / (defSeconds * 1000);
@@ -25,7 +25,11 @@ function Timer(props) {
 
     if (time <= 0) {
       clearInterval(intervalRef.current);
-      return { hours: 0, minutes: 0, seconds: 0 };
+      props.onDone();
+      setHours(0);
+      setMinutes(0);
+      setSeconds(0);
+      return;
     }
 
     setHours(Math.floor((time / (1000 * 60 * 60)) % 24));
@@ -34,14 +38,43 @@ function Timer(props) {
   };
 
   useEffect(() => {
-    intervalRef.current = setInterval(() => {
-      getTime(deadline.current);
-    }, 100);
+    clearInterval(intervalRef.current);
 
-    return () => {
-      clearInterval(intervalRef.current);
-    };
-  }, [deadline]);
+    if (props.status === "ready") {
+      setRemainingTime(defSeconds * 1000);
+      getTime(defSeconds * 1000);
+      return;
+    }
+
+    if (props.status === "reset") {
+      const resetTime = defSeconds * 1000;
+      setRemainingTime(resetTime);
+      getTime(resetTime);
+      return; // Don't start timer after reset
+    }
+
+    if (props.status === "running") {
+      const start = Date.now();
+      const initialRemaining = remainingTime;
+
+      intervalRef.current = setInterval(() => {
+        const elapsed = Date.now() - start;
+        const newRemaining = initialRemaining - elapsed;
+
+        if (newRemaining <= 0) {
+          clearInterval(intervalRef.current);
+          props.onDone?.(); // optional chaining in case not passed
+          setRemainingTime(0);
+          getTime(0);
+        } else {
+          setRemainingTime(newRemaining);
+          getTime(newRemaining);
+        }
+      }, 100);
+    }
+
+    return () => clearInterval(intervalRef.current);
+  }, [props.status]);
 
   return (
     <div className="timer-container">
@@ -51,7 +84,7 @@ function Timer(props) {
         <div
           className="progress-arc"
           style={{
-            "--progress": `${100 - (seconds / defSeconds) * 100}%`,
+            "--progress": `${(remainingTime / (defSeconds * 1000)) * 100}%`,
           }}
         ></div>
         {hours}:{minutes}:{seconds}

@@ -44,7 +44,7 @@ function Options() {
   };
 
   return (
-    <div id="main-frame">
+    <div id="main-frame" className="options">
       {showOptions ? (
         <>
           <h2 className="options_title">Options</h2>
