@@ -27,7 +27,7 @@ function Home() {
   };
 
   return (
-    <div>
+    <div className="home">
       <h1 className="main-title">Excercises</h1>
       <div id="charts">
         <PieGraph percentage={0} handleClick={handleClick}></PieGraph>

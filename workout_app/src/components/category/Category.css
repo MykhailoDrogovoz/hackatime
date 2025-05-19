@@ -1,4 +1,12 @@
+.full-screen {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+}
+
 .chart-container {
+  width: 60%;
   background-color: #f0f4f8;
   padding: 20px;
   border-radius: 12px;

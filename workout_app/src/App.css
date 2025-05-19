@@ -12,4 +12,9 @@
   width: 80vw;
   color: #000;
   margin-bottom: 200px;
+  margin: 0 auto;
+}
+
+.App.gradient-bg {
+  background: radial-gradient(ellipse at center, #63856a 1%, #3c5a40 100%);
 }

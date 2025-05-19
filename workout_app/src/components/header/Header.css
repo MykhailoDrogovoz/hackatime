@@ -1,0 +1,70 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  top: 0;
+  z-index: 100;
+  padding: 10px 20px;
+  box-sizing: border-box;
+  align-items: center;
+}
+
+#menu {
+  display: flex;
+  align-items: center;
+}
+
+#menu .menuItem {
+  padding: 20px;
+  text-decoration: none;
+  color: #000;
+  font-weight: bold;
+  letter-spacing: 1px;
+  transition: all 0.5s;
+  color: #63856a;
+}
+
+#gradient-bg .menuItem {
+  color: #c8d8b9;
+}
+
+#gradient-bg #coin-container {
+  background: #c8d8b9;
+}
+
+#gradient-bg #coin-container span {
+  color: #000;
+}
+
+/* .menuItem:hover {
+  color: #fff;
+  background-color: rgb(255, 255, 255);
+} */
+
+.fa-user-circle {
+  font-size: 54px;
+}
+
+#coin-container {
+  display: flex;
+  align-items: center;
+  gap: 0 10px;
+  background: #63856a;
+  border-radius: 20px;
+  padding: 5px 10px;
+}
+
+#coin-container span {
+  color: #fff;
+}
+
+#mobile-menu-btn {
+  display: none;
+  background-color: transparent;
+  color: #fff;
+  border: none;
+  font-family: "Lexend Mega", sans-serif;
+  cursor: pointer;
+  outline: none;
+  font-size: 20px;
+}
