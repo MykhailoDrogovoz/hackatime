@@ -1,0 +1,14 @@
+.exercise-frame.done {
+  color: #000;
+}
+
+.coin-container-cong {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.coin-container-cong img {
+  height: 100%;
+  margin: 10px 10px 10px 5px;
+}

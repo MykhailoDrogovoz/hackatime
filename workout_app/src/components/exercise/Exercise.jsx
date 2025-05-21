@@ -1,10 +1,11 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Timer from "./Timer";
 import "./Exercise.css";
 import { useState } from "react";
 
 function Exercise() {
   const location = useLocation();
+  const navigate = useNavigate();
   const { exType, exNumber } = location.state || {};
 
   const [timerStatus, setTimerStatus] = useState("ready");
@@ -13,6 +14,7 @@ function Exercise() {
     if (timerStatus === "running") {
       setTimerStatus("stopped");
     } else if (timerStatus === "done") {
+      navigate("/exercise-done", { state: { exType: exType } });
     } else {
       setTimerStatus("running");
     }

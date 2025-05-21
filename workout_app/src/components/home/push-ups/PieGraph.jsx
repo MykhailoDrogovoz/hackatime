@@ -1,7 +1,7 @@
 import "./PieGraph.css";
 import { useState } from "react";
 
-import Options from "../categories/choice/Options";
+import Options from "../../categories/choice/Options";
 
 function PieGraph(props) {
   const exType = "Pushups";

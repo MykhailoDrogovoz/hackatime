@@ -1,10 +1,9 @@
 import { useState } from "react";
 import "../../App.css";
-import PieGraph from "../push-ups/PieGraph";
-import Category from "../category/Category";
+import PieGraph from "./push-ups/PieGraph";
+import Category from "./category/Category";
 import { useNavigate } from "react-router-dom";
-// import Options from "./components//categories/choice/Options";
-// import Exercise from "./components/exercise/Exercise";
+import List from "./lists/List";
 
 function Home() {
   const [showOptions, setShowOptions] = useState(false);
@@ -38,6 +37,9 @@ function Home() {
         <PieGraph percentage={100} handleClick={handleClick}></PieGraph>
       </div>
       <Category />
+      <div className="full-screen">
+        <List />
+      </div>
     </div>
   );
 }
