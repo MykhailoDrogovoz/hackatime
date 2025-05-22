@@ -36,7 +36,9 @@ function Home() {
         <PieGraph percentage={75} handleClick={handleClick}></PieGraph>
         <PieGraph percentage={100} handleClick={handleClick}></PieGraph>
       </div>
-      <Category />
+      <div className="full-screen">
+        <Category />
+      </div>
       <div className="full-screen">
         <List />
       </div>

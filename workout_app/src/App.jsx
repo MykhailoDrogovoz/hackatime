@@ -9,6 +9,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Header from "./components/header/Header";
 import { useLocation } from "react-router-dom";
 import DoneExercise from "./components/exercise/DoneExercise";
+import NewList from "./components/home/lists/NewList";
 
 function App() {
   const location = useLocation();
@@ -25,6 +26,7 @@ function App() {
         <Route path="/options" element={<Options />} />
         <Route path="/exercise" element={<Exercise />} />
         <Route path="/exercise-done" element={<DoneExercise />} />
+        <Route path="/new-list" element={<NewList />} />
       </Routes>
     </div>
   );

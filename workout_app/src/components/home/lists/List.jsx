@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import "./List.css";
 
 function List() {
@@ -5,7 +6,9 @@ function List() {
     <div className="lists chart-container">
       <div className="new-list-button">
         <h2>Your lists</h2>
-        <button>+ Add new list</button>
+        <button>
+          <Link to="/new-list">+ Add new list </Link>
+        </button>
       </div>
       <div className="lists-container">
         <div className="list">
