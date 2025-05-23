@@ -1,0 +1,137 @@
+@import url("https://fonts.googleapis.com/css2?family=Kadwa:wght@400;700&display=swap");
+
+.leaderboard {
+  color: #000;
+  margin-bottom: 40px;
+}
+
+.time-container {
+  display: flex;
+  background: #63856a;
+  gap: 30px;
+  border-radius: 50px;
+  height: 50px;
+  padding: 15px;
+}
+
+.time-container div {
+  padding: 5px 10px;
+}
+
+.time-container .main {
+  background: #63856a;
+  border-radius: 50px;
+  color: #fff;
+}
+
+.leaderboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 80vw;
+  max-width: 1200px;
+}
+
+.leaderboard-header .item {
+  background: rgba(99, 133, 106, 0.4);
+}
+
+.leaderboard-header .item.sorted {
+  height: 60px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  padding: 10px;
+}
+
+.paragraph-1 {
+  font-size: 28px;
+  font-family: "Kadwa", serif;
+  font-style: bold;
+}
+
+.clear {
+  color: #b34e4e;
+}
+
+.top-3 {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  margin-top: 40px;
+}
+
+.top-3 .stage-element div {
+  background: #3c5a40;
+  background: rgba(60, 90, 64, 0.6);
+  text-align: center;
+  height: 55%;
+}
+
+.top-3 .stage-element.first div {
+  color: #fff;
+  background: rgba(60, 90, 64, 1);
+  height: 100%;
+}
+
+.top-3 .stage-element.third div {
+  background: rgba(60, 90, 64, 0.3);
+  height: 45%;
+}
+
+.top-3 .stage-element {
+  width: 200px;
+  height: 600px;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+}
+
+.top-3 .stage-element .fa-user-circle {
+  color: #63856a;
+  text-align: center;
+  font-size: 100px;
+  margin-bottom: 20px;
+}
+
+.top-3 .stage-element .fa-crown {
+  color: #f8ed4f;
+  font-size: 50px;
+  text-align: center;
+}
+
+h2 {
+  font-size: 54px;
+  font-family: "Kadwa", serif;
+  font-style: bold;
+}
+
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+  margin: 60px 0;
+}
+
+td,
+th {
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(odd) {
+  background-color: rgb(60, 90, 64);
+  color: #fff;
+}
+
+.buttons {
+  display: flex;
+  justify-content: end;
+  width: 100%;
+  gap: 30px;
+}
+
+.buttons i {
+  font-size: 20px;
+  margin-right: 20px;
+}
