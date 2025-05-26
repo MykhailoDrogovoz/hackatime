@@ -5,9 +5,6 @@ function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   return (

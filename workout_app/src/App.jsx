@@ -12,6 +12,7 @@ import DoneExercise from "./components/exercise/DoneExercise";
 import NewList from "./components/home/lists/NewList";
 import Leaderboard from "./components/leaderboard/Leaderboard";
 import LoginContainer from "./components/account/LoginContainer";
+import Account from "./components/account/Account";
 
 function App() {
   const location = useLocation();
@@ -31,6 +32,7 @@ function App() {
         <Route path="/new-list" element={<NewList />} />
         <Route path="/leaderboard" element={<Leaderboard />} />
         <Route path="/login" element={<LoginContainer />} />
+        <Route path="/account" element={<Account />} />
       </Routes>
     </div>
   );

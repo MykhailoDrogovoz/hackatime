@@ -1,0 +1,74 @@
+.account .fa-user-circle {
+  color: #63856a;
+  font-size: 150px;
+}
+
+.account .fa-pen {
+  color: #000;
+  font-size: 30px;
+  position: absolute;
+  bottom: 430px;
+  left: 61vw;
+}
+
+.account {
+  color: #000;
+  width: 60%;
+  max-width: 800px;
+  display: flex;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.account .main-button {
+  width: 100%;
+}
+
+.account form div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin: 10px;
+}
+
+.account input {
+  width: 60%;
+}
+
+.account-list {
+  background: #63856a;
+  border-radius: 30px;
+  color: #fff;
+}
+
+.account-list ul li {
+  list-style: none;
+}
+
+.account-list ul {
+  padding: 0;
+  /* width: 100%; */
+  height: 100%;
+}
+
+.account-main {
+  width: 70%;
+}
+
+ul.center {
+  flex-direction: column;
+  margin: 0 100px;
+}
+
+.account .main {
+  color: #000;
+}
+
+h5 {
+  font-size: 22px;
+}

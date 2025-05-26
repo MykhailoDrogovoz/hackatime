@@ -21,6 +21,7 @@ input,
   border: none;
   border-bottom: 1px solid #000;
   border-width: 1px;
+  background: transparent;
 }
 
 .new-list form div textarea {
