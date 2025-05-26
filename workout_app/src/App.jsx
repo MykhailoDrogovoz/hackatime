@@ -11,6 +11,7 @@ import { useLocation } from "react-router-dom";
 import DoneExercise from "./components/exercise/DoneExercise";
 import NewList from "./components/home/lists/NewList";
 import Leaderboard from "./components/leaderboard/Leaderboard";
+import LoginContainer from "./components/account/LoginContainer";
 
 function App() {
   const location = useLocation();
@@ -29,6 +30,7 @@ function App() {
         <Route path="/exercise-done" element={<DoneExercise />} />
         <Route path="/new-list" element={<NewList />} />
         <Route path="/leaderboard" element={<Leaderboard />} />
+        <Route path="/login" element={<LoginContainer />} />
       </Routes>
     </div>
   );

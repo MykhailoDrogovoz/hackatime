@@ -28,7 +28,7 @@ const Header = (props) => {
           <span>21</span>
           <img src="/coin.png" alt="" />
         </div>
-        <Link to="/account" className="menuItem">
+        <Link to="/login" className="menuItem">
           <i className="fa fa-user-circle"></i>
         </Link>
       </nav>

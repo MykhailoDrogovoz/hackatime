@@ -1,5 +1,5 @@
 .new-list {
-  max-width: 500px;
+  max-width: 700px;
 }
 
 .new-list form {
@@ -15,7 +15,7 @@
   width: 80%;
 }
 
-.new-list form div input,
+input,
 .new-list form div textarea {
   padding: 10px 5px;
   border: none;
@@ -43,7 +43,7 @@
   padding-top: 10px;
 }
 
-.new-list form div input:focus,
+input:focus,
 .new-list form div textarea:focus {
   outline: none;
 }
@@ -55,6 +55,7 @@
 .buttons-white-theme button {
   background: transparent;
   border: #7fc388 1px solid;
+  margin: 10px 40px;
 }
 
 .buttons-white-theme .main-button {
