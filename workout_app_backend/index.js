@@ -1,14 +1,24 @@
-const express = require("express");
-const sequelize = require("./util/db");
+import express from "express";
+import sequelize from "./util/db.js";
+import bodyParser from "body-parser";
+import cors from "cors";
+
+import userRoutes from "./routes/user.js";
+
 const app = express();
 
+app.use(bodyParser.json());
+
 app.use(express.json());
+app.use(cors());
 
 app.use(express.urlencoded({ extended: true }));
 
 app.get("/", (req, res) => {
   res.json({ message: "Hello, World!" });
 });
+
+app.use("/user", userRoutes);
 
 sequelize
   .authenticate()
