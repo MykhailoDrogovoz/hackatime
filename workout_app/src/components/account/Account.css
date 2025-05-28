@@ -1,21 +1,22 @@
 .account .fa-user-circle {
   color: #63856a;
   font-size: 150px;
+  margin-bottom: 10px;
 }
 
 .account .fa-pen {
-  color: #000;
+  color: #63856a;
   font-size: 30px;
-  position: absolute;
-  bottom: 430px;
-  left: 61vw;
+  position: relative;
+  top: 40%;
+  right: 2%;
 }
 
 .account {
   color: #000;
-  width: 60%;
-  max-width: 800px;
-  display: flex;
+  /* max-width: 800px; */
+  display: grid;
+  grid-template-columns: 1fr 2fr;
 }
 
 .center {
@@ -44,6 +45,8 @@
   background: #63856a;
   border-radius: 30px;
   color: #fff;
+  margin-right: 5vw;
+  padding: 30px;
 }
 
 .account-list ul li {
@@ -51,24 +54,49 @@
 }
 
 .account-list ul {
-  padding: 0;
-  /* width: 100%; */
-  height: 100%;
+  padding: 0 20px;
 }
 
-.account-main {
-  width: 70%;
+.account-list .fa-user-circle {
+  color: #c8d8b9;
+  font-size: 100px;
+}
+
+.account-list-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 20px;
+  padding-bottom: 20px;
+  border-bottom: #c8d8b9 solid 1px;
 }
 
 ul.center {
   flex-direction: column;
-  margin: 0 100px;
+  /* margin: 0 100px; */
+}
+
+.account-main .center {
+  margin-bottom: 50px;
 }
 
 .account .main {
-  color: #000;
+  color: #c8d8b9;
+}
+
+ul div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
 }
 
 h5 {
   font-size: 22px;
+}
+
+.account-main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }

@@ -10,6 +10,30 @@ class userController {
     this.users = [];
   }
 
+  getUserProfile = async (req, res) => {
+    try {
+      const user = await User.findOne({
+        where: {
+          userId: req.user.userId,
+        },
+      });
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const userData = {
+        ...user.get(),
+        password: undefined,
+      };
+
+      res.json({ user: userData });
+    } catch (err) {
+      console.error("Error fetching user profile:", err);
+      res.status(500).json({ message: "Server error", error: err.message });
+    }
+  };
+
   addUser(req, res) {
     const saltRounds = 10;
     const username = req.body.username;
@@ -64,6 +88,48 @@ class userController {
               .status(500)
               .json({ message: "Error creating user", error: err.message });
           });
+      });
+    });
+  }
+
+  getUser(req, res) {
+    if (req.body.email == null || req.body.password == null) {
+      return res.status(400).json({ message: "Fill all required fields" });
+    }
+
+    User.findOne({ where: { email: req.body.email } }).then((newUser) => {
+      if (!newUser) {
+        return res.status(404).json({
+          error: "User not found",
+        });
+      }
+
+      const storedHashedPassword = newUser.password;
+      const userInputPassword = req.body.password;
+
+      bcrypt.compare(userInputPassword, storedHashedPassword, (err, result) => {
+        if (err) {
+          console.error("Error comparing passwords: ", err);
+          return;
+        }
+
+        const token = jwt.sign(
+          { userId: newUser.userId },
+          authConfig.secret,
+
+          { expiresIn: "2h" }
+        );
+
+        if (result) {
+          console.log(`[Server]: ${newUser.username} logged in`);
+          return res.json({
+            user: newUser,
+            accessToken: token,
+          });
+        } else {
+          console.log("[Server]: Passwords do not match! Auth failed.");
+          res.status(401).send("Invalid credentials");
+        }
       });
     });
   }
