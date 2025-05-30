@@ -91,6 +91,12 @@ ul div {
   width: 100%;
 }
 
+ul div a {
+  text-decoration: none;
+  color: #ff8d8f;
+  font-size: 20px;
+}
+
 h5 {
   font-size: 22px;
 }

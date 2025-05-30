@@ -10,7 +10,6 @@ function Login(props) {
   const usernameInputRef = useRef();
   const emailInputRef = useRef();
   const passwordInputRef = useRef();
-  const passwordConfInputRef = useRef();
 
   const saveUserDataHandler = (enteredUserData) => {
     const userData = {

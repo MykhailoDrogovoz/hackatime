@@ -1,7 +1,55 @@
 import { Link } from "react-router-dom";
 import "./List.css";
+import { useEffect, useState } from "react";
+import data_file from "../../../data.json";
 
 function List() {
+  const [lists, setLists] = useState(null);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await fetch(
+          `http://${data_file.ip}:${data_file.port}/lists/all`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        const data = await response.json();
+        setLists(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchUserData();
+  }, []);
+
+  const handleDelete = async (id) => {
+    try {
+      const response = await fetch(
+        `http://${data_file.ip}:${data_file.port}/lists/${id}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await response.json();
+      console.log("Delete response:", data);
+      window.location.reload();
+    } catch (error) {
+      console.error("Error deleting list:", error);
+    }
+  };
+
+  const takeList = (list) => {
+    localStorage.setItem("taskList", JSON.stringify(list));
+  };
+
   return (
     <div className="lists chart-container">
       <div className="new-list-button">
@@ -11,81 +59,30 @@ function List() {
         </button>
       </div>
       <div className="lists-container">
-        <div className="list">
-          <div className="list-header">
-            <i className="fa fa-pen"></i>
-            <i className="fa fa-trash"></i>
+        {lists?.map((list, index) => (
+          <div className="list" key={index}>
+            <div className="list-header">
+              <i className="fa fa-pen"></i>
+              <i
+                className="fa fa-trash"
+                onClick={() => {
+                  handleDelete(list.listId);
+                }}
+              ></i>
+            </div>
+            <div className="list-body">
+              <p>Title:</p>
+              <h4>{list.listName}</h4>
+            </div>
+            <div className="list-body">
+              <p>Total time:</p>
+              <h4>20 minutes</h4>
+            </div>
+            <button id="list-take" onClick={takeList(list)}>
+              Take
+            </button>
           </div>
-          <div className="list-body">
-            <p>Title:</p>
-            <h4>Morning warm-up</h4>
-          </div>
-          <div className="list-body">
-            <p>Total time:</p>
-            <h4>20 minutes</h4>
-          </div>
-          <button id="list-take">Take</button>
-        </div>
-        <div className="list">
-          <div className="list-header">
-            <i className="fa fa-pen"></i>
-            <i className="fa fa-trash"></i>
-          </div>
-          <div className="list-body">
-            <p>Title:</p>
-            <h4>Morning warm-up</h4>
-          </div>
-          <div className="list-body">
-            <p>Total time:</p>
-            <h4>20 minutes</h4>
-          </div>
-          <button id="list-take">Take</button>
-        </div>
-        <div className="list">
-          <div className="list-header">
-            <i className="fa fa-pen"></i>
-            <i className="fa fa-trash"></i>
-          </div>
-          <div className="list-body">
-            <p>Title:</p>
-            <h4>Morning warm-up</h4>
-          </div>
-          <div className="list-body">
-            <p>Total time:</p>
-            <h4>20 minutes</h4>
-          </div>
-          <button id="list-take">Take</button>
-        </div>
-        <div className="list">
-          <div className="list-header">
-            <i className="fa fa-pen"></i>
-            <i className="fa fa-trash"></i>
-          </div>
-          <div className="list-body">
-            <p>Title:</p>
-            <h4>Morning warm-up</h4>
-          </div>
-          <div className="list-body">
-            <p>Total time:</p>
-            <h4>20 minutes</h4>
-          </div>
-          <button id="list-take">Take</button>
-        </div>
-        <div className="list">
-          <div className="list-header">
-            <i className="fa fa-pen"></i>
-            <i className="fa fa-trash"></i>
-          </div>
-          <div className="list-body">
-            <p>Title:</p>
-            <h4>Morning warm-up</h4>
-          </div>
-          <div className="list-body">
-            <p>Total time:</p>
-            <h4>20 minutes</h4>
-          </div>
-          <button id="list-take">Take</button>
-        </div>
+        ))}
       </div>
     </div>
   );

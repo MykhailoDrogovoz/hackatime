@@ -4,6 +4,8 @@ import bodyParser from "body-parser";
 import cors from "cors";
 
 import userRoutes from "./routes/user.js";
+import listRoutes from "./routes/list.js";
+import tagsRoutes from "./routes/tags.js";
 
 const app = express();
 
@@ -19,6 +21,9 @@ app.get("/", (req, res) => {
 });
 
 app.use("/user", userRoutes);
+
+app.use("/lists", listRoutes);
+app.use("/tags", tagsRoutes);
 
 sequelize
   .authenticate()

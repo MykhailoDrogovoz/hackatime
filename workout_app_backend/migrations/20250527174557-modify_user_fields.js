@@ -7,7 +7,7 @@ module.exports = {
       queryInterface.changeColumn("Users", "firstName", {
         type: Sequelize.STRING,
       }),
-      queryInterface.changeColumn("User", "lastName", {
+      queryInterface.changeColumn("Users", "lastName", {
         type: Sequelize.STRING,
       }),
       queryInterface.changeColumn("Users", "email", {

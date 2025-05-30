@@ -137,6 +137,9 @@ function Account() {
               <h5>Settings</h5>
               <i className="fa fa-chevron-right"></i>
             </div>
+            <div>
+              <a onClick={logoutHandler}>Logout</a>
+            </div>
           </ul>
         </div>
         <div className="account-main">
