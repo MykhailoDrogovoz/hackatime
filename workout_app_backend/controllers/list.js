@@ -110,6 +110,41 @@ class listController {
         .json({ message: "Error deleting list", error: err.message });
     }
   };
+
+  addTagToList = async (req, res) => {
+    try {
+      const list = await List.findByPk(req.params.id);
+      if (!list) {
+        return res.status(404).json({ message: "List not found" });
+      }
+
+      console.log(req.body.name);
+
+      const [newTag, created] = await Tags.findOrCreate({
+        where: { name: req.body.tag.trim() },
+      });
+
+      if (!newTag) {
+        return res.status(404).json({ message: "Tag not found" });
+      }
+      await list.addTag(newTag);
+
+      const updatedList = await List.findByPk(req.params.id, {
+        include: [
+          {
+            model: Tags,
+            through: { model: ListTags },
+          },
+        ],
+      });
+      res.status(201).json(updatedList);
+    } catch (err) {
+      console.log("[Server]: Error adding tag to list", err);
+      res
+        .status(500)
+        .json({ message: "Error adding tag to list", error: err.message });
+    }
+  };
 }
 
 export const ListController = new listController();

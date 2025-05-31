@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./Login.css";
 import Login from "./Login";
 import Register from "./Register";
@@ -87,6 +87,14 @@ function LoginContainer() {
       return null;
     }, []);
   };
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem("authToken");
+
+    if (storedToken) {
+      navigate("/account");
+    }
+  });
 
   return (
     <div className="full-screen">

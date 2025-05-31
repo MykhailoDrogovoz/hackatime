@@ -48,6 +48,7 @@ function List() {
 
   const takeList = (list) => {
     localStorage.setItem("taskList", JSON.stringify(list));
+    window.location.reload();
   };
 
   return (
@@ -78,7 +79,12 @@ function List() {
               <p>Total time:</p>
               <h4>20 minutes</h4>
             </div>
-            <button id="list-take" onClick={takeList(list)}>
+            <button
+              id="list-take"
+              onClick={() => {
+                takeList(list);
+              }}
+            >
               Take
             </button>
           </div>

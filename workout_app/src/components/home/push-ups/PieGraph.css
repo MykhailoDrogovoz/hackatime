@@ -5,6 +5,8 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   box-shadow: #3c5a40 20px 20px 20px;
+  width: 400px;
+  height: 250px;
 }
 
 .main-title {
@@ -88,4 +90,57 @@
 
 .coin-container {
   margin: 20px;
+}
+
+.disable .coin {
+  background: rgba(0, 0, 0, 0.7);
+  /* opacity: 0.8; */
+  box-shadow: none;
+  color: #fff;
+}
+
+/* .disable .pie-graph-container {
+  background: #000;
+} */
+
+.disable .new-exercise {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.exercise-popup-content {
+  background: #fff;
+  color: #000;
+  padding: 20px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.exercise-popup-content button {
+  /* background: #5e35b1; */
+  box-shadow: none;
+  border: #5e35b1 1px solid;
+}
+
+.add-btn {
+  color: #fff;
+  background: #5e35b1;
+  border: none;
+}
+
+#search-input {
+  width: 90%;
+}
+
+.tag-list {
+  width: 90%;
+}
+
+.tag-item {
+  display: flex;
+  justify-content: space-between;
 }

@@ -49,7 +49,9 @@
 .lists-container {
   display: flex;
   gap: 50px;
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 20px;
 }
 
 #list-take {

@@ -109,6 +109,14 @@ function Account() {
     navigate("/login");
   };
 
+  const handleChange = (id, newValue) => {
+    setFields((prevFields) =>
+      prevFields.map((field) =>
+        field.id === id ? { ...field, value: newValue } : field
+      )
+    );
+  };
+
   return (
     <div className="full-screen center">
       <div className="account">

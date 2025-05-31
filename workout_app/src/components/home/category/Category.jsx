@@ -3,22 +3,26 @@ import {
   Bar,
   XAxis,
   YAxis,
-  Tooltip,
-  Legend,
   ResponsiveContainer,
   Cell,
-  Text,
 } from "recharts";
 import "./Category.css";
-
-const data = [
-  { category: "aa", minutes: 30 },
-  { category: "bb", minutes: 45 },
-  { category: "cc", minutes: 25 },
-  { category: "dd", minutes: 35 },
-];
+import { useEffect, useState } from "react";
 
 function Category() {
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    const taskList = JSON.parse(localStorage.getItem("taskList"));
+    if (taskList?.Tags) {
+      const newData = taskList.Tags.map((tag) => ({
+        category: tag.name,
+        minutes: 20, // You can change this to the actual time if available
+      }));
+      setData(newData);
+    }
+  }, []);
+
   return (
     <div className="chart-container">
       <h1 className="chart-title">Physical activities</h1>
@@ -32,14 +36,13 @@ function Category() {
             axisLine={false}
             tick={false}
           />
-          {/* <Tooltip /> */}
           <Bar
             radius={[0, 10, 10, 0]}
             dataKey="minutes"
             fill="#8884d8"
             name="Physical exercises"
             label={({ y, height, index, width }) => {
-              const label = data[index].category;
+              const label = data[index]?.category || "";
               return (
                 <text
                   x={width - 10}
@@ -55,9 +58,7 @@ function Category() {
             }}
           >
             {data.map((entry, index) => (
-              <div>
-                <Cell key={`cell-${index}`} fill="#8884d8" />
-              </div>
+              <Cell key={`cell-${index}`} fill="#8884d8" />
             ))}
           </Bar>
         </BarChart>
