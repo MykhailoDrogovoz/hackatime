@@ -2,7 +2,9 @@ import { useState } from "react";
 import "./Account.css";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import data_file from "../../data.json";
+
+const apiIp = import.meta.env.VITE_API_IP;
+const apiPort = import.meta.env.VITE_APP_API_PORT;
 
 function Account() {
   const [username, setUsername] = useState("");
@@ -46,7 +48,7 @@ function Account() {
 
       try {
         const response = await fetch(
-          `http://${data_file.ip}:${data_file.port}/user/profile`,
+          `http://${apiIp}:${apiPort}/user/profile`,
           {
             method: "GET",
             headers: {

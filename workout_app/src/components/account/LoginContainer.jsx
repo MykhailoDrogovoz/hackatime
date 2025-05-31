@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import "./Login.css";
 import Login from "./Login";
 import Register from "./Register";
-import data_file from "../../data.json";
 import { useNavigate } from "react-router-dom";
+
+const apiIp = import.meta.env.VITE_API_IP;
+const apiPort = import.meta.env.VITE_APP_API_PORT;
 
 function LoginContainer() {
   const [username, setUsername] = useState("");
@@ -21,7 +23,7 @@ function LoginContainer() {
     const addUser = async () => {
       try {
         const response = await fetch(
-          `http://${data_file.ip}:${data_file.port}/user/register`,
+          `http://${apiIp}:${apiPort}/user/register`,
           {
             method: "POST",
             body: JSON.stringify(user),
@@ -48,16 +50,13 @@ function LoginContainer() {
   const handleLogin = async (user) => {
     const getUser = async () => {
       try {
-        const response = await fetch(
-          `http://${data_file.ip}:${data_file.port}/user/login`,
-          {
-            method: "POST",
-            body: JSON.stringify(user),
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const response = await fetch(`http://${apiIp}:${apiPort}/user/login`, {
+          method: "POST",
+          body: JSON.stringify(user),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
         const data = await response.json();
         localStorage.setItem("authToken", data.accessToken);
 

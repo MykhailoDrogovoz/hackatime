@@ -25,3 +25,4 @@ dist-ssr
 
 # Optional npm script lifecycle directories
 /src/data.json
+.env

@@ -2,7 +2,8 @@ import { useNavigate } from "react-router-dom";
 import "./NewList.css";
 import CreatableSelect from "react-select/creatable";
 import { useEffect, useRef, useState } from "react";
-import data_file from "../../../data.json";
+const apiIp = import.meta.env.VITE_API_IP;
+const apiPort = import.meta.env.VITE_APP_API_PORT;
 
 function NewList() {
   const navigate = useNavigate();
@@ -41,13 +42,10 @@ function NewList() {
   useEffect(() => {
     const fetchTags = async () => {
       try {
-        const response = await fetch(
-          `http://${data_file.ip}:${data_file.port}/tags/all`,
-          {
-            method: "GET",
-            headers: { "Content-Type": "application/json" },
-          }
-        );
+        const response = await fetch(`http://${apiIp}:${apiPort}/tags/all`, {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        });
         const data = await response.json();
 
         const formattedOptions = data.map((tag) => ({
@@ -104,14 +102,11 @@ function NewList() {
     console.log(newList);
 
     try {
-      const response = await fetch(
-        `http://${data_file.ip}:${data_file.port}/lists`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(newList),
-        }
-      );
+      const response = await fetch(`http://${apiIp}:${apiPort}/lists`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newList),
+      });
 
       if (!response.ok) throw new Error("Failed to create list");
 

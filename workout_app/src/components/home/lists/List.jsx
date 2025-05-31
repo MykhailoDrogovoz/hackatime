@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
 import "./List.css";
 import { useEffect, useState } from "react";
-import data_file from "../../../data.json";
+const apiIp = import.meta.env.VITE_API_IP;
+const apiPort = import.meta.env.VITE_APP_API_PORT;
 
 function List() {
   const [lists, setLists] = useState(null);
@@ -9,15 +10,12 @@ function List() {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await fetch(
-          `http://${data_file.ip}:${data_file.port}/lists/all`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const response = await fetch(`http://${apiIp}:${apiPort}/lists/all`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
         const data = await response.json();
         setLists(data);
       } catch (error) {
@@ -29,15 +27,12 @@ function List() {
 
   const handleDelete = async (id) => {
     try {
-      const response = await fetch(
-        `http://${data_file.ip}:${data_file.port}/lists/${id}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetch(`http://${apiIp}:${apiPort}/lists/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
       const data = await response.json();
       console.log("Delete response:", data);
       window.location.reload();
