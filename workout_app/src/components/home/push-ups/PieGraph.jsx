@@ -1,8 +1,7 @@
 import "./PieGraph.css";
 import { useEffect, useState } from "react";
 import Popup from "reactjs-popup";
-const apiIp = import.meta.env.VITE_API_IP;
-const apiPort = import.meta.env.VITE_APP_API_PORT;
+const VITE_API_URL = import.meta.env.VITE_API_URL;
 
 function PieGraph(props) {
   const exType = "Pushups";
@@ -12,7 +11,7 @@ function PieGraph(props) {
   useEffect(() => {
     const fetchTags = async () => {
       try {
-        const response = await fetch(`http://${apiIp}:${apiPort}/tags/all`, {
+        const response = await fetch(`${VITE_API_URL}/tags/all`, {
           method: "GET",
           headers: { "Content-Type": "application/json" },
         });
@@ -48,7 +47,7 @@ function PieGraph(props) {
       console.log(selectedTag);
       try {
         const response = await fetch(
-          `http://${apiIp}:${apiPort}/lists/add-to-list/${taskList.listId}`,
+          `${VITE_API_URL}/lists/add-to-list/${taskList.listId}`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },

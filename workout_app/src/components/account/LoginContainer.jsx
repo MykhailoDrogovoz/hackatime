@@ -3,9 +3,7 @@ import "./Login.css";
 import Login from "./Login";
 import Register from "./Register";
 import { useNavigate } from "react-router-dom";
-
-const apiIp = import.meta.env.VITE_API_IP;
-const apiPort = import.meta.env.VITE_APP_API_PORT;
+const VITE_API_URL = import.meta.env.VITE_API_URL;
 
 function LoginContainer() {
   const [username, setUsername] = useState("");
@@ -22,16 +20,13 @@ function LoginContainer() {
   const handleRegister = (user) => {
     const addUser = async () => {
       try {
-        const response = await fetch(
-          `http://${apiIp}:${apiPort}/user/register`,
-          {
-            method: "POST",
-            body: JSON.stringify(user),
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const response = await fetch(`${VITE_API_URL}/user/register`, {
+          method: "POST",
+          body: JSON.stringify(user),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
         const data = await response.json();
         console.log(data);
         if (data.success) {

@@ -1,8 +1,7 @@
 import { Link } from "react-router-dom";
 import "./List.css";
 import { useEffect, useState } from "react";
-const apiIp = import.meta.env.VITE_API_IP;
-const apiPort = import.meta.env.VITE_APP_API_PORT;
+const VITE_API_URL = import.meta.env.VITE_API_URL;
 
 function List() {
   const [lists, setLists] = useState(null);
@@ -10,7 +9,7 @@ function List() {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await fetch(`http://${apiIp}:${apiPort}/lists/all`, {
+        const response = await fetch(`${VITE_API_URL}/lists/all`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -27,7 +26,7 @@ function List() {
 
   const handleDelete = async (id) => {
     try {
-      const response = await fetch(`http://${apiIp}:${apiPort}/lists/${id}`, {
+      const response = await fetch(`${VITE_API_URL}/lists/${id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",

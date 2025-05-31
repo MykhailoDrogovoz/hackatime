@@ -2,8 +2,7 @@ import { useNavigate } from "react-router-dom";
 import "./NewList.css";
 import CreatableSelect from "react-select/creatable";
 import { useEffect, useRef, useState } from "react";
-const apiIp = import.meta.env.VITE_API_IP;
-const apiPort = import.meta.env.VITE_APP_API_PORT;
+const VITE_API_URL = import.meta.env.VITE_API_URL;
 
 function NewList() {
   const navigate = useNavigate();
@@ -42,7 +41,7 @@ function NewList() {
   useEffect(() => {
     const fetchTags = async () => {
       try {
-        const response = await fetch(`http://${apiIp}:${apiPort}/tags/all`, {
+        const response = await fetch(`${VITE_API_URL}/tags/all`, {
           method: "GET",
           headers: { "Content-Type": "application/json" },
         });
@@ -102,7 +101,7 @@ function NewList() {
     console.log(newList);
 
     try {
-      const response = await fetch(`http://${apiIp}:${apiPort}/lists`, {
+      const response = await fetch(`${VITE_API_URL}/lists`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newList),

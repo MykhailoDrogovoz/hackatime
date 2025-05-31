@@ -2,9 +2,7 @@ import { useState } from "react";
 import "./Account.css";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-
-const apiIp = import.meta.env.VITE_API_IP;
-const apiPort = import.meta.env.VITE_APP_API_PORT;
+const VITE_API_URL = import.meta.env.VITE_API_URL;
 
 function Account() {
   const [username, setUsername] = useState("");
@@ -47,16 +45,13 @@ function Account() {
       }
 
       try {
-        const response = await fetch(
-          `http://${apiIp}:${apiPort}/user/profile`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${storedToken}`,
-            },
-          }
-        );
+        const response = await fetch(`${VITE_API_URL}/user/profile`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${storedToken}`,
+          },
+        });
 
         if (!response.ok) {
           const errorData = await response.json();
