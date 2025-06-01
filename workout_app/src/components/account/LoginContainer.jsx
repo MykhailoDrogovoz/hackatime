@@ -45,7 +45,7 @@ function LoginContainer() {
   const handleLogin = async (user) => {
     const getUser = async () => {
       try {
-        const response = await fetch(`http://${VITE_API_URL}user/login`, {
+        const response = await fetch(`${VITE_API_URL}user/login`, {
           method: "POST",
           body: JSON.stringify(user),
           headers: {
