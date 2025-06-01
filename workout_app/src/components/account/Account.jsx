@@ -45,7 +45,7 @@ function Account() {
       }
 
       try {
-        const response = await fetch(`${VITE_API_URL}/user/profile`, {
+        const response = await fetch(`${VITE_API_URL}user/profile`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",

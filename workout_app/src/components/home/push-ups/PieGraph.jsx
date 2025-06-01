@@ -11,7 +11,7 @@ function PieGraph(props) {
   useEffect(() => {
     const fetchTags = async () => {
       try {
-        const response = await fetch(`${VITE_API_URL}/tags/all`, {
+        const response = await fetch(`${VITE_API_URL}tags/all`, {
           method: "GET",
           headers: { "Content-Type": "application/json" },
         });
@@ -47,7 +47,7 @@ function PieGraph(props) {
       console.log(selectedTag);
       try {
         const response = await fetch(
-          `${VITE_API_URL}/lists/add-to-list/${taskList.listId}`,
+          `${VITE_API_URL}lists/add-to-list/${taskList.listId}`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },

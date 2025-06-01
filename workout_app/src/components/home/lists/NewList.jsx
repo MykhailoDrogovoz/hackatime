@@ -41,7 +41,7 @@ function NewList() {
   useEffect(() => {
     const fetchTags = async () => {
       try {
-        const response = await fetch(`${VITE_API_URL}/tags/all`, {
+        const response = await fetch(`${VITE_API_URL}tags/all`, {
           method: "GET",
           headers: { "Content-Type": "application/json" },
         });
@@ -101,7 +101,7 @@ function NewList() {
     console.log(newList);
 
     try {
-      const response = await fetch(`${VITE_API_URL}/lists`, {
+      const response = await fetch(`${VITE_API_URL}lists`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newList),

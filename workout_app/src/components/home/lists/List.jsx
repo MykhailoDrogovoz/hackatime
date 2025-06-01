@@ -9,7 +9,7 @@ function List() {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await fetch(`${VITE_API_URL}/lists/all`, {
+        const response = await fetch(`${VITE_API_URL}lists/all`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -26,7 +26,7 @@ function List() {
 
   const handleDelete = async (id) => {
     try {
-      const response = await fetch(`${VITE_API_URL}/lists/${id}`, {
+      const response = await fetch(`${VITE_API_URL}lists/${id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",

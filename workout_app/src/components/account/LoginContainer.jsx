@@ -20,7 +20,7 @@ function LoginContainer() {
   const handleRegister = (user) => {
     const addUser = async () => {
       try {
-        const response = await fetch(`${VITE_API_URL}/user/register`, {
+        const response = await fetch(`${VITE_API_URL}user/register`, {
           method: "POST",
           body: JSON.stringify(user),
           headers: {
@@ -45,7 +45,7 @@ function LoginContainer() {
   const handleLogin = async (user) => {
     const getUser = async () => {
       try {
-        const response = await fetch(`http://${apiIp}:${apiPort}/user/login`, {
+        const response = await fetch(`http://${VITE_API_URL}user/login`, {
           method: "POST",
           body: JSON.stringify(user),
           headers: {
