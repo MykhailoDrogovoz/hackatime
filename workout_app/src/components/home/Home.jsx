@@ -21,14 +21,16 @@ function Home() {
 
   const [tags, setTags] = useState(() => {
     const storedTags = localStorage.getItem("taskList");
-    console.log(storedTags);
+    // console.log(storedTags);
     return storedTags ? JSON.parse(storedTags) : { Tags: [] }; // Ensure tags is an object with Tags array
   });
 
   const handleClick = (exType) => {
     console.log(exType);
-    setExType(exType);
-    navigate("/options", { state: { exType: exType } });
+    // setExType(exType);
+    navigate("/options", {
+      state: { exType: exType },
+    });
   };
 
   const handleNumber = (number) => {
@@ -57,6 +59,7 @@ function Home() {
             percentage={0}
             handleClick={() => handleClick(tag.name)}
             name={tag.name}
+            totalSets={tag.totalSets}
           />
         ))}
       </div>

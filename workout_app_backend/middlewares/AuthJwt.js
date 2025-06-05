@@ -23,7 +23,6 @@ export const verifyToken = async (req, res, next) => {
     req.user.userId = decoded.userId;
 
     const user = await User.findByPk(req.user.userId);
-    console.log("Found user:", user);
 
     if (!user) {
       return res.status(401).json({ message: "Unauthorized! User not found" });

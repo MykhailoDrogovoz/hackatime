@@ -4,42 +4,11 @@ import Popup from "reactjs-popup";
 const VITE_API_URL = import.meta.env.VITE_API_URL;
 
 function PieGraph(props) {
-  const exType = "Pushups";
-
-  const [tags, setTags] = useState(0);
-
   const [doneSets, setDoneSets] = useState([]);
 
-  const [progress, setProgress] = useState(0);
+  const exType = "Pushups";
 
-  useEffect(() => {
-    const tagName = props.name;
-
-    const fetchDoneSets = async () => {
-      const storedToken = localStorage.getItem("authToken");
-      const response = await fetch(`${VITE_API_URL}tags/get-sets/${tagName}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${storedToken}`,
-        },
-      });
-      if (!response.ok) {
-      }
-      const data = await response.json();
-      if (!data.userExercise) {
-        setDoneSets(0);
-      } else {
-        setDoneSets(data.userExercise.setsCompleted);
-        setProgress(
-          Math.round((data.userExercise.setsCompleted / props.totalSets) * 100)
-        );
-      }
-    };
-    if (tagName) {
-      fetchDoneSets();
-    }
-  }, []);
+  const [tags, setTags] = useState([]);
 
   useEffect(() => {
     const fetchTags = async () => {
@@ -110,14 +79,14 @@ function PieGraph(props) {
             <div className="display-flex">
               <div
                 className="pie-graph"
-                style={{ "--percentage": `${progress}%` }}
+                style={{ "--percentage": `${props.percentage}%` }}
               >
-                <div className="pie-center">{progress}%</div>
+                <div className="pie-center">{props.percentage}%</div>
               </div>
               <div>
-                <p className="done">Today done: {doneSets}</p>
-                <p className="goal">Today's goal: {props.totalSets}</p>
-                {/* <p className="record">Your record</p> */}
+                <p className="done">Today done:</p>
+                <p className="goal">Today's goal</p>
+                <p className="record">Your record</p>
                 <button onClick={() => props.handleClick(exType)}>
                   Do it!
                 </button>

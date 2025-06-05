@@ -39,6 +39,11 @@ User.init(
       type: DataTypes.CHAR,
       allowNull: false,
     },
+    coins: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+      allowNull: false,
+    },
   },
 
   {

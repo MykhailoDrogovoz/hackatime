@@ -103,6 +103,7 @@ function Account() {
   const logoutHandler = () => {
     setToken("");
     localStorage.removeItem("authToken");
+    localStorage.removeItem("userCoins");
     navigate("/login");
   };
 

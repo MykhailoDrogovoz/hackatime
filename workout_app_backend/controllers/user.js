@@ -133,6 +133,41 @@ class userController {
       });
     });
   }
+
+  setCoins = async (req, res) => {
+    const { coins } = req.body;
+    const userId = req.user.userId;
+
+    if (coins === undefined || coins < 0) {
+      return res.status(400).json({ message: "Invalid coins value." });
+    }
+
+    try {
+      const user = await User.findByPk(userId);
+
+      if (!user) {
+        console.log(user);
+
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      user.coins = coins;
+
+      console.log(user);
+      await user.save();
+
+      res.status(200).json({
+        message: "Coins updated successfully!",
+        user: {
+          id: user.id,
+          coins: user.coins,
+        },
+      });
+    } catch (error) {
+      console.error("Error updating coins:", error);
+      res.status(500).json({ message: "Internal server error." });
+    }
+  };
 }
 
 export const UserController = new userController();

@@ -8,13 +8,20 @@ function Exercise() {
   const navigate = useNavigate();
   const { exType, exNumber } = location.state || {};
 
+  console.log(JSON.parse(localStorage.getItem("taskList")).Tags, exType);
+  const exerciseData = JSON.parse(localStorage.getItem("taskList")).Tags.find(
+    (ex) => ex.name === exType
+  );
+
   const [timerStatus, setTimerStatus] = useState("ready");
 
   const handleStart = () => {
     if (timerStatus === "running") {
       setTimerStatus("stopped");
     } else if (timerStatus === "done") {
-      navigate("/exercise-done", { state: { exType: exType } });
+      navigate("/exercise-done", {
+        state: { exType: exType, exNumber: exNumber },
+      });
     } else {
       setTimerStatus("running");
     }
@@ -37,7 +44,8 @@ function Exercise() {
         onDone={handleDone}
       ></Timer>
       <div className="exercise-info">
-        <h1>Task completed: 20/30</h1>
+        {console.log(exerciseData)}
+        <h1>Task completed: {exerciseData.totalSets}</h1>
         <h2>Type: {exType}</h2>
         <h2>Sets: {exNumber}</h2>
         <div>

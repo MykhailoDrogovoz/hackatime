@@ -22,10 +22,20 @@ Tags.init(
       type: DataTypes.INTEGER,
       allowNull: false,
       autoIncrement: true,
-      primaryKey: true, // ✅ this is the key fix
+      primaryKey: true,
     },
     name: {
       type: DataTypes.STRING,
+      allowNull: false,
+    },
+    totalSets: {
+      type: DataTypes.INTEGER,
+      defaultValue: 3,
+      allowNull: false,
+    },
+    coins: {
+      type: DataTypes.INTEGER,
+      defaultValue: 3,
       allowNull: false,
     },
   },
