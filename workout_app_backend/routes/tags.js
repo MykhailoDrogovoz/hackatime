@@ -17,4 +17,8 @@ router.get("/get-sets/:tagName", verifyToken, (req, res) =>
   TagController.getSets(req, res)
 );
 
+router.get("/get-all-userExercises", verifyToken, (req, res) =>
+  TagController.getUserExercisesByUserId(req, res)
+);
+
 export default router;

@@ -11,32 +11,7 @@ function NewList() {
 
   const listNameInputRef = useRef();
   const descriptionInputRef = useRef();
-
-  const submitHandler = (event) => {
-    const enteredListName = listNameInputRef.current.value;
-    const enteredDescription = descriptionInputRef.current.value;
-    event.preventDefault();
-
-    if (
-      enteredListName.trim().length == 0 ||
-      enteredDescription.trim().length == 0
-    ) {
-      setError({
-        title: "Invalid input",
-        message:
-          "Please enter a valid title or amount or date (non-empty values)",
-      });
-      return;
-    }
-
-    const newList = {
-      listName: enteredListName,
-      description: enteredDescription,
-    };
-
-    console.log(newList);
-    saveUserDataHandler(newList);
-  };
+  const accessInputRef = useRef();
 
   useEffect(() => {
     const fetchTags = async () => {
@@ -83,27 +58,31 @@ function NewList() {
 
     const enteredListName = listNameInputRef.current.value;
     const enteredDescription = descriptionInputRef.current.value;
+    const enteredAccess = accessInputRef.current.value;
 
-    if (
-      enteredListName.trim().length === 0 ||
-      enteredDescription.trim().length === 0
-    ) {
-      alert("Please enter a valid title and description."); // Or better error UI
+    if (enteredListName.trim().length === 0) {
+      alert("Please enter a valid title.");
       return;
     }
 
     const newList = {
       listName: enteredListName,
       description: enteredDescription,
+      access: enteredAccess,
       tags: value.map((v) => ({ name: v.label })),
     };
 
     console.log(newList);
 
     try {
+      const storedToken = localStorage.getItem("authToken");
+
       const response = await fetch(`${VITE_API_URL}lists`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${storedToken}`,
+        },
         body: JSON.stringify(newList),
       });
 
@@ -127,6 +106,14 @@ function NewList() {
           <div className="form-group">
             <label htmlFor="">List name:</label>
             <input type="text" ref={listNameInputRef} />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="access">Choose accessiblity:</label>
+            <select name="access" id="access" ref={accessInputRef} required>
+              <option value="public">Public</option>
+              <option value="private">Private</option>
+            </select>
           </div>
 
           <div className="form-group">

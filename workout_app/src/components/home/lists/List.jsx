@@ -1,22 +1,37 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./List.css";
 import { useEffect, useState } from "react";
 const VITE_API_URL = import.meta.env.VITE_API_URL;
 
 function List() {
   const [lists, setLists] = useState(null);
+  const [userId, setUserId] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
+        const storedToken = localStorage.getItem("authToken");
+
         const response = await fetch(`${VITE_API_URL}lists/all`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${storedToken}`,
           },
         });
+        if (response.status === 401) {
+          navigate(
+            "/login/" +
+              (response.json().message
+                ? `?error=${response.json().message}`
+                : "")
+          );
+        }
         const data = await response.json();
-        setLists(data);
+        console.log(data);
+        setLists(data.lists);
+        setUserId(data.userId);
       } catch (error) {
         console.error(error);
       }
@@ -57,13 +72,25 @@ function List() {
         {lists?.map((list, index) => (
           <div className="list" key={index}>
             <div className="list-header">
-              <i className="fa fa-pen"></i>
-              <i
-                className="fa fa-trash"
-                onClick={() => {
-                  handleDelete(list.listId);
-                }}
-              ></i>
+              {console.log(userId, list.userId)}
+              {userId === list.userId ? (
+                <div>
+                  <i
+                    className="fa fa-pen"
+                    onClick={() => {
+                      navigate(`/list/${list.listId}`);
+                    }}
+                  ></i>
+                  <i
+                    className="fa fa-trash"
+                    onClick={() => {
+                      handleDelete(list.listId);
+                    }}
+                  ></i>
+                </div>
+              ) : (
+                <div id="list-actions-disable"></div>
+              )}
             </div>
             <div className="list-body">
               <p>Title:</p>

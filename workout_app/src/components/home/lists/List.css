@@ -59,3 +59,7 @@
   background: #fff;
   margin: 0;
 }
+
+#list-actions-disable {
+  height: 24px;
+}

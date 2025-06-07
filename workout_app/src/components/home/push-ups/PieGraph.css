@@ -144,3 +144,9 @@
   display: flex;
   justify-content: space-between;
 }
+
+.pie-graph-container button.disable {
+  background: rgba(0, 0, 0, 0.7);
+  cursor: none;
+  pointer-events: none;
+}

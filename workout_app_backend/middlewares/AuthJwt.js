@@ -6,10 +6,7 @@ import User from "../models/user.js";
 export const verifyToken = async (req, res, next) => {
   const headerToken =
     req.headers["x-access-token"] || req.headers["authorization"];
-  console.log("[Server]: headerToken is", headerToken);
-
   const token = headerToken.replace("Bearer ", "");
-  console.log("[Server]: token is", token);
 
   if (!token) {
     return res.status(403).json({ message: "No token provided!" });
@@ -17,7 +14,6 @@ export const verifyToken = async (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token.replace("Bearer ", ""), authConfig.secret);
-    console.log("Decoded JWT:", decoded);
 
     req.user = req.user || {};
     req.user.userId = decoded.userId;
@@ -29,7 +25,6 @@ export const verifyToken = async (req, res, next) => {
     }
 
     req.user = user;
-    console.log("[Server]: User added to req object:", req.user);
 
     next();
   } catch (err) {

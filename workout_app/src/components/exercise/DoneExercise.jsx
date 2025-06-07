@@ -13,17 +13,18 @@ function Exercise() {
     return JSON.parse(localStorage.getItem("userCoins")) || 0;
   });
   const [exerciseCoins, setExerciseCoins] = useState();
+  const [hasCompleted, setHasCompleted] = useState(false);
 
   // Check if reward has been claimed (use localStorage to persist across refreshes)
   useEffect(() => {
     if (localStorage.getItem(`rewardClaimed_${exType}`)) {
-      setReward(false); // Reward already claimed
+      setReward(false);
     } else {
-      if (exNumber) {
+      if (exNumber && !hasCompleted) {
         completeSet(exNumber, exType);
       }
     }
-  }, [exType]);
+  }, [exType, exNumber, hasCompleted]);
 
   // Fetch user data and coin balance
   useEffect(() => {
@@ -87,6 +88,7 @@ function Exercise() {
         setReward(true);
         setExerciseCoins(data.coins);
       }
+      setHasCompleted(true);
     } catch (error) {
       console.error("Error completing set:", error);
     }

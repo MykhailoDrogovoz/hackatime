@@ -40,6 +40,12 @@ UserExercise.init(
   {
     sequelize,
     modelName: "UserExercise",
+    indexes: [
+      {
+        unique: true,
+        fields: ["userId", "tagId"],
+      },
+    ],
   }
 );
 

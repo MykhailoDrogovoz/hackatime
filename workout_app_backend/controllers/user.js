@@ -80,7 +80,6 @@ class userController {
               accessToken: token,
             });
 
-            console.log(newUser);
             console.log(`[Server]: ${newUser.username} signed up`);
           })
           .catch((err) => {
@@ -146,14 +145,11 @@ class userController {
       const user = await User.findByPk(userId);
 
       if (!user) {
-        console.log(user);
-
         return res.status(404).json({ message: "User not found" });
       }
 
       user.coins = coins;
 
-      console.log(user);
       await user.save();
 
       res.status(200).json({

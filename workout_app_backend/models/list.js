@@ -14,6 +14,9 @@ class List extends Model {
       foreignKey: "listId",
       through: "ListTags",
     });
+    this.belongsTo(models.User, {
+      foreignKey: "userId",
+    });
   }
 }
 List.init(
@@ -31,6 +34,15 @@ List.init(
     description: {
       type: DataTypes.STRING,
       allowNull: true,
+    },
+    access: {
+      type: DataTypes.ENUM("public", "private"),
+      allowNull: false,
+      defaultValue: "private",
+    },
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
     },
   },
   {

@@ -13,6 +13,7 @@ import NewList from "./components/home/lists/NewList";
 import Leaderboard from "./components/leaderboard/Leaderboard";
 import LoginContainer from "./components/account/LoginContainer";
 import Account from "./components/account/Account";
+import UpdateList from "./components/home/lists/UpdateList";
 
 function App() {
   const location = useLocation();
@@ -33,6 +34,7 @@ function App() {
         <Route path="/leaderboard" element={<Leaderboard />} />
         <Route path="/login" element={<LoginContainer />} />
         <Route path="/account" element={<Account />} />
+        <Route path="/list/:id" element={<UpdateList />} />
       </Routes>
     </div>
   );

@@ -31,6 +31,7 @@ function PieGraph(props) {
         setDoneSets(0);
       } else {
         setDoneSets(data.userExercise.setsCompleted);
+        console.log(data.userExercise.setsCompleted, props.name);
         setProgress(
           Math.round((data.userExercise.setsCompleted / props.totalSets) * 100)
         );
@@ -100,8 +101,17 @@ function PieGraph(props) {
     fetchTags();
   };
 
+  if (progress === 100) {
+    props.setIsExerciseDone(true);
+  }
+
   return (
-    <div className={"coin-container" + (props.name ? "" : " disable")}>
+    <div
+      className={
+        "coin-container" +
+        (progress === 100 || props.name == null ? " disable" : "")
+      }
+    >
       <div className="coin">ℭ</div>
       <div className="pie-graph-container">
         {props.name ? (
@@ -118,7 +128,10 @@ function PieGraph(props) {
                 <p className="done">Today done: {doneSets}</p>
                 <p className="goal">Today's goal: {props.totalSets}</p>
                 {/* <p className="record">Your record</p> */}
-                <button onClick={() => props.handleClick(exType)}>
+                <button
+                  onClick={() => props.handleClick(exType)}
+                  className={progress === 100 ? "disable" : ""}
+                >
                   Do it!
                 </button>
               </div>

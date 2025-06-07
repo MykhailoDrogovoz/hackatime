@@ -32,6 +32,8 @@ function LoginContainer() {
         if (data.success) {
           setIsRegister(false);
           setIsAuthenticated(true);
+          localStorage.setItem("authToken", data.accessToken);
+          navigate("/account");
         } else {
           setError(data.error);
         }
@@ -40,6 +42,10 @@ function LoginContainer() {
       }
     };
     addUser();
+    useState(() => {
+      setToken(localStorage.getItem("authToken"));
+      return null;
+    }, []);
   };
 
   const handleLogin = async (user) => {

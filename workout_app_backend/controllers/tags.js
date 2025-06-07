@@ -3,6 +3,7 @@ import Tags from "../models/tags.js";
 import UserExercise from "../models/userexercise.js";
 import User from "../models/user.js";
 import models from "../models/index.js";
+import { Op } from "sequelize";
 
 class tagController {
   constructor() {
@@ -176,6 +177,7 @@ class tagController {
       if (newSetsCompleted >= totalSets) {
         userExercise.setsCompleted = totalSets;
         userExercise.completedAt = new Date();
+        await userExercise.save();
 
         return res.json({
           message: "Exercise completed!",
@@ -208,12 +210,13 @@ class tagController {
         where: { name: tagName },
       });
 
-      console.log(tagName);
-
       // Fetch the user's exercise entry for the specific tag (exercise)
       const userExercise = await UserExercise.findOne({
         where: { userId: userId, tagId: tag.tagId },
       });
+
+      console.log("sdfshdjfk", tagName);
+      console.log("sdfshdjfk", userExercise);
 
       if (!userExercise) {
         return res.status(200).json({ userExercise: 0 });
@@ -253,6 +256,29 @@ class tagController {
     } catch (error) {
       console.error("Error rewarding coins:", error);
       throw error;
+    }
+  };
+
+  getUserExercisesByUserId = async (req, res) => {
+    try {
+      const userId = req.user.userId;
+
+      const userExercises = await UserExercise.findAll({
+        where: { userId: userId, completedAt: { [Op.ne]: null } },
+      });
+
+      if (!userExercises) {
+        return res.status(404).json({ message: "Not found" });
+      }
+
+      return res.json({
+        userExercises: userExercises,
+      });
+    } catch (error) {
+      console.error(error);
+      return res
+        .status(500)
+        .json({ message: "An error occurred while completing the set." });
     }
   };
 }
