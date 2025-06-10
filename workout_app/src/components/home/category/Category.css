@@ -7,7 +7,7 @@
 
 .chart-container {
   width: 60%;
-  background-color: #f0f4f8;
+  background-color: #fff;
   padding: 20px;
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -23,10 +23,8 @@
 }
 
 .recharts-layer text {
-  font-size: 20px;
+  font-size: 14px;
   text-align: center;
-  display: flex;
-  width: 100%;
 }
 
 .recharts-bar-rectangle {

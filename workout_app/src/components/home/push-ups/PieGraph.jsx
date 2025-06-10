@@ -12,6 +12,8 @@ function PieGraph(props) {
 
   const [progress, setProgress] = useState(0);
 
+  const [userId, setUserId] = useState();
+
   useEffect(() => {
     const tagName = props.name;
 
@@ -31,7 +33,6 @@ function PieGraph(props) {
         setDoneSets(0);
       } else {
         setDoneSets(data.userExercise.setsCompleted);
-        console.log(data.userExercise.setsCompleted, props.name);
         setProgress(
           Math.round((data.userExercise.setsCompleted / props.totalSets) * 100)
         );
@@ -65,6 +66,25 @@ function PieGraph(props) {
     fetchTags();
   }, []);
 
+  useEffect(() => {
+    const fetchUserId = async () => {
+      try {
+        const response = await fetch(`${VITE_API_URL}user/profile`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          },
+        });
+        const data = await response.json();
+        setUserId(data.user.userId);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchUserId();
+  });
+
   const [selectedTag, setSelectedTag] = useState(null);
 
   const selectedTagHandle = (label) => {
@@ -78,7 +98,6 @@ function PieGraph(props) {
   const addListTag = () => {
     const fetchTags = async () => {
       const taskList = JSON.parse(localStorage.getItem("taskList"));
-      console.log(selectedTag);
       try {
         const response = await fetch(
           `${VITE_API_URL}lists/add-to-list/${taskList.listId}`,
@@ -92,7 +111,6 @@ function PieGraph(props) {
 
         localStorage.setItem("taskList", JSON.stringify(updatedList));
 
-        console.log("Updated list with tag:", updatedList);
         window.location.reload();
       } catch (error) {
         console.error(error);
@@ -139,67 +157,65 @@ function PieGraph(props) {
           </div>
         ) : (
           <div className="new-exercise">
-            <Popup
-              trigger={
-                <button
-                  onClick={() => {
-                    console.log(tags);
-                  }}
-                >
-                  + Add exercise
-                </button>
-              }
-              modal
-              closeOnDocumentClick={false}
-              overlayStyle={{
-                backgroundColor: "rgba(0, 0, 0, 0.8)",
-              }}
-              position="right center"
-            >
-              {(close) => (
-                <div className="exercise-popup-content">
-                  <h2>Select an Exercise</h2>
-                  <input
-                    type="search"
-                    name="search"
-                    id="search-input"
-                    placeholder="Search..."
-                  />
-                  <div className="tag-list">
-                    {tags.length > 0 ? (
-                      tags.map((tag) => (
-                        <div key={tag.value} className="tag-item">
-                          <label>{tag.label}</label>
-                          <div>
-                            <i
-                              className={`fa fa-square-${
-                                selectedTag === tag.label ? "minus" : "plus"
-                              }`}
-                              onClick={() => selectedTagHandle(tag.label)}
-                            />
+            {JSON.parse(localStorage.getItem("taskList")).userId === userId ? (
+              <Popup
+                trigger={<button>+ Add exercise</button>}
+                modal
+                closeOnDocumentClick={false}
+                overlayStyle={{
+                  backgroundColor: "rgba(0, 0, 0, 0.8)",
+                }}
+                position="right center"
+              >
+                {(close) => (
+                  <div className="exercise-popup-content">
+                    <h2>Select an Exercise</h2>
+                    <input
+                      type="search"
+                      name="search"
+                      id="search-input"
+                      placeholder="Search..."
+                    />
+                    <div className="tag-list">
+                      {tags.length > 0 ? (
+                        tags.map((tag) => (
+                          <div key={tag.value} className="tag-item">
+                            <label>{tag.label}</label>
+                            <div>
+                              <i
+                                className={`fa fa-square-${
+                                  selectedTag === tag.label ? "minus" : "plus"
+                                }`}
+                                onClick={() => selectedTagHandle(tag.label)}
+                              />
+                            </div>
                           </div>
-                        </div>
-                      ))
-                    ) : (
-                      <p>Loading exercises...</p>
-                    )}
+                        ))
+                      ) : (
+                        <p>Loading exercises...</p>
+                      )}
+                    </div>
+                    <div className="modal-footer">
+                      <button className="close-btn" onClick={close}>
+                        Close
+                      </button>
+                      <button
+                        className="add-btn"
+                        onClick={() => {
+                          addListTag();
+                        }}
+                      >
+                        Add Exercise
+                      </button>
+                    </div>
                   </div>
-                  <div className="modal-footer">
-                    <button className="close-btn" onClick={close}>
-                      Close
-                    </button>
-                    <button
-                      className="add-btn"
-                      onClick={() => {
-                        addListTag();
-                      }}
-                    >
-                      Add Exercise
-                    </button>
-                  </div>
-                </div>
-              )}
-            </Popup>
+                )}
+              </Popup>
+            ) : (
+              <div>
+                <p>You do not have access to add new exercise</p>
+              </div>
+            )}
           </div>
         )}
       </div>

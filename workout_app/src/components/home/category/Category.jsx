@@ -8,19 +8,45 @@ import {
 } from "recharts";
 import "./Category.css";
 import { useEffect, useState } from "react";
+const VITE_API_URL = import.meta.env.VITE_API_URL;
 
 function Category() {
   const [data, setData] = useState([]);
 
+  const fetchDoneSets = async (tagName) => {
+    const storedToken = localStorage.getItem("authToken");
+    const response = await fetch(`${VITE_API_URL}tags/get-sets/${tagName}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${storedToken}`,
+      },
+    });
+    if (!response.ok) return 0;
+
+    const data = await response.json();
+    return data.userExercise?.setsCompleted || 0.5;
+  };
+
   useEffect(() => {
     const taskList = JSON.parse(localStorage.getItem("taskList"));
-    if (taskList?.Tags) {
-      const newData = taskList.Tags.map((tag) => ({
-        category: tag.name,
-        minutes: 20, // You can change this to the actual time if available
-      }));
-      setData(newData);
-    }
+
+    const fetchAllData = async () => {
+      if (taskList?.Tags) {
+        const newData = await Promise.all(
+          taskList.Tags.map(async (tag) => {
+            const minutes = await fetchDoneSets(tag.name);
+            return {
+              category: tag.name,
+              minutes: minutes,
+            };
+          })
+        );
+        setData(newData);
+      }
+    };
+
+    fetchAllData();
   }, []);
 
   return (
@@ -41,24 +67,27 @@ function Category() {
             dataKey="minutes"
             fill="#8884d8"
             name="Physical exercises"
-            label={({ y, height, index, width }) => {
+            label={({ x, y, height, index, width, value }) => {
               const label = data[index]?.category || "";
               return (
                 <text
-                  x={width - 10}
                   y={y + height / 2}
-                  fill="white"
-                  textAnchor="end"
+                  fill="black"
+                  textAnchor="start"
                   dominantBaseline="middle"
-                  fontSize={14}
+                  fontSize={12}
                 >
-                  {label}
+                  {label.split(" ").map((word, i) => (
+                    <tspan key={i} x={7} dy={i === 0 ? 0 : "1.2em"}>
+                      {word}
+                    </tspan>
+                  ))}
                 </text>
               );
             }}
           >
             {data.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill="#8884d8" />
+              <Cell x={100} key={`cell-${index}`} fill="#8884d8" />
             ))}
           </Bar>
         </BarChart>

@@ -6,6 +6,7 @@ import cors from "cors";
 import userRoutes from "./routes/user.js";
 import listRoutes from "./routes/list.js";
 import tagsRoutes from "./routes/tags.js";
+import gameRoutes from "./routes/game.js";
 
 const app = express();
 
@@ -24,6 +25,7 @@ app.use("/user", userRoutes);
 
 app.use("/lists", listRoutes);
 app.use("/tags", tagsRoutes);
+app.use("/games", gameRoutes);
 
 sequelize
   .authenticate()

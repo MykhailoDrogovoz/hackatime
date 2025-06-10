@@ -1,4 +1,5 @@
 .options_list li {
+  position: relative;
   list-style: none;
   padding: 0;
   background: #c8d8bc;
@@ -46,4 +47,12 @@
 
 .options {
   flex-direction: column;
+}
+
+.fa-lock {
+  top: 10%;
+  right: 5%;
+  position: absolute;
+  margin: 0;
+  color: #f86e6e;
 }

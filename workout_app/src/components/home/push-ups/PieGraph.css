@@ -150,3 +150,7 @@
   cursor: none;
   pointer-events: none;
 }
+
+.new-exercise.disable {
+  display: none;
+}

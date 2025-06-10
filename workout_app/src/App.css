@@ -15,6 +15,10 @@
   margin: 0 auto;
 }
 
+.no-exercises {
+  height: 40vh;
+}
+
 .App.gradient-bg {
   background: radial-gradient(ellipse at center, #63856a 1%, #3c5a40 100%);
 }
