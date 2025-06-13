@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "./Leaderboard.css";
 import { useEffect } from "react";
+import Select from "react-select";
 const VITE_API_URL = import.meta.env.VITE_API_URL;
 
 const Leaderboard = () => {
@@ -8,6 +9,7 @@ const Leaderboard = () => {
   const [firstPlace, setFirstPlace] = useState({});
   const [secondPlace, setSecondPlace] = useState({});
   const [thirdPlace, setThirdPlace] = useState();
+  const [time, setTime] = useState("all-time");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [page, setPage] = useState(1);
@@ -17,18 +19,18 @@ const Leaderboard = () => {
   const [order, setOrder] = useState("desc");
   const [total, setTotal] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
+  const [sortedBy, setSortedBy] = useState("calories");
 
   useEffect(() => {
     const fetchLeaderboard = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`${VITE_API_URL}user/leaderboard`);
+        const response = await fetch(`${VITE_API_URL}user/leaderboard/${time}`);
         const data = await response.json();
-        console.log(data.sortedUsers);
-        setFirstPlace(data.sortedUsers[0]);
-        setSecondPlace(data.sortedUsers[1]);
-        setThirdPlace(data.sortedUsers[2]);
-        setLeaderboard(data.sortedUsers.slice(3));
+        setFirstPlace(data.leaderboard[0]);
+        setSecondPlace(data.leaderboard[1]);
+        setThirdPlace(data.leaderboard[2]);
+        setLeaderboard(data.leaderboard.slice(3));
         // setTotal(data.total);
         // setTotalPages(Math.ceil(data.total / limit));
         setLoading(false);
@@ -38,21 +40,92 @@ const Leaderboard = () => {
       }
     };
     fetchLeaderboard();
-  }, []);
+  }, [time]);
+
+  const sortLeaderboard = (sortBy) => {
+    const sortedLeaderboard = [...leaderboard].sort(
+      (a, b) => b[sortBy] - a[sortBy]
+    );
+    setLeaderboard(sortedLeaderboard);
+    setSortedBy(sortBy);
+  };
+
+  // Options for react-select
+  const options = [
+    { value: "calories", label: "Calories" },
+    { value: "totalTime", label: "Total Time" },
+  ];
+
+  const colourStyles = {
+    option: (styles, { data, isDisabled, isFocused, isSelected }) => {
+      console.log({ data, isDisabled, isFocused, isSelected });
+
+      return {
+        ...styles,
+        backgroundColor: isFocused
+          ? isSelected
+            ? "#63856a"
+            : "#63856a66"
+          : isSelected
+          ? "#63856a"
+          : null,
+        color: isSelected ? "#fff" : "#000",
+        cursor: isDisabled ? "not-allowed" : "pointer",
+        fontWeight: isSelected ? "bold" : "normal",
+      };
+    },
+    control: (styles) => ({
+      ...styles,
+      border: "none",
+      boxShadow: "none",
+      borderRadius: "5px",
+    }),
+  };
+
+  // Handle change from react-select
+  const handleSortChange = (selectedOption) => {
+    sortLeaderboard(selectedOption.value);
+  };
 
   return (
     <div className="coin-container-cong">
       <div className="leaderboard">
         <h2>Leaderboard</h2>
         <div className="leaderboard-header">
-          <div className="item paragraph-1 sorted">
-            Sorted by: Calories
-            <i className="fa fa-chevron-down"></i>
-          </div>
+          <Select
+            isSearchable={false}
+            value={options.find((option) => option.value === sortedBy)}
+            onChange={handleSortChange}
+            options={options}
+            styles={colourStyles}
+            className="sort-dropdown"
+            classNamePrefix="select"
+          />
           <div className="time-container item">
-            <div className="paragraph-1 main">Daily</div>
-            <div className="paragraph-1">Last week</div>
-            <div className="paragraph-1">All time</div>
+            <div
+              className={"paragraph-1 " + (time === "daily" && "main")}
+              onClick={() => {
+                setTime("daily");
+              }}
+            >
+              Daily
+            </div>
+            <div
+              className={"paragraph-1 " + (time === "last-week" && "main")}
+              onClick={() => {
+                setTime("last-week");
+              }}
+            >
+              Last week
+            </div>
+            <div
+              className={"paragraph-1 " + (time === "all-time" && "main")}
+              onClick={() => {
+                setTime("all-time");
+              }}
+            >
+              All time
+            </div>
           </div>
           <p className="paragraph-1">Filter</p>
           <p className="paragraph-1 clear">Clear</p>
@@ -64,7 +137,11 @@ const Leaderboard = () => {
               <div>
                 <h2>3</h2>
                 <h3>{thirdPlace.username}</h3>
-                <h3>{thirdPlace.calories} cal</h3>
+                <h3>
+                  {sortedBy === "calories"
+                    ? thirdPlace.calories + " cal"
+                    : thirdPlace.totalTime + " sec"}
+                </h3>
               </div>
             </div>
           )}
@@ -75,7 +152,11 @@ const Leaderboard = () => {
               <div>
                 <h2>1</h2>
                 <h3>{firstPlace.username}</h3>
-                <h3>{firstPlace.calories} cal</h3>
+                <h3>
+                  {sortedBy === "calories"
+                    ? firstPlace.calories + " cal"
+                    : firstPlace.totalTime + " sec"}
+                </h3>
               </div>
             </div>
           )}
@@ -86,14 +167,17 @@ const Leaderboard = () => {
               <div>
                 <h2>2</h2>
                 <h3>{secondPlace.username}</h3>
-                <h3>{secondPlace.calories} cal</h3>
+                <h3>
+                  {sortedBy === "calories"
+                    ? secondPlace.calories + " cal"
+                    : secondPlace.totalTime + " sec"}
+                </h3>
               </div>
             </div>
           )}
         </div>
         {leaderboard.length > 0 && (
           <>
-            {console.log(leaderboard)}
             <table>
               <tr>
                 <th>Username</th>

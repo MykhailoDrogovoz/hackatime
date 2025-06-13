@@ -49,6 +49,11 @@ User.init(
       defaultValue: 0,
       allowNull: false,
     },
+    totalTime: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+      allowNull: false,
+    },
   },
 
   {

@@ -129,6 +129,14 @@ function PieGraph(props) {
     props.setIsExerciseDone(true);
   }
 
+  const disable_do_it = () => {
+    if (progress === 100) {
+      alert("You already have completed all sets of this exercise!");
+    } else {
+      props.handleClick(exType);
+    }
+  };
+
   return (
     <div
       className={
@@ -163,7 +171,11 @@ function PieGraph(props) {
                   Calories per time: {props.calories} cal
                 </p>
                 <button
-                  onClick={() => props.handleClick(exType)}
+                  onClick={() => {
+                    progress === 100
+                      ? disable_do_it(exType)
+                      : props.handleClick(exType);
+                  }}
                   className={progress === 100 ? "disable" : ""}
                 >
                   Do it!

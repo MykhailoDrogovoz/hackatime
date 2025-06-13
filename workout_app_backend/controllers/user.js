@@ -1,9 +1,11 @@
 import * as bcrypt from "bcrypt";
 import "../util/db.js";
 import User from "../models/user.js";
-
+import Tags from "../models/tags.js";
+import { Op } from "sequelize";
 import jwt from "jsonwebtoken";
 import authConfig from "../config/auth.config.js";
+import UserExercise from "../models/userexercise.js";
 
 class userController {
   constructor() {
@@ -155,7 +157,7 @@ class userController {
       res.status(200).json({
         message: "Coins updated successfully!",
         user: {
-          id: user.id,
+          id: user.userId,
           coins: user.coins,
         },
       });
@@ -165,24 +167,115 @@ class userController {
     }
   };
 
-  getCaloriesTime = async (req, res) => {
-    try {
-      const allUsers = await User.findAll();
-      const sortedUsers = allUsers.sort((a, b) => b.calories - a.calories);
-      const sortedUsersWithCaloriesAndUsername = sortedUsers.map((user) => ({
-        username: user.username,
-        calories: user.calories,
-      }));
+  async calculateTotalCalories(userId, startDate, endDate) {
+    const exercises = await UserExercise.findAll({
+      where: {
+        userId,
+        createdAt: {
+          [Op.gte]: startDate,
+          [Op.lte]: endDate,
+        },
+      },
+      include: [
+        {
+          model: Tags,
+          attributes: ["calories"],
+        },
+      ],
+    });
 
-      console.log(sortedUsersWithCaloriesAndUsername);
-      res.status(200).json({
-        sortedUsers: sortedUsersWithCaloriesAndUsername,
-      });
+    return exercises.reduce((total, exercise) => {
+      const caloriesBurned = exercise.setsCompleted * exercise.Tag.calories;
+      return total + caloriesBurned;
+    }, 0);
+  }
+
+  async getDailyLeaderboard(req, res) {
+    try {
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+
+      const users = await User.findAll();
+
+      const leaderboard = [];
+      for (const user of users) {
+        const totalCalories = await this.calculateTotalCalories(
+          user.userId,
+          yesterday,
+          new Date()
+        );
+        leaderboard.push({
+          username: user.username,
+          calories: totalCalories,
+          totalTime: user.totalTime,
+        });
+      }
+
+      leaderboard.sort((a, b) => b.calories - a.calories);
+
+      res.status(200).json({ leaderboard });
     } catch (error) {
-      console.error("Error updating coins:", error);
+      console.error("Error fetching daily leaderboard:", error);
       res.status(500).json({ message: "Internal server error." });
     }
-  };
+  }
+
+  async getLastWeekLeaderboard(req, res) {
+    try {
+      const lastWeek = new Date();
+      lastWeek.setDate(lastWeek.getDate() - 7);
+
+      const users = await User.findAll();
+
+      const leaderboard = [];
+      for (const user of users) {
+        const totalCalories = await this.calculateTotalCalories(
+          user.userId,
+          lastWeek,
+          new Date()
+        );
+        leaderboard.push({
+          username: user.username,
+          calories: totalCalories,
+          totalTime: user.totalTime,
+        });
+      }
+
+      leaderboard.sort((a, b) => b.calories - a.calories);
+
+      res.status(200).json({ leaderboard });
+    } catch (error) {
+      console.error("Error fetching last-week leaderboard:", error);
+      res.status(500).json({ message: "Internal server error." });
+    }
+  }
+
+  async getAllTimeLeaderboard(req, res) {
+    try {
+      const users = await User.findAll();
+
+      const leaderboard = [];
+      for (const user of users) {
+        const totalCalories = await this.calculateTotalCalories(
+          user.userId,
+          new Date(0),
+          new Date()
+        );
+        leaderboard.push({
+          username: user.username,
+          calories: totalCalories,
+          totalTime: user.totalTime,
+        });
+      }
+
+      leaderboard.sort((a, b) => b.calories - a.calories);
+
+      res.status(200).json({ leaderboard });
+    } catch (error) {
+      console.error("Error fetching all-time leaderboard:", error);
+      res.status(500).json({ message: "Internal server error." });
+    }
+  }
 }
 
 export const UserController = new userController();

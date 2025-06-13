@@ -61,7 +61,7 @@ module.exports = {
           totalSets: difficultyMap.hard.totalSecondsSets, // 50 sets for Plank (hard difficulty)
           totalSeconds: difficultyMap.hard.totalSeconds, // Plank hold for 60 seconds per set
           secondsPerSet: 1, // Hold each plank for 60 seconds
-          calories: 2, // ~2 calories per minute of plank hold (estimate)
+          calories: 2.0, // ~2 calories per minute of plank hold (estimate)
           coins: difficultyMap.hard.coins,
           createdAt: now,
           updatedAt: now,
@@ -100,7 +100,7 @@ module.exports = {
           name: "Deadlift",
           totalSets: difficultyMap.hard.totalSets, // 50 sets for Deadlifts (hard difficulty)
           secondsPerSet: 6, // Deadlift takes 6 seconds per rep
-          calories: 1, // ~1 calorie per deadlift (estimate)
+          calories: 1.0, // ~1 calorie per deadlift (estimate)
           coins: difficultyMap.hard.coins,
           createdAt: now,
           updatedAt: now,

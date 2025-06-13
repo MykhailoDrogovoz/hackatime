@@ -35,117 +35,6 @@ class tagController {
     // Will add if it is helpfull
   };
 
-  // completeSet = async (req, res) => {
-  //   const { userId, tagId } = req.body;
-
-  //   try {
-  //     let userExercise = await UserExercise.findOne({
-  //       where: { userId, tagId },
-  //     });
-
-  //     if (!userExercise) {
-  //       return res.status(404).json({ message: "User exercise not found" });
-  //       // userExercise = await UserExercise.create({
-  //       //   userId,
-  //       //   tagId,
-  //       //   setsCompleted: 0,
-  //       //   totalSets: 3,
-  //       // });
-  //     }
-
-  //     userExercise.setsCompleted += 1;
-
-  //     await userExercise.save();
-
-  //     if (userExercise.setsCompleted >= userExercise.totalSets) {
-  //       await this.rewardCoins(userId, tagId);
-  //     }
-
-  //     return res.status(200).json({
-  //       message: "Exercise set completed successfully!",
-  //       data: userExercise,
-  //     });
-  //   } catch (error) {
-  //     console.error("Error completing set:", error);
-  //     return res.status(500).json({
-  //       message: "Error completing the set.",
-  //       error: error.message,
-  //     });
-  //   }
-  // };
-
-  // rewardCoins = async (userId, tagId) => {
-  //   try {
-  //     const tag = await Tags.findByPk(tagId);
-
-  //     if (!tag) {
-  //       throw new Error("Tag not found.");
-  //     }
-
-  //     const user = await User.findByPk(userId);
-
-  //     if (!user) {
-  //       throw new Error("User not found.");
-  //     }
-
-  //     user.coins += 10;
-  //     await user.save();
-
-  //     await UserExercise.update(
-  //       { completedAt: new Date() },
-  //       { where: { userId, tagId } }
-  //     );
-
-  //     console.log("Coins rewarded to the user!");
-  //   } catch (error) {
-  //     console.error("Error rewarding coins:", error);
-  //     throw error;
-  //   }
-  // };
-
-  // getExerciseProgress = async (req, res) => {
-  //   try {
-  //     const { userId, tagId } = req.params;
-
-  //     // Fetch the user's exercise entry for the specific tag (exercise)
-  //     const userExercise = await models.UserExercise.findOne({
-  //       where: { userId, tagId },
-  //     });
-
-  //     if (!userExercise) {
-  //       return res
-  //         .status(404)
-  //         .json({ message: "Exercise not found for this user." });
-  //     }
-
-  //     // Fetch the tag (exercise) to get the total sets
-  //     const exercise = await models.Tags.findOne({
-  //       where: { tagId },
-  //     });
-
-  //     // Calculate progress
-  //     const totalSets = exercise.totalSets;
-  //     const setsCompleted = userExercise.setsCompleted;
-  //     const progress = (setsCompleted / totalSets) * 100;
-
-  //     // Return the progress as a response
-  //     return res.json({
-  //       userId,
-  //       tagId,
-  //       setsCompleted,
-  //       totalSets,
-  //       progress: Math.round(progress), // Round to the nearest integer
-  //     });
-  //   } catch (error) {
-  //     console.error(error);
-  //     return res
-  //       .status(500)
-  //       .json({ message: "An error occurred while fetching progress." });
-  //   }
-  // };
-
-  // Complete a set of exercise
-
   completeSet = async (req, res) => {
     try {
       const userId = req.user.userId;
@@ -155,7 +44,6 @@ class tagController {
         return res.status(400).json({ message: "Invalid sets completed" });
       }
 
-      // Fetch the user's exercise entry for the specific tag (exercise)
       const [userExercise, created] = await UserExercise.findOrCreate({
         where: { userId: userId, tagId: tagId },
       });
@@ -172,16 +60,18 @@ class tagController {
 
       const totalSets = exercise.totalSets;
 
-      // Update the setsCompleted value
       const newSetsCompleted = userExercise.setsCompleted + setsCompleted;
 
-      // Check if the user has completed all sets
       if (exercise.totalSeconds) {
         if (newSetsCompleted >= exercise.totalSeconds * exercise.totalSets) {
-          user.calories = user.calories + totalSets * exercise.totalSeconds;
+          console.log(newSetsCompleted);
+          user.calories =
+            Number(user.calories) + setsCompleted * Number(exercise.calories);
+          user.totalTime =
+            user.totalTime + setsCompleted * exercise.secondsPerSet;
           await user.save();
 
-          userExercise.setsCompleted = totalSets;
+          userExercise.setsCompleted = newSetsCompleted;
           userExercise.completedAt = new Date();
           await userExercise.save();
 
@@ -193,7 +83,12 @@ class tagController {
         }
       } else {
         if (newSetsCompleted >= totalSets) {
-          user.calories = user.calories + totalSets;
+          console.log(newSetsCompleted);
+          user.calories =
+            Number(user.calories) + setsCompleted * Number(exercise.calories);
+          user.totalTime =
+            user.totalTime + setsCompleted * exercise.secondsPerSet;
+
           await user.save();
 
           userExercise.setsCompleted = totalSets;
@@ -207,7 +102,11 @@ class tagController {
           });
         }
       }
-      user.calories = user.calories + newSetsCompleted;
+      user.totalTime = user.totalTime + setsCompleted * exercise.secondsPerSet;
+
+      user.calories =
+        Number(user.calories) + Number(exercise.calories) * setsCompleted;
+
       await user.save();
 
       userExercise.setsCompleted = newSetsCompleted;

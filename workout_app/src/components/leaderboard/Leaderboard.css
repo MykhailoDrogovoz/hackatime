@@ -48,6 +48,28 @@
   font-size: 28px;
   font-family: "Kadwa", serif;
   font-style: bold;
+  cursor: pointer;
+}
+
+.sort-dropdown {
+  border-radius: 20px;
+  border-bottom: none;
+  /* background: #000; */
+}
+
+.sort-dropdown .select__control,
+.select__menu {
+  background: rgba(99, 133, 106, 0.4);
+  color: #000 !important;
+  border: none;
+  font-size: 28px;
+  font-family: "Kadwa", serif;
+  font-style: bold;
+  cursor: pointer;
+}
+
+.select__menu .select__value-container {
+  background: #000 !important;
 }
 
 .clear {

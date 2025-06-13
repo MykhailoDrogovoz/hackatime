@@ -19,4 +19,16 @@ router.get("/leaderboard", (req, res) =>
   UserController.getCaloriesTime(req, res)
 );
 
+router.get("/leaderboard/daily", (req, res) =>
+  UserController.getDailyLeaderboard(req, res)
+);
+
+router.get("/leaderboard/last-week", (req, res) =>
+  UserController.getLastWeekLeaderboard(req, res)
+);
+
+router.get("/leaderboard/all-time", (req, res) =>
+  UserController.getAllTimeLeaderboard(req, res)
+);
+
 export default router;
