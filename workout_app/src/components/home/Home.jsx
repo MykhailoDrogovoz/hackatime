@@ -144,16 +144,22 @@ function Home() {
       <h1 className="main-title">Excercises</h1>
       <div id="charts">
         {getTagsToRender().map((tag, index) => (
-          <PieGraph
-            key={tag.name || `placeholder-${index}`}
-            percentage={0}
-            handleClick={() => handleClick(tag.name)}
-            name={tag.name}
-            totalSets={tag.totalSets}
-            setIsExerciseDone={(bool) => {
-              setIsExerciseDone(bool);
-            }}
-          />
+          <>
+            {console.log(tag)}
+            <PieGraph
+              key={tag.name || `placeholder-${index}`}
+              percentage={0}
+              handleClick={() => handleClick(tag.name)}
+              name={tag.name}
+              totalSets={tag.totalSets}
+              setIsExerciseDone={(bool) => {
+                setIsExerciseDone(bool);
+              }}
+              secondsPerSet={tag.secondsPerSet}
+              totalSeconds={tag.totalSeconds}
+              calories={tag.calories}
+            />
+          </>
         ))}
       </div>
       <div className="full-screen">

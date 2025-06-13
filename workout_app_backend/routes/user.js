@@ -15,4 +15,8 @@ router.post("/update-coins", verifyToken, (req, res) => {
   UserController.setCoins(req, res);
 });
 
+router.get("/leaderboard", (req, res) =>
+  UserController.getCaloriesTime(req, res)
+);
+
 export default router;

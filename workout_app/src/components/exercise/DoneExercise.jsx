@@ -15,6 +15,33 @@ function Exercise() {
   const [exerciseCoins, setExerciseCoins] = useState();
   const [hasCompleted, setHasCompleted] = useState(false);
 
+  const [completedExercises, setCompletedExercises] = useState([]);
+
+  useEffect(() => {
+    const receivedExercises = async () => {
+      try {
+        const storedToken = localStorage.getItem("authToken");
+        const response = await fetch(
+          `${VITE_API_URL}tags/get-all-userExercises`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${storedToken}`,
+            },
+          }
+        );
+
+        const data = await response.json();
+        setCompletedExercises(data.userExercises);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    receivedExercises();
+  }, []);
+
   // Check if reward has been claimed (use localStorage to persist across refreshes)
   useEffect(() => {
     if (localStorage.getItem(`rewardClaimed_${exType}`)) {
@@ -141,11 +168,17 @@ function Exercise() {
     const taskList = JSON.parse(localStorage.getItem("taskList"));
     const tags = taskList?.Tags || [];
 
-    const currentIndex = tags.findIndex((tag) => tag.name === exType);
+    const filteredTags = tags.filter(
+      (tag) =>
+        !completedExercises.some((completed) => completed.tagId === tag.tagId)
+    );
 
-    if (currentIndex !== -1 && currentIndex < tags.length - 1) {
-      const nextExercise = tags[currentIndex + 1];
+    console.log(filteredTags);
+    const currentIndex = filteredTags.findIndex((tag) => tag.name === exType);
 
+    if (currentIndex !== -1 && currentIndex < filteredTags.length - 1) {
+      const nextExercise = filteredTags[currentIndex + 1];
+      console.log(nextExercise);
       // Redirect to the next exercise
       navigate("/options", {
         state: { exType: nextExercise.name },

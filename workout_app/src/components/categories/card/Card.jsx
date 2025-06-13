@@ -3,14 +3,18 @@ import { Text } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { TextureLoader } from "three";
 
-function Card() {
+function Card(props) {
   const cardRef = useRef();
   const suits = [`♠`, `♥`, `♦`, `♣`];
+
+  // Updated values array with face cards
   const values = [2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K", "A"];
 
   const [suit, setSuit] = useState(
     suits[Math.floor(Math.random() * suits.length)]
   );
+
+  // Set the value of the card (could be a face card or a number)
   const [value, setValue] = useState(
     values[Math.floor(Math.random() * values.length)]
   );
@@ -22,6 +26,15 @@ function Card() {
   const [flipped, setFlipped] = useState(false);
 
   const texture = new TextureLoader().load("/card_texture.jpg");
+
+  // Convert face cards to numbers (if the value is a face card)
+  const convertToNumber = (value) => {
+    if (value === "J") return 11;
+    if (value === "Q") return 12;
+    if (value === "K") return 13;
+    if (value === "A") return 14;
+    return value; // For numeric cards, return as is
+  };
 
   // Animate on frame
   useFrame(() => {
@@ -59,7 +72,13 @@ function Card() {
     if (!flipped && phase === "idle") {
       setFlipped(true);
     }
+
+    // Convert face cards to numbers and log the value
+    const numericValue = convertToNumber(value);
+    props.setCards(numericValue);
   };
+
+  const cardTextColor = suit === "♥" || suit === "♦" ? "red" : "black";
 
   return (
     <group>
@@ -84,7 +103,7 @@ function Card() {
         <Text
           position={[0.4, -0.9, 0.01]}
           fontSize={0.2}
-          color="black"
+          color={cardTextColor}
           anchorX="center"
           anchorY="middle"
         >
@@ -93,7 +112,7 @@ function Card() {
         <Text
           position={[0, 0, 0.01]}
           fontSize={0.4}
-          color="black"
+          color={cardTextColor}
           anchorX="center"
           anchorY="middle"
         >
@@ -102,7 +121,7 @@ function Card() {
         <Text
           position={[-0.4, 0.9, 0.01]}
           fontSize={0.2}
-          color="black"
+          color={cardTextColor}
           anchorX="center"
           anchorY="middle"
         >

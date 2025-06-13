@@ -34,7 +34,13 @@ function PieGraph(props) {
       } else {
         setDoneSets(data.userExercise.setsCompleted);
         setProgress(
-          Math.round((data.userExercise.setsCompleted / props.totalSets) * 100)
+          Math.round(
+            (data.userExercise.setsCompleted /
+              (props.totalSeconds
+                ? props.totalSeconds * props.totalSets
+                : props.totalSets)) *
+              100
+          )
         );
       }
     };
@@ -144,8 +150,18 @@ function PieGraph(props) {
               </div>
               <div>
                 <p className="done">Today done: {doneSets}</p>
-                <p className="goal">Today's goal: {props.totalSets}</p>
-                {/* <p className="record">Your record</p> */}
+                <p className="goal">
+                  Today's goal:{" "}
+                  {props.totalSeconds
+                    ? props.totalSeconds *
+                        props.totalSets *
+                        props.secondsPerSet +
+                      " seconds"
+                    : props.totalSets + " times"}
+                </p>
+                <p className="record">
+                  Calories per time: {props.calories} cal
+                </p>
                 <button
                   onClick={() => props.handleClick(exType)}
                   className={progress === 100 ? "disable" : ""}

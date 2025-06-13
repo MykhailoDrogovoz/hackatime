@@ -30,8 +30,17 @@ Tags.init(
     },
     totalSets: {
       type: DataTypes.INTEGER,
-      defaultValue: 3,
+    },
+    secondsPerSet: {
+      type: DataTypes.INTEGER,
+      defaultValue: 1,
       allowNull: false,
+    },
+    totalSeconds: {
+      type: DataTypes.INTEGER,
+    },
+    calories: {
+      type: DataTypes.INTEGER,
     },
     coins: {
       type: DataTypes.INTEGER,

@@ -159,7 +159,9 @@ function Options() {
                     !userOptions.some((u) => u.gameId === option.id)
                   ) {
                     if (userCoins >= option.coin_cost) {
-                      alert("Are you sure you want to spend coins?");
+                      alert(
+                        `Are you sure you want to spend ${option.coin_cost} coins?`
+                      );
                       buyOption(option.name);
                     } else {
                       alert("You do not have enough coins!");

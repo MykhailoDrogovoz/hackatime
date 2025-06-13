@@ -44,6 +44,11 @@ User.init(
       defaultValue: 0,
       allowNull: false,
     },
+    calories: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+      allowNull: false,
+    },
   },
 
   {

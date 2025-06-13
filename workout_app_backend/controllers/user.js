@@ -164,6 +164,25 @@ class userController {
       res.status(500).json({ message: "Internal server error." });
     }
   };
+
+  getCaloriesTime = async (req, res) => {
+    try {
+      const allUsers = await User.findAll();
+      const sortedUsers = allUsers.sort((a, b) => b.calories - a.calories);
+      const sortedUsersWithCaloriesAndUsername = sortedUsers.map((user) => ({
+        username: user.username,
+        calories: user.calories,
+      }));
+
+      console.log(sortedUsersWithCaloriesAndUsername);
+      res.status(200).json({
+        sortedUsers: sortedUsersWithCaloriesAndUsername,
+      });
+    } catch (error) {
+      console.error("Error updating coins:", error);
+      res.status(500).json({ message: "Internal server error." });
+    }
+  };
 }
 
 export const UserController = new userController();

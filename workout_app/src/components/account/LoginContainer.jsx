@@ -27,9 +27,11 @@ function LoginContainer() {
             "Content-Type": "application/json",
           },
         });
-        const data = await response.json();
-        console.log(data);
-        if (data.success) {
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log(data.accessToken);
+
           setIsRegister(false);
           setIsAuthenticated(true);
           localStorage.setItem("authToken", data.accessToken);

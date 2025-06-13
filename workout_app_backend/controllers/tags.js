@@ -166,6 +166,8 @@ class tagController {
           .json({ message: "User exercise entry not found." });
       }
 
+      const user = await models.User.findByPk(userId);
+
       const exercise = await models.Tags.findByPk(tagId);
 
       const totalSets = exercise.totalSets;
@@ -174,17 +176,39 @@ class tagController {
       const newSetsCompleted = userExercise.setsCompleted + setsCompleted;
 
       // Check if the user has completed all sets
-      if (newSetsCompleted >= totalSets) {
-        userExercise.setsCompleted = totalSets;
-        userExercise.completedAt = new Date();
-        await userExercise.save();
+      if (exercise.totalSeconds) {
+        if (newSetsCompleted >= exercise.totalSeconds * exercise.totalSets) {
+          user.calories = user.calories + totalSets * exercise.totalSeconds;
+          await user.save();
 
-        return res.json({
-          message: "Exercise completed!",
-          coins: exercise.coins,
-          setsCompleted: totalSets,
-        });
+          userExercise.setsCompleted = totalSets;
+          userExercise.completedAt = new Date();
+          await userExercise.save();
+
+          return res.json({
+            message: "Exercise completed!",
+            coins: exercise.coins,
+            setsCompleted: totalSets,
+          });
+        }
+      } else {
+        if (newSetsCompleted >= totalSets) {
+          user.calories = user.calories + totalSets;
+          await user.save();
+
+          userExercise.setsCompleted = totalSets;
+          userExercise.completedAt = new Date();
+          await userExercise.save();
+
+          return res.json({
+            message: "Exercise completed!",
+            coins: exercise.coins,
+            setsCompleted: totalSets,
+          });
+        }
       }
+      user.calories = user.calories + newSetsCompleted;
+      await user.save();
 
       userExercise.setsCompleted = newSetsCompleted;
       await userExercise.save();
