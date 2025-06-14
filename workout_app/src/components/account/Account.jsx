@@ -55,6 +55,7 @@ function Account() {
 
         if (!response.ok) {
           const errorData = await response.json();
+
           if (
             response.status === 401 &&
             errorData.message &&
@@ -70,9 +71,12 @@ function Account() {
             return;
           }
           setError({
-            title: "Problems with backend",
+            title: "Unauthorized",
             message: "Failed to fetch user data",
           });
+          localStorage.removeItem("authToken");
+          navigate("/login");
+          console.log("jdkajlsd");
           return;
         }
 

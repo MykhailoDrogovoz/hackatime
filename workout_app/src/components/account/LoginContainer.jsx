@@ -44,10 +44,6 @@ function LoginContainer() {
       }
     };
     addUser();
-    useState(() => {
-      setToken(localStorage.getItem("authToken"));
-      return null;
-    }, []);
   };
 
   const handleLogin = async (user) => {
@@ -83,11 +79,6 @@ function LoginContainer() {
       }
     };
     getUser(user);
-
-    useState(() => {
-      setToken(localStorage.getItem("authToken"));
-      return null;
-    }, []);
   };
 
   useEffect(() => {
@@ -96,36 +87,29 @@ function LoginContainer() {
     if (storedToken) {
       navigate("/account");
     }
-  });
+  }, []);
 
   return (
     <div className="full-screen">
       <div className="lists chart-container new-list login">
         <div className="login-header">
-          <h3
-            className={!isRegister && "main left"}
-            onClick={
-              isRegister
-                ? () => {
-                    setIsRegister(false);
+          {["Sign in", "Sign up"].map((label, index) => {
+            const isSignIn = index === 0;
+            const active = isSignIn ? !isRegister : isRegister;
+            return (
+              <h3
+                key={label}
+                className={active ? "main left" : ""}
+                onClick={() => {
+                  if ((isSignIn && isRegister) || (!isSignIn && !isRegister)) {
+                    setIsRegister(!isRegister);
                   }
-                : () => {}
-            }
-          >
-            Sign in
-          </h3>
-          <h3
-            className={isRegister && "main"}
-            onClick={
-              isRegister
-                ? () => {}
-                : () => {
-                    setIsRegister(true);
-                  }
-            }
-          >
-            Sign up
-          </h3>
+                }}
+              >
+                {label}
+              </h3>
+            );
+          })}
         </div>
         {isRegister ? (
           <Register onAddUser={handleRegister} />

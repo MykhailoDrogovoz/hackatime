@@ -14,16 +14,29 @@ import Leaderboard from "./components/leaderboard/Leaderboard";
 import LoginContainer from "./components/account/LoginContainer";
 import Account from "./components/account/Account";
 import UpdateList from "./components/home/lists/UpdateList";
+import MusicPlayer from "./components/music/MusicPlayer";
+import { useEffect } from "react";
+import globalAudioManager from "./GlobalAudioManager";
 
 function App() {
   const location = useLocation();
   const isGradientPage =
     location.pathname === "/options" || location.pathname === "/exercise";
 
-  console.log(isGradientPage);
+  useEffect(() => {
+    if (!window.YT) {
+      const tag = document.createElement("script");
+      tag.src = "https://www.youtube.com/iframe_api";
+      document.body.appendChild(tag);
+      tag.onload = () => globalAudioManager.initYouTubePlayer("yt-player");
+    } else {
+      globalAudioManager.initYouTubePlayer("yt-player");
+    }
+  }, []);
 
   return (
     <div className={`App ${isGradientPage ? "gradient-bg" : ""}`}>
+      <div id="yt-player" style={{ display: "none" }}></div>
       <Header isGradientPage={isGradientPage} />
       <Routes>
         <Route path="/" element={<Home />} />
@@ -35,6 +48,7 @@ function App() {
         <Route path="/login" element={<LoginContainer />} />
         <Route path="/account" element={<Account />} />
         <Route path="/list/:id" element={<UpdateList />} />
+        <Route path="/music-player" element={<MusicPlayer />}></Route>
       </Routes>
     </div>
   );
