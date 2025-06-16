@@ -17,7 +17,13 @@ const Header = (props) => {
   const [volume, setVolume] = useState(true);
   const [userData, setUserData] = useState({});
   const [currentTrack, setCurrentTrack] = useState(null);
-  const navigate = useNavigate();
+  const [muted, setMuted] = useState(false);
+  const navigate = useNavigate()
+  
+  useEffect(() => {
+    globalAudioManager.on("muted", setMuted);
+    return () => globalAudioManager.off("muted", setMuted);
+  }, []);
 
   useEffect(() => {
     setIsPlaying(globalAudioManager.isPlaying);
@@ -155,13 +161,17 @@ const Header = (props) => {
 
             <i
               className="fa fa-backward"
-              onClick={() =>
-                userData.musicUnlocked && globalAudioManager.goToPreviousTrack()
-              }
+              onClick={(e) => {
+                e.stopPropagation();
+                userData.musicUnlocked &&
+                  globalAudioManager.goToPreviousTrack();
+              }}
             ></i>
+
             <i
               className={isPlaying ? "fa fa-stop-circle" : "fa fa-play-circle"}
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
                 if (userData.musicUnlocked) {
                   if (isPlaying) {
                     globalAudioManager.pause();
@@ -171,15 +181,25 @@ const Header = (props) => {
                 }
               }}
             ></i>
+
             <i
               className="fa fa-forward"
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
                 userData.musicUnlocked && globalAudioManager.goToNextTrack();
               }}
             ></i>
+
             <i
-              class={volume ? "fa fa-volume-mute" : "fa fa-volume-up"}
-              onClick={() => setVolume(!volume)}
+              className={muted ? "fa fa-volume-mute" : "fa fa-volume-up"}
+              onClick={(e) => {
+                e.stopPropagation();
+                if (muted) {
+                  globalAudioManager.unmute();
+                } else {
+                  globalAudioManager.mute();
+                }
+              }}
             ></i>
           </div>
         )}

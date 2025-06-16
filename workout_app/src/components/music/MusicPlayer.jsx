@@ -87,6 +87,7 @@ const MusicPlayer = () => {
 
       setMusicList(tracks.tracks);
       if (tracks.tracks.length > 0) setCurrentTrack(tracks.tracks[0]);
+      setLoaded(true);
     };
 
     fetchTracks();
@@ -240,7 +241,7 @@ const MusicPlayer = () => {
   };
 
   return (
-    <div className="full-screen">
+    <div >
       <div
         className={
           "lists chart-container" +

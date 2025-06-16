@@ -25,15 +25,24 @@ class GlobalAudioManager extends EventEmitter {
     this.audio = new Audio();
     this.currentUrl = null;
     this.playerReady = false;
+    this.trackList = [];
   }
 
   loadVideoById(videoId) {
-    if (this.youtubePlayerv && this.playerReady) {
+    if (this.youtubePlayer && this.playerReady) {
       this.youtubePlayer.loadVideoById(videoId);
     }
   }
 
   async setSrc(url) {
+    // Stop previous media
+    if (this.currentType === "mp3") {
+      this.audio.pause();
+      this.audio.currentTime = 0;
+    } else if (this.currentType === "youtube" && this.youtubePlayer) {
+      this.youtubePlayer.stopVideo();
+    }
+
     this.currentUrl = url;
     this.currentType =
       url.includes("youtube") || url.includes("youtu.be") ? "youtube" : "mp3";
@@ -73,7 +82,26 @@ class GlobalAudioManager extends EventEmitter {
     }
   }
 
+  mute() {
+    if (this.currentType === "youtube" && this.youtubePlayer?.mute) {
+      this.youtubePlayer.mute();
+    } else {
+      this.audio.muted = true;
+    }
+    this.emit("muted", true);
+  }
+
+  unmute() {
+    if (this.currentType === "youtube" && this.youtubePlayer?.unMute) {
+      this.youtubePlayer.unMute();
+    } else {
+      this.audio.muted = false;
+    }
+    this.emit("muted", false);
+  }
+
   setTrackList(tracks) {
+    console.log(tracks);
     this.trackList = tracks;
   }
 
@@ -98,6 +126,8 @@ class GlobalAudioManager extends EventEmitter {
   }
 
   async goToPreviousTrack() {
+    console.log(this.trackList);
+
     if (!this.trackList || !this.currentTrack) return;
     const index = this.trackList.findIndex(
       (t) => t.url === this.currentTrack.url
