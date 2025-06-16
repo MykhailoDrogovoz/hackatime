@@ -54,6 +54,18 @@ User.init(
       defaultValue: 0,
       allowNull: false,
     },
+    musicUnlocked: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
+    customMusicUnlocked: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
+    customListsUnlocked: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
   },
 
   {

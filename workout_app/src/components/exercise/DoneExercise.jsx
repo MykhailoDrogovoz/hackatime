@@ -123,12 +123,10 @@ function Exercise() {
 
   // Reward coins for completing all sets
   const handleCoinReward = async () => {
-    const newCoinBalance = coins + 3;
+    const newCoinBalance = coins + exerciseCoins;
     setCoins(newCoinBalance);
 
     localStorage.setItem("userCoins", JSON.stringify(newCoinBalance));
-
-    window.dispatchEvent(new Event("storage"));
 
     const storedToken = localStorage.getItem("authToken");
 
@@ -149,8 +147,9 @@ function Exercise() {
 
       if (response.ok) {
         const data = await response.json();
-        setReward(false); // Disable reward button after claiming coins
-        localStorage.setItem(`rewardClaimed_${exType}`, "true"); // Mark reward as claimed
+        setReward(false);
+        localStorage.setItem(`rewardClaimed_${exType}`, "true");
+        window.dispatchEvent(new Event("coinsUpdated"));
         console.log("Coins successfully updated:", data);
       } else {
         console.error(
@@ -163,7 +162,6 @@ function Exercise() {
     }
   };
 
-  // Handle the "Next" button click to go to the next exercise
   const handleNext = () => {
     const taskList = JSON.parse(localStorage.getItem("taskList"));
     const tags = taskList?.Tags || [];

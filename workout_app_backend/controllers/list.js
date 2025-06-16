@@ -1,4 +1,5 @@
 import List from "../models/list.js";
+import User from "../models/user.js";
 import "../util/db.js";
 import Tags from "../models/tags.js";
 import ListTags from "../models/listtags.js";
@@ -17,6 +18,7 @@ class listController {
       }
 
       const userId = req.user.userId;
+      const user = await User.findByPk(userId);
 
       const lists = await List.findAll({
         where: {
@@ -45,7 +47,7 @@ class listController {
         return res.status(404).json({ message: "Lists not found" });
       }
 
-      res.status(200).json({ lists, userId });
+      res.status(200).json({ lists, user });
     } catch (err) {
       console.log("[Server]: Error getting lists", err);
       res

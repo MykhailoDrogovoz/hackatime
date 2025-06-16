@@ -63,3 +63,13 @@
 #list-actions-disable {
   height: 24px;
 }
+
+.new-list-button .locked {
+  background: #f0f0f0;
+  position: relative;
+}
+
+.new-list-button .locked .fa-lock {
+  top: -10%;
+  right: -2%;
+}

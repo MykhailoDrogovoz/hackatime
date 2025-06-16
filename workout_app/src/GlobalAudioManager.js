@@ -24,9 +24,16 @@ class GlobalAudioManager extends EventEmitter {
     this.isPlaying = false;
     this.audio = new Audio();
     this.currentUrl = null;
+    this.playerReady = false;
   }
 
-  setSrc(url) {
+  loadVideoById(videoId) {
+    if (this.youtubePlayerv && this.playerReady) {
+      this.youtubePlayer.loadVideoById(videoId);
+    }
+  }
+
+  async setSrc(url) {
     this.currentUrl = url;
     this.currentType =
       url.includes("youtube") || url.includes("youtu.be") ? "youtube" : "mp3";
@@ -35,6 +42,7 @@ class GlobalAudioManager extends EventEmitter {
       this.audio.src = url;
     } else {
       const videoId = this.extractYouTubeID(url);
+      await this.initYouTubePlayer();
       this.loadVideoById(videoId);
     }
   }
@@ -69,34 +77,34 @@ class GlobalAudioManager extends EventEmitter {
     this.trackList = tracks;
   }
 
-  setCurrentTrack(track) {
+  async setCurrentTrack(track) {
     this.currentTrack = track;
-    this.setSrc(track.url);
+    await this.setSrc(track.url);
   }
 
   getCurrentTrack() {
     return this.currentTrack;
   }
 
-  goToNextTrack() {
+  async goToNextTrack() {
     if (!this.trackList || !this.currentTrack) return;
     const index = this.trackList.findIndex(
       (t) => t.url === this.currentTrack.url
     );
     const next = (index + 1) % this.trackList.length;
     const nextTrack = this.trackList[next];
-    this.setCurrentTrack(nextTrack);
+    await this.setCurrentTrack(nextTrack);
     this.play();
   }
 
-  goToPreviousTrack() {
+  async goToPreviousTrack() {
     if (!this.trackList || !this.currentTrack) return;
     const index = this.trackList.findIndex(
       (t) => t.url === this.currentTrack.url
     );
     const prev = (index - 1 + this.trackList.length) % this.trackList.length;
     const prevTrack = this.trackList[prev];
-    this.setCurrentTrack(prevTrack);
+    await this.setCurrentTrack(prevTrack);
     this.play();
   }
 
@@ -121,7 +129,9 @@ class GlobalAudioManager extends EventEmitter {
       width: "0",
       videoId: "",
       events: {
-        onReady: () => {},
+        onReady: () => {
+          this.playerReady = true;
+        },
         onStateChange: (event) => {
           switch (event.data) {
             case YT.PlayerState.PLAYING:
@@ -143,12 +153,6 @@ class GlobalAudioManager extends EventEmitter {
         },
       },
     });
-  }
-
-  loadVideoById(videoId) {
-    if (this.youtubePlayer) {
-      this.youtubePlayer.loadVideoById(videoId);
-    }
   }
 
   getYouTubeVideoTitle(url) {

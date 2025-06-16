@@ -35,6 +35,7 @@ function LoginContainer() {
           setIsRegister(false);
           setIsAuthenticated(true);
           localStorage.setItem("authToken", data.accessToken);
+          localStorage.setItem("userCoins", data.newUser.coins);
           navigate("/account");
         } else {
           setError(data.error);
@@ -57,7 +58,6 @@ function LoginContainer() {
           },
         });
         const data = await response.json();
-        localStorage.setItem("authToken", data.accessToken);
 
         if (!response.ok) {
           const errorMessage = await response.text();
@@ -69,6 +69,8 @@ function LoginContainer() {
           });
           return;
         }
+        localStorage.setItem("authToken", data.accessToken);
+        localStorage.setItem("userCoins", data.user.coins);
         navigate("/account");
       } catch (error) {
         console.log(error);

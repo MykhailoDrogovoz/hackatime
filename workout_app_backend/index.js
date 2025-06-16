@@ -7,6 +7,7 @@ import userRoutes from "./routes/user.js";
 import listRoutes from "./routes/list.js";
 import tagsRoutes from "./routes/tags.js";
 import gameRoutes from "./routes/game.js";
+import trackRoutes from "./routes/track.js";
 
 const app = express();
 
@@ -22,10 +23,10 @@ app.get("/", (req, res) => {
 });
 
 app.use("/user", userRoutes);
-
 app.use("/lists", listRoutes);
 app.use("/tags", tagsRoutes);
 app.use("/games", gameRoutes);
+app.use("/tracks", trackRoutes);
 
 sequelize
   .authenticate()

@@ -10,10 +10,15 @@
   align-items: center;
 }
 
-.music-song .music_image {
+.music-song .music-song-left .music_image {
+  margin-right: 20px;
+  height: 100px;
+}
+
+.music-song .music-song-left .music_image img {
   width: 100px;
   height: 100px;
-  margin-right: 20px;
+  box-sizing: border-box;
 }
 
 #music-url {
@@ -66,6 +71,18 @@
 }
 
 .music-song-icons {
+  display: flex;
+  justify-content: center;
+}
+
+.unlock-custom-music {
+  display: flex;
+  background: #63856a;
+  color: #fff;
+  height: auto;
+}
+
+.custom-music {
   display: flex;
   justify-content: center;
 }

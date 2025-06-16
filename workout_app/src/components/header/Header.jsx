@@ -1,15 +1,23 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./Header.css";
 import globalAudioManager from "../../GlobalAudioManager";
+const VITE_API_URL = import.meta.env.VITE_API_URL;
 
 const Header = (props) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [coins, setCoins] = useState(
-    () => JSON.parse(localStorage.getItem("userCoins")) || null
+    JSON.parse(localStorage.getItem("userCoins")) !== null &&
+      JSON.parse(localStorage.getItem("userCoins")) !== undefined
+      ? JSON.parse(localStorage.getItem("userCoins"))
+      : null
   );
+
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(true);
+  const [userData, setUserData] = useState({});
+  const [currentTrack, setCurrentTrack] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setIsPlaying(globalAudioManager.isPlaying);
@@ -32,37 +40,142 @@ const Header = (props) => {
     setMenuOpen((prev) => !prev);
   };
 
+  useEffect(() => {
+    const storedToken = localStorage.getItem("authToken");
+
+    if (!storedToken) {
+      navigate("/login");
+      return;
+    }
+
+    const checkAuthorization = async () => {
+      try {
+        const response = await fetch(`${VITE_API_URL}user/profile`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${storedToken}`,
+          },
+        });
+
+        if (!response.ok) {
+          localStorage.removeItem("authToken");
+          navigate("/login");
+          return;
+        }
+
+        const data = await response.json();
+        setUserData(data.user);
+        setCoins(data.user.coins);
+        localStorage.setItem("userCoins", JSON.stringify(data.user.coins));
+      } catch (error) {
+        console.error("Authorization check failed:", error);
+      }
+    };
+
+    const handleCoinsUpdate = () => checkAuthorization();
+
+    window.addEventListener("coinsUpdated", handleCoinsUpdate);
+
+    checkAuthorization();
+
+    return () => {
+      window.removeEventListener("coinsUpdated", handleCoinsUpdate);
+    };
+  }, []);
+
+  const unlockFeature = async (feature) => {
+    alert("Are you sure you want to spend 100 coins?");
+
+    const token = localStorage.getItem("authToken");
+
+    const res = await fetch(`${VITE_API_URL}user/unlock-feature`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ feature }),
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+      setUserData((prev) => ({
+        ...prev,
+        coins: data.coins,
+        [`${feature}Unlocked`]: true,
+      }));
+    } else {
+      alert(data.error || "Failed to unlock feature.");
+    }
+  };
+
+  useEffect(() => {
+    const updateTrackInfo = () => {
+      setCurrentTrack(globalAudioManager.getCurrentTrack());
+    };
+
+    globalAudioManager.on("play", updateTrackInfo);
+    globalAudioManager.on("trackChanged", updateTrackInfo);
+
+    updateTrackInfo();
+
+    return () => {
+      globalAudioManager.off("play", updateTrackInfo);
+      globalAudioManager.off("trackChanged", updateTrackInfo);
+    };
+  }, []);
+
   return (
     <header id={props.isGradientPage ? "gradient-bg" : ""} className="header">
       <a href="/" id="logo"></a>
 
       <nav id="menu" className={menuOpen ? "open" : ""}>
         {coins !== null && (
-          <div className="music">
+          <div
+            className={"music" + (userData.musicUnlocked ? "" : " locked")}
+            onClick={() => {
+              !userData.musicUnlocked
+                ? unlockFeature("music")
+                : navigate("/music-player");
+            }}
+          >
+            {!userData.musicUnlocked && <i className="fas fa-lock"></i>}
+
             <div className="music_image">
               <img
-                src="https://variety.com/wp-content/uploads/2022/07/Music-Streaming-Wars.jpg?w=1000&h=563&crop=1"
+                src={
+                  currentTrack?.imgUrl ||
+                  "https://img.freepik.com/premium-photo/headphones-with-music-notes-headband-purple-background_1204450-18453.jpg?semt=ais_hybrid&w=740"
+                }
                 alt="Music Cover"
               />
             </div>
 
             <i
               className="fa fa-backward"
-              onClick={() => globalAudioManager.goToPreviousTrack()}
+              onClick={() =>
+                userData.musicUnlocked && globalAudioManager.goToPreviousTrack()
+              }
             ></i>
             <i
               className={isPlaying ? "fa fa-stop-circle" : "fa fa-play-circle"}
               onClick={() => {
-                if (isPlaying) {
-                  globalAudioManager.pause();
-                } else {
-                  globalAudioManager.play();
+                if (userData.musicUnlocked) {
+                  if (isPlaying) {
+                    globalAudioManager.pause();
+                  } else {
+                    globalAudioManager.play();
+                  }
                 }
               }}
             ></i>
             <i
               className="fa fa-forward"
-              onClick={() => globalAudioManager.goToNextTrack()}
+              onClick={() => {
+                userData.musicUnlocked && globalAudioManager.goToNextTrack();
+              }}
             ></i>
             <i
               class={volume ? "fa fa-volume-mute" : "fa fa-volume-up"}

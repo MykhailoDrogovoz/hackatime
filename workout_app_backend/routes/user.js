@@ -31,4 +31,8 @@ router.get("/leaderboard/all-time", (req, res) =>
   UserController.getAllTimeLeaderboard(req, res)
 );
 
+router.post("/unlock-feature", verifyToken, (req, res) =>
+  UserController.unlockFeature(req, res)
+);
+
 export default router;

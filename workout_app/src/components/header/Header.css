@@ -81,17 +81,17 @@
   padding: 10px;
   margin-right: 20px;
   border-radius: 10px;
-}
-
-.music_image {
-  width: 50px;
-  height: 50px;
+  position: relative;
 }
 
 .music_image img {
-  width: 100%;
-  height: 100%;
+  width: 50px;
+  height: 50px;
   object-fit: cover;
+}
+
+.music_image {
+  height: 50px;
 }
 
 .fa-play-circle,
@@ -103,4 +103,17 @@
 iframe {
   width: 0;
   height: 0;
+}
+
+.music.locked .fa-lock {
+  top: -10%;
+  right: -3%;
+  color: #fff;
+}
+
+.music.locked {
+  /* background: #ffffff; */
+  /* position: relative; */
+  background: rgba(0, 0, 0, 0.3);
+  border-color: transparent;
 }

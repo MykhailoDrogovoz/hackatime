@@ -13,6 +13,9 @@ const MusicPlayer = () => {
   const [currentSong, setCurrentSong] = useState("");
   const [loaded, setLoaded] = useState(false);
   const navigate = useNavigate();
+  const [userData, setUserData] = useState({});
+  const defaultImage =
+    "https://img.freepik.com/premium-photo/headphones-with-music-notes-headband-purple-background_1204450-18453.jpg?semt=ais_hybrid&w=740";
 
   const extractArtistAndSong = (title) => {
     const dashSplit = title.split(" - ");
@@ -41,50 +44,88 @@ const MusicPlayer = () => {
     return id ? `https://img.youtube.com/vi/${id}/hqdefault.jpg` : null;
   };
 
-  const addMusic = () => {
+  const addMusic = async () => {
     const url = inputUrl.trim();
     if (!url || musicList.some((t) => t.url === url)) return;
 
     const type =
       url.includes("youtube") || url.includes("youtu.be") ? "youtube" : "mp3";
 
-    const newTrack = {
-      url,
-      type,
-      imgUrl:
-        type === "youtube"
-          ? getYouTubeThumbnail(url)
-          : "https://img.freepik.com/premium-photo/headphones-with-music-notes-headband-purple-background_1204450-18453.jpg?semt=ais_hybrid&w=740",
-    };
+    let imgUrl = null;
 
-    const updatedList = [...musicList, newTrack];
-    setMusicList(updatedList);
+    if (type === "youtube") {
+      imgUrl = getYouTubeThumbnail(url);
+    } else {
+      imgUrl = defaultImage;
+    }
+    const response = await fetch(`${VITE_API_URL}tracks`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+      },
+      body: JSON.stringify({ url, type, imgUrl }),
+    });
+
+    const newTrack = await response.json();
+    setMusicList((prev) => [...prev, newTrack]);
     if (!currentTrack) setCurrentTrack(newTrack);
     setInputUrl("");
   };
 
   useEffect(() => {
-    const savedList = localStorage.getItem("myTrackList");
-    if (savedList) {
-      try {
-        const parsedList = JSON.parse(savedList);
-        setMusicList(parsedList);
-        if (parsedList.length > 0) {
-          setCurrentTrack(parsedList[0]);
-        }
-      } catch (e) {
-        console.error(e);
+    const fetchTracks = async () => {
+      const token = localStorage.getItem("authToken");
+
+      const response = await fetch(`${VITE_API_URL}tracks`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const tracks = await response.json();
+
+      setMusicList(tracks.tracks);
+      if (tracks.tracks.length > 0) setCurrentTrack(tracks.tracks[0]);
+    };
+
+    fetchTracks();
+  }, []);
+
+  useEffect(() => {
+    if (musicList.length === 0) return;
+
+    const storedTrack = localStorage.getItem("currentTrack");
+    if (storedTrack) {
+      const parsed = JSON.parse(storedTrack);
+      const found = musicList.find((t) => t.url === parsed.url);
+      if (found) {
+        setCurrentTrack(found);
+        return;
       }
     }
-    setLoaded(true);
-  }, []);
+
+    setCurrentTrack(musicList[0]);
+  }, [musicList]);
 
   useEffect(() => {
     if (!loaded) return;
     globalAudioManager.setTrackList(musicList);
-    console.log(musicList);
     localStorage.setItem("myTrackList", JSON.stringify(musicList));
   }, [musicList, loaded]);
+
+  useEffect(() => {
+    const storedTrack = localStorage.getItem("currentTrack");
+    if (storedTrack) {
+      setCurrentTrack(JSON.parse(storedTrack));
+    }
+  }, []);
+
+  useEffect(() => {
+    if (currentTrack) {
+      localStorage.setItem("currentTrack", JSON.stringify(currentTrack));
+    }
+  }, [currentTrack]);
 
   useEffect(() => {
     if (currentTrack) {
@@ -161,6 +202,8 @@ const MusicPlayer = () => {
           localStorage.removeItem("authToken");
           navigate("/login");
         }
+        const data = await response.json();
+        setUserData(data.user);
       } catch (error) {
         console.error("Authorization check failed:", error);
         localStorage.removeItem("authToken");
@@ -171,27 +214,68 @@ const MusicPlayer = () => {
     checkAuthorization();
   }, []);
 
+  const unlockFeature = async (feature) => {
+    const token = localStorage.getItem("authToken");
+
+    const response = await fetch(`${VITE_API_URL}user/unlock-feature`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ feature }),
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      setUserData((prev) => ({
+        ...prev,
+        coins: data.coins,
+        [`${feature}Unlocked`]: true,
+      }));
+    } else {
+      alert(data.error || "Failed to unlock feature.");
+    }
+  };
+
   return (
     <div className="full-screen">
       <div
         className={
-          "lists chart-container" + (currentTrack ? " currentTrack" : "")
+          "lists chart-container" +
+          (currentTrack ? " currentTrack" : "") +
+          (!userData.customMusicUnlocked ? " custom-music" : "")
         }
       >
-        <div className="music-header">
-          <div>
-            <label htmlFor="music-url">Enter music link</label>
-            <input
-              type="text"
-              id="music-url"
-              value={inputUrl}
-              onChange={(e) => setInputUrl(e.target.value)}
-            />
-          </div>
-          <button className="add-music" onClick={addMusic}>
-            Add url
+        {!userData.customMusicUnlocked && (
+          <button
+            className="unlock-custom-music"
+            onClick={() => unlockFeature("customMusic")}
+          >
+            Unlock Custom Music (200 coins)
           </button>
-        </div>
+        )}
+
+        {userData.customMusicUnlocked && (
+          <div className="music-header">
+            <div>
+              <label htmlFor="music-url">Enter music link</label>
+              <input
+                type="text"
+                id="music-url"
+                value={inputUrl}
+                onChange={(e) => setInputUrl(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") addMusic();
+                }}
+              />
+            </div>
+            <button className="add-music" onClick={addMusic}>
+              Add url
+            </button>
+          </div>
+        )}
 
         {musicList.length > 0 &&
           musicList.map((track, idx) => (

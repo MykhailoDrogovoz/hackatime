@@ -276,6 +276,47 @@ class userController {
       res.status(500).json({ message: "Internal server error." });
     }
   }
+
+  async unlockFeature(req, res) {
+    const { feature } = req.body;
+    const FEATURE_COSTS = {
+      music: 100,
+      customMusic: 200,
+      customLists: 100,
+    };
+
+    if (!FEATURE_COSTS[feature]) {
+      return res.status(400).json({ error: "Unknown feature" });
+    }
+
+    try {
+      const user = await User.findByPk(req.user.userId);
+      console.log(req.user.userId);
+      if (!user) return res.status(404).json({ error: "User not found" });
+
+      if (user[feature + "Unlocked"]) {
+        return res.status(400).json({ error: "Already unlocked" });
+      }
+      console.log(user.coins, FEATURE_COSTS[feature]);
+      if (user.coins < FEATURE_COSTS[feature]) {
+        return res.status(400).json({ error: "Not enough coins" });
+      }
+
+      user.coins -= FEATURE_COSTS[feature];
+      user[feature + "Unlocked"] = true;
+
+      await user.save();
+
+      return res.json({
+        success: true,
+        coins: user.coins,
+        unlockedFeature: feature,
+      });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: "Server error" });
+    }
+  }
 }
 
 export const UserController = new userController();

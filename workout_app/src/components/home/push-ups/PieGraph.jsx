@@ -13,6 +13,7 @@ function PieGraph(props) {
   const [progress, setProgress] = useState(0);
 
   const [userId, setUserId] = useState();
+  const taskList = JSON.parse(localStorage.getItem("taskList")) || [];
 
   useEffect(() => {
     const tagName = props.name;
@@ -103,7 +104,6 @@ function PieGraph(props) {
 
   const addListTag = () => {
     const fetchTags = async () => {
-      const taskList = JSON.parse(localStorage.getItem("taskList"));
       try {
         const response = await fetch(
           `${VITE_API_URL}lists/add-to-list/${taskList.listId}`,
@@ -141,7 +141,7 @@ function PieGraph(props) {
     <div
       className={
         "coin-container" +
-        (progress === 100 || props.name == null ? " disable" : "")
+        (progress >= 100 || props.name == null ? " disable" : "")
       }
     >
       <div className="coin">ℭ</div>
@@ -172,11 +172,11 @@ function PieGraph(props) {
                 </p>
                 <button
                   onClick={() => {
-                    progress === 100
+                    progress >= 100
                       ? disable_do_it(exType)
                       : props.handleClick(exType);
                   }}
-                  className={progress === 100 ? "disable" : ""}
+                  className={progress >= 100 ? "disable" : ""}
                 >
                   Do it!
                 </button>
@@ -185,7 +185,7 @@ function PieGraph(props) {
           </div>
         ) : (
           <div className="new-exercise">
-            {JSON.parse(localStorage.getItem("taskList")).userId === userId ? (
+            {taskList.userId === userId ? (
               <Popup
                 trigger={<button>+ Add exercise</button>}
                 modal
