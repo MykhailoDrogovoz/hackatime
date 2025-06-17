@@ -187,7 +187,7 @@ function Exercise() {
   };
 
   return (
-    <div id="main-frame" className="exercise-frame done">
+    <div id="main-frame" className="exercise-frame done full-screen">
       <div>
         <h2>Congratulations!</h2>
         <p>You have completed all {exType} exercises.</p>

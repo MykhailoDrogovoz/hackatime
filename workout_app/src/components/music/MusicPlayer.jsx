@@ -205,6 +205,9 @@ const MusicPlayer = () => {
         }
         const data = await response.json();
         setUserData(data.user);
+        if (!data.user.customMusicUnlocked) {
+          navigate("/")
+        }
       } catch (error) {
         console.error("Authorization check failed:", error);
         localStorage.removeItem("authToken");
@@ -239,6 +242,7 @@ const MusicPlayer = () => {
       alert(data.error || "Failed to unlock feature.");
     }
   };
+
 
   return (
     <div >

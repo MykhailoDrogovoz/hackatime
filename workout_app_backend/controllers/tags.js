@@ -64,7 +64,6 @@ class tagController {
 
       if (exercise.totalSeconds) {
         if (newSetsCompleted >= exercise.totalSeconds * exercise.totalSets) {
-          console.log(newSetsCompleted);
           user.calories =
             Number(user.calories) + setsCompleted * Number(exercise.calories);
           user.totalTime =
@@ -83,7 +82,6 @@ class tagController {
         }
       } else {
         if (newSetsCompleted >= totalSets) {
-          console.log(newSetsCompleted);
           user.calories =
             Number(user.calories) + setsCompleted * Number(exercise.calories);
           user.totalTime =
@@ -133,13 +131,10 @@ class tagController {
         where: { name: tagName },
       });
 
-      // Fetch the user's exercise entry for the specific tag (exercise)
       const userExercise = await UserExercise.findOne({
         where: { userId: userId, tagId: tag.tagId },
       });
 
-      console.log("sdfshdjfk", tagName);
-      console.log("sdfshdjfk", userExercise);
 
       if (!userExercise) {
         return res.status(200).json({ userExercise: 0 });

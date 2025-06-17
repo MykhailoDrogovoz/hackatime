@@ -135,6 +135,50 @@ class userController {
     });
   }
 
+  editUser = async (req, res) => {
+    try {
+      if (
+        (req.body.username && typeof req.body.username !== "string") ||
+        (req.body.firstName && typeof req.body.firstName !== "string") ||
+        (req.body.lastName && typeof req.body.lastName !== "string") ||
+        (req.body.email && typeof req.body.email !== "string")
+      ) {
+        return res.status(400).json({ error: "Invalid types of data" });
+      }
+
+      const updatedRows = await User.update(
+        {
+          firstName: req.body.firstName || null,
+          lastName: req.body.lastName || null,
+          email: req.body.email,
+          username: req.body.username,
+        },
+        {
+          where: {
+            userId: req.user.userId,
+          },
+        }
+      );
+
+      if (updatedRows[0] === 0) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const updatedUser = await User.findOne({
+        where: {
+          userId: req.user.userId,
+        },
+      });
+
+      console.log(`[Server]: ${updatedUser.username} updated a profile`);
+
+      res.json({ message: "User updated successfully" });
+    } catch (err) {
+      console.error("Error fetching user profile:", err);
+      res.status(500).json({ message: "Server error", error: err.message });
+    }
+  };
+
   setCoins = async (req, res) => {
     const { coins } = req.body;
     const userId = req.user.userId;
@@ -291,13 +335,11 @@ class userController {
 
     try {
       const user = await User.findByPk(req.user.userId);
-      console.log(req.user.userId);
       if (!user) return res.status(404).json({ error: "User not found" });
 
       if (user[feature + "Unlocked"]) {
         return res.status(400).json({ error: "Already unlocked" });
       }
-      console.log(user.coins, FEATURE_COSTS[feature]);
       if (user.coins < FEATURE_COSTS[feature]) {
         return res.status(400).json({ error: "Not enough coins" });
       }

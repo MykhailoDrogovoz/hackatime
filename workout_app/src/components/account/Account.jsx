@@ -5,33 +5,19 @@ import { useEffect } from "react";
 const VITE_API_URL = import.meta.env.VITE_API_URL;
 
 function Account() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const [token, setToken] = useState("");
   const navigate = useNavigate();
 
-  const handleCloseError = () => {
-    setError(null);
-  };
-
   const [fields, setFields] = useState([
-    { id: 1, label: "Username", name: "username", type: "name", value: "" },
-
+    { id: 1, label: "Username", name: "username", type: "name", value: "", required: true },
     { id: 2, label: "Name", name: "firstName", type: "text", value: "" },
     { id: 3, label: "Surname", name: "lastName", type: "text", value: "" },
-    { id: 4, label: "Email", name: "email", type: "email", value: "" },
-    {
-      id: 5,
-      label: "Phone number",
-      name: "phoneNumber",
-      type: "phone",
-      value: "",
-    },
+    { id: 4, label: "Email", name: "email", type: "email", value: "", required: true },
   ]);
+  
 
   const [userData, setUserData] = useState(null);
 
@@ -119,6 +105,62 @@ function Account() {
     );
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const emptyRequiredFields = fields.filter(
+      (field) => field.required && !field.value.trim()
+    );
+
+    if (emptyRequiredFields.length > 0) {
+      setError({
+        title: "Validation Error",
+        message: `${emptyRequiredFields.map((f) => f.label).join(", ")} ${
+          emptyRequiredFields.length === 1 ? "is" : "are"
+        } required.`,
+      });
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const updatedData = {};
+      fields.forEach((field) => {
+        updatedData[field.name] = field.value;
+      });
+
+      const response = await fetch(`${VITE_API_URL}user/edit`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(updatedData),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        setError({
+          title: "Update Failed",
+          message: result?.message || "Could not update user data",
+        });
+      } else {
+        setUserData((prev) => ({ ...prev, ...updatedData }));
+        alert("Profile updated successfully!");
+      }
+    } catch (err) {
+      console.error("Error updating user:", err);
+      setError({
+        title: "Error",
+        message: "An unexpected error occurred while updating profile.",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="full-screen center">
       <div className="account">
@@ -144,10 +186,6 @@ function Account() {
               <i className="fa fa-chevron-right"></i>
             </div>
             <div>
-              <h5>Settings</h5>
-              <i className="fa fa-chevron-right"></i>
-            </div>
-            <div>
               <a onClick={logoutHandler}>Logout</a>
             </div>
           </ul>
@@ -157,25 +195,8 @@ function Account() {
             <i className="fa fa-user-circle"></i>
             <i className="fa fa-pen"></i>
           </div>
-          {/* <form action="">
-            <div className="form-group">
-              <label htmlFor="username ">Username:</label>
-              <input type="text" name="username" id="username" />
-            </div>
 
-            <div className="form-group">
-              <label htmlFor="">Email:</label>
-              <input type="email" name="email" id="email" />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="password">Password:</label>
-              <input type="password" name="password" id="password" />
-            </div>
-
-            <button className="main-button">Edit</button>
-          </form> */}
-          <form>
+          <form onSubmit={handleSubmit}>
             {fields.map((field) => (
               <div key={field.id} className="field">
                 <label htmlFor={field.name}>{field.label}:</label>
@@ -183,11 +204,14 @@ function Account() {
                   type={field.type}
                   name={field.name}
                   value={field.value}
+                  required={field.required}
                   onChange={(e) => handleChange(field.id, e.target.value)}
                 />
               </div>
             ))}
-            <button className="main-button">Edit</button>
+            <button className="main-button" type="submit" disabled={loading}>
+              {loading ? "Saving..." : "Edit"}
+            </button>
           </form>
         </div>
       </div>

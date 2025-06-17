@@ -61,7 +61,7 @@ function Exercise() {
   };
 
   return (
-    <div id="main-frame" className="exercise-frame">
+    <div id="main-frame" className="exercise-frame full-screen">
       <Timer
         exNumber={exerciseData.secondsPerSet * exNumber}
         status={timerStatus}

@@ -5,6 +5,11 @@ import Tags from "../models/tags.js";
 import ListTags from "../models/listtags.js";
 import models from "../models/index.js";
 import { Op } from "sequelize";
+import axios from "axios";
+import dotenv from "dotenv";
+dotenv.config();
+import OpenAI from "openai";
+
 
 class listController {
   constructor() {
@@ -56,6 +61,54 @@ class listController {
     }
   };
 
+   getExerciseDataFromAI = async (exerciseName) => {
+    const prompt = `You are an assistant generating structured exercise metadata.
+
+Return a strict JSON object describing the exercise "${exerciseName}" with these fields:
+- "coins" (number): reward points for the exercise
+- "calories" (number): estimated calories burned per set or per second if time-based
+- "totalSets" (number): number of sets (total times)
+- "secondsPerSet" (number): duration per set in seconds
+- "totalSeconds" (number or null): total duration, if applicable (e.g., Plank)
+
+Rules:
+- Estimate calorie burn realistically:
+  • Around 0.2–0.5 calories per set for light/moderate exercises.
+- Do not include explanations or extra text — respond only with a JSON object.
+- Ensure the response is strictly formatted as valid JSON (no comments or trailing commas).
+
+Example:
+{
+  "totalSets": 30,
+  "coins": 3,
+  "calories": 0.3,
+  "totalSeconds": null,
+  "secondsPerSet": 2
+}`;
+  
+    try {
+      const token = process.env.GITHUB_API_KEY_TOKEN;
+      const endpoint = "https://models.github.ai/inference";
+      const modelName = "openai/gpt-4.1-mini";
+
+        const client = new OpenAI({ baseURL: endpoint, apiKey: token });
+
+      const response = await client.chat.completions.create({
+        messages: [
+          { role: "user", content: prompt },
+        ],
+        model: modelName,
+      });
+  
+      const json = response.choices[0].message.content;
+      console.log("Reponse: ",json)
+      return JSON.parse(json);
+    } catch (err) {
+      console.error("[AI Error]:", err.message);
+      return null;
+    }
+  }
+
   getListById = async (req, res) => {
     try {
       const list = await List.findOne({
@@ -92,13 +145,25 @@ class listController {
       for (const tag of tags) {
         if (tag.tagId) {
           tagIds.push(tag.tagId);
-        } else if (tag.name) {
-          const [newTag, created] = await Tags.findOrCreate({
-            where: { name: tag.name.trim() },
+        } else {
+          // 👇 Get metadata from AI
+          const aiData = await this.getExerciseDataFromAI(tag.name.trim());
+    
+          // Optional: validate aiData here before saving
+    
+          const newTag = await Tags.create({
+            name: tag.name.trim(),
+            totalSets: aiData?.totalSets || 0,
+            coins: aiData?.coins || 0,
+            calories: aiData?.calories || 0,
+            totalSeconds: aiData?.totalSeconds || null,
+            secondsPerSet: aiData?.secondsPerSet || 0,
           });
+    
           tagIds.push(newTag.tagId);
         }
       }
+        
 
       const newList = await List.create({
         listName,
@@ -150,8 +215,6 @@ class listController {
       if (!list) {
         return res.status(404).json({ message: "List not found" });
       }
-
-      console.log(req.body.name);
 
       const [newTag, created] = await Tags.findOrCreate({
         where: { name: req.body.tag.trim() },
@@ -218,10 +281,20 @@ class listController {
       for (const tag of tags) {
         if (tag.tagId) {
           tagIds.push(tag.tagId);
-        } else if (tag.name) {
-          const [newTag, created] = await Tags.findOrCreate({
-            where: { name: tag.name.trim() },
+        } else {
+          console.log("sdflfjsd")
+          const aiData = await this.getExerciseDataFromAI(tag.name.trim());
+
+
+          const newTag = await Tags.create({
+            name: tag.name.trim(),
+            totalSets: aiData?.totalSets || 0,
+            coins: aiData?.coins || 0,
+            calories: aiData?.calories || 0,
+            totalSeconds: aiData?.totalSeconds || null,
+            secondsPerSet: aiData?.secondsPerSet || 0,
           });
+
           tagIds.push(newTag.tagId);
         }
       }

@@ -11,6 +11,10 @@ router.get("/profile", verifyToken, (req, res) => {
   UserController.getUserProfile(req, res);
 });
 
+router.patch("/edit", verifyToken, (req, res) => {
+  UserController.editUser(req, res);
+});
+
 router.post("/update-coins", verifyToken, (req, res) => {
   UserController.setCoins(req, res);
 });
