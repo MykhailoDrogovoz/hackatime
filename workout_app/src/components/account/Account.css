@@ -73,7 +73,6 @@
 
 ul.center {
   flex-direction: column;
-  /* margin: 0 100px; */
 }
 
 .account-main .center {
@@ -107,25 +106,25 @@ h5 {
   justify-content: center;
 }
 
-.mobile-logout{
+.mobile-logout {
   display: none;
 }
 
 @media (max-width: 600px) {
-.account-list {
-  display: none;
-}
+  .account-list {
+    display: none;
+  }
 
-.account{
-  display: block;
-}
+  .account {
+    display: block;
+  }
 
-.mobile-logout{
-  display: block;
-}
+  .mobile-logout {
+    display: block;
+  }
 
-.account .fa-pen{
-  top: 50px;
-  right: 8%;
-}
+  .account .fa-pen {
+    top: 50px;
+    right: 8%;
+  }
 }

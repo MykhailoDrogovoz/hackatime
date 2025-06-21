@@ -54,6 +54,10 @@ input:focus,
   flex-direction: row;
 }
 
+.new-list form .buttons-white-theme button {
+  color: #000;
+}
+
 .buttons-white-theme button {
   background: transparent;
   border: #7fc388 1px solid;
