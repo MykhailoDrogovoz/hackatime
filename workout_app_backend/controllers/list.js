@@ -5,7 +5,6 @@ import Tags from "../models/tags.js";
 import ListTags from "../models/listtags.js";
 import models from "../models/index.js";
 import { Op } from "sequelize";
-import axios from "axios";
 import dotenv from "dotenv";
 dotenv.config();
 import OpenAI from "openai";

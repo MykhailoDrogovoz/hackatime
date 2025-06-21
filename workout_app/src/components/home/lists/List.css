@@ -73,3 +73,11 @@
   top: -10%;
   right: -2%;
 }
+
+@media (max-width: 600px) {
+
+
+.list .list-body {
+  width: 200px;
+  display: block;
+}}

@@ -339,7 +339,6 @@ const MusicPlayer = () => {
                     ? `${currentArtist || "Artist"} - ${currentSong || "Song"}`
                     : "MP3 Track"}
                 </h3>
-                <p>{currentTrack.url}</p>
               </div>
             </div>
             <div className="music-song-icons">

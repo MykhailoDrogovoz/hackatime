@@ -1,5 +1,5 @@
 .full-screen {
-  width: 95vw;
+  width: 100vw;
   height: 100vh;
   display: flex;
   align-items: center;
@@ -33,4 +33,32 @@
 
 path {
   border-radius: 20px;
+}
+
+.chart-container {
+  width: 95%;
+  padding: 10px;
+}
+
+.chart-title {
+  font-size: 18px;
+  margin-bottom: 12px;
+}
+
+.recharts-wrapper {
+  height: 200px !important;
+}
+
+.recharts-text tspan {
+  font-size: 10px !important;
+}
+
+.recharts-layer text {
+  font-size: 10px;
+}
+
+@media (max-width: 600px) {
+  .full-screen{
+    height: 90vh;
+  }
 }

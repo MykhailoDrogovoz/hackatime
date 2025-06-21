@@ -28,9 +28,7 @@ function Randomizer(props) {
   };
 
   return (
-    <div>
-      <div id="roulette-wheel-wrapper" className="randomizer">
-        {/* Top icon/button bar */}
+      <div id="roulette-wheel-wrapper" className="randomizer mobile-view">
         <div className="icon-bar">
           <button className="icon-button" onClick={props.onBack} title="Back">
             <i className="fas fa-arrow-left"></i>
@@ -84,7 +82,6 @@ function Randomizer(props) {
           </button>
         </div>
       </div>
-    </div>
   );
 }
 

@@ -56,3 +56,27 @@
   margin: 0;
   color: #f86e6e;
 }
+
+
+@media (max-width: 600px) {
+  .options_list {
+    padding: 0;
+  }
+
+  .options_list li {
+    width: 100%;
+    height: 120px;
+  }
+
+  .fas.fa-lock{
+    font-size: 20px;
+  }
+
+  .icon-button{
+    font-size: 35px;
+  }
+  
+  .icon-bar{
+    margin: 0;
+  }
+}

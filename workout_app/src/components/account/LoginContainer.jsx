@@ -92,16 +92,22 @@ function LoginContainer() {
   }, []);
 
   return (
-    <div className="full-screen">
+    <div className="full-screen login-container">
       <div className="lists chart-container new-list login">
         <div className="login-header">
           {["Sign in", "Sign up"].map((label, index) => {
             const isSignIn = index === 0;
-            const active = isSignIn ? !isRegister : isRegister;
+            const active =
+              (isSignIn && !isRegister) || (!isSignIn && isRegister);
+
+            let className = "";
+            if (active) className += " main";
+            if (!isRegister && label === "Sign in") className += " left";
+
             return (
               <h3
                 key={label}
-                className={active ? "main left" : ""}
+                className={className}
                 onClick={() => {
                   if ((isSignIn && isRegister) || (!isSignIn && !isRegister)) {
                     setIsRegister(!isRegister);

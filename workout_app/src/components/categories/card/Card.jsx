@@ -5,75 +5,66 @@ import { TextureLoader } from "three";
 
 function Card(props) {
   const cardRef = useRef();
+  const cardMeshRef = useRef();
   const suits = [`♠`, `♥`, `♦`, `♣`];
-
-  // Updated values array with face cards
   const values = [2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K", "A"];
-
-  const [suit, setSuit] = useState(
-    suits[Math.floor(Math.random() * suits.length)]
-  );
-
-  // Set the value of the card (could be a face card or a number)
-  const [value, setValue] = useState(
-    values[Math.floor(Math.random() * values.length)]
-  );
-
-  const cardCount = 32;
-  const [rotation, setRotation] = useState(Math.PI);
-  const [yPos, setYPos] = useState(0);
-  const [phase, setPhase] = useState("idle");
+  const [suit] = useState(suits[Math.floor(Math.random() * suits.length)]);
+  const [value] = useState(values[Math.floor(Math.random() * values.length)]);
   const [flipped, setFlipped] = useState(false);
 
   const texture = new TextureLoader().load("/card_texture.jpg");
+  const rotation = useRef(Math.PI);
+  const yPos = useRef(0);
+  const phase = useRef("idle");
 
-  // Convert face cards to numbers (if the value is a face card)
+  const cardCount = 32;
+
   const convertToNumber = (value) => {
     if (value === "J") return 11;
     if (value === "Q") return 12;
     if (value === "K") return 13;
     if (value === "A") return 14;
-    return value; // For numeric cards, return as is
+    return value;
   };
 
-  // Animate on frame
   useFrame(() => {
     if (flipped) {
-      if (phase === "idle") {
-        setPhase("movingBack");
+      if (phase.current === "idle") {
+        phase.current = "movingBack";
       }
 
-      if (phase === "movingBack") {
-        if (yPos > -1.5) {
-          setYPos((prev) => prev - 0.02);
+      if (phase.current === "movingBack") {
+        if (yPos.current > -1.5) {
+          yPos.current -= 0.02;
         } else {
-          setPhase("flipping");
+          phase.current = "flipping";
         }
       }
 
-      if (phase === "flipping") {
-        if (rotation > 0) {
-          setRotation((prev) => Math.max(prev - 0.1, 0));
+      if (phase.current === "flipping") {
+        if (rotation.current > 0) {
+          rotation.current = Math.max(rotation.current - 0.1, 0);
         } else {
-          setPhase("returning");
+          phase.current = "returning";
         }
       }
 
-      if (phase === "returning") {
-        if (yPos < 0) {
-          setYPos((prev) => Math.min(prev + 0.02, 0));
+      if (phase.current === "returning") {
+        if (yPos.current < 0) {
+          yPos.current = Math.min(yPos.current + 0.02, 0);
         }
       }
     }
+
+    cardMeshRef.current.position.y = yPos.current;
+    cardMeshRef.current.rotation.x = rotation.current;
   });
 
-  // Click handler to start flip
   const handleClick = () => {
-    if (!flipped && phase === "idle") {
+    if (!flipped && phase.current === "idle") {
       setFlipped(true);
     }
 
-    // Convert face cards to numbers and log the value
     const numericValue = convertToNumber(value);
     props.setCards(numericValue);
   };
@@ -82,11 +73,10 @@ function Card(props) {
 
   return (
     <group>
-      {/* Clickable flipping card */}
       <group
-        ref={cardRef}
-        position={[0, yPos, 0.33]}
-        rotation={[rotation, 0, 0]}
+        ref={cardMeshRef}
+        position={[0, yPos.current, 0.33]}
+        rotation={[rotation.current, 0, 0]}
         onClick={handleClick}
       >
         <mesh>
@@ -99,7 +89,6 @@ function Card(props) {
           <meshStandardMaterial map={texture} />
         </mesh>
 
-        {/* Text on card face */}
         <Text
           position={[0.4, -0.9, 0.01]}
           fontSize={0.2}
@@ -129,7 +118,6 @@ function Card(props) {
         </Text>
       </group>
 
-      {/* Card stack underneath */}
       <group position={[0, 0, 0.01]}>
         {[...Array(cardCount)].map((_, index) => (
           <mesh key={index} position={[0, 0, index * 0.01]}>

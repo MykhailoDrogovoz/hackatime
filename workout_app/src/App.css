@@ -22,3 +22,10 @@
 .App.gradient-bg {
   background: radial-gradient(ellipse at center, #63856a 1%, #3c5a40 100%);
 }
+
+@media (max-width: 600px) {
+  #main-frame {
+    display: block;
+    height: 100vh;
+  }
+}

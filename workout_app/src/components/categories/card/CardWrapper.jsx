@@ -30,7 +30,7 @@ function CardWrapper(props) {
   console.log(`User got: ${card}`);
 
   return (
-    <div>
+    <div id="roulette-wheel-wrapper" className="randomizer">
       <div className="icon-bar">
         <button className="icon-button" onClick={props.onBack} title="Back">
           <i className="fas fa-arrow-left"></i>

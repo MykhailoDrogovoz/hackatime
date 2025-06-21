@@ -12,12 +12,6 @@ const Leaderboard = () => {
   const [time, setTime] = useState("all-time");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
-  const [search, setSearch] = useState("");
-  const [sort, setSort] = useState("score");
-  const [order, setOrder] = useState("desc");
-  const [total, setTotal] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [sortedBy, setSortedBy] = useState("calories");
 
@@ -31,8 +25,6 @@ const Leaderboard = () => {
         setSecondPlace(data.leaderboard[1]);
         setThirdPlace(data.leaderboard[2]);
         setLeaderboard(data.leaderboard.slice(3));
-        // setTotal(data.total);
-        // setTotalPages(Math.ceil(data.total / limit));
         setLoading(false);
       } catch (error) {
         setError(error);
@@ -88,19 +80,22 @@ const Leaderboard = () => {
   };
 
   return (
-    <div className="coin-container-cong">
+    <div className="coin-container-cong full-screen">
       <div className="leaderboard">
         <h2>Leaderboard</h2>
         <div className="leaderboard-header">
-          <Select
-            isSearchable={false}
-            value={options.find((option) => option.value === sortedBy)}
-            onChange={handleSortChange}
-            options={options}
-            styles={colourStyles}
-            className="sort-dropdown"
-            classNamePrefix="select"
-          />
+          <div className="leaderboar-select-mobile">
+            <Select
+              isSearchable={false}
+              value={options.find((option) => option.value === sortedBy)}
+              onChange={handleSortChange}
+              options={options}
+              styles={colourStyles}
+              className="sort-dropdown"
+              classNamePrefix="select"
+            />
+            <p className="paragraph-1 clear">Clear</p>
+          </div>
           <div className="time-container item">
             <div
               className={"paragraph-1 " + (time === "daily" && "main")}
@@ -127,7 +122,6 @@ const Leaderboard = () => {
               All time
             </div>
           </div>
-          <p className="paragraph-1">Filter</p>
           <p className="paragraph-1 clear">Clear</p>
         </div>
         <div className="top-3">
@@ -188,7 +182,7 @@ const Leaderboard = () => {
                 return (
                   <tr key={user.username}>
                     <td>{user.username}</td>
-                    <td>5021 h</td>
+                    <td>{user.totalTime}</td>
                     <td>{user.calories}</td>
                   </tr>
                 );

@@ -86,3 +86,71 @@
   display: flex;
   justify-content: center;
 }
+
+@media (max-width: 768px) {
+  .music-song.main {
+    width: 80vw;
+    position: fixed;
+    bottom: 100px;
+    left: 5%;
+    box-shadow: 0px -4px 10px rgba(0, 0, 0, 0.4);
+    background: #63856a;
+    padding: 20px;
+    color: #fff;
+    z-index: 1000;
+    margin: 0 auto;
+  }
+
+  .main .music-song-right {
+    justify-content: center;
+    gap: 15px;
+    font-size: 18px;
+  }
+
+  .main .music-song-right .fa-stop-circle,
+  .main .music-song-right .fa-play-circle {
+    font-size: 40px;
+  }
+
+  .music-song .music-song-left .music_image img {
+    width: 80px;
+    height: 80px;
+  }
+
+  .currentTrack {
+    padding-bottom: 300px; 
+  }
+
+  .music-song-left {
+    flex-wrap: wrap;
+    min-width: 0;
+  }
+  
+  .music-song {
+    word-break: break-word;
+  }
+
+  .chart-container{
+    width: 75%;
+  }
+
+  .music-header{
+    display: block;
+  }
+
+  .music-header .add-music{
+    width: 100%;
+    margin: 0;
+    margin-top: 20px;
+  }
+
+  #music-url{
+    width: 100%;
+  }
+
+  .music-song-left .music_image, .music-song.main .music-song-left .music_image img{
+    width: 100%;
+    height: 100%;
+    margin-right: 0;
+  }
+}

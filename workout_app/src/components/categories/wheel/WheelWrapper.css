@@ -1,5 +1,6 @@
 #main-frame {
   width: 100vw;
+  height: 100vh;
 }
 
 #roulette-wheel-wrapper {
@@ -29,4 +30,27 @@ button {
 .main-button {
   background-color: #7fc388;
   color: #fff;
+}
+
+@media (max-width: 600px) {
+  #roulette-wheel-wrapper {
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .App.gradient-bg {
+    overflow: hidden;
+  }
+
+  #centered-div {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  button {
+    font-size: 16px;
+    width: 150px;
+    height: 45px;
+    box-shadow: #3c5a40 0px 10px 10px;
+  }
 }

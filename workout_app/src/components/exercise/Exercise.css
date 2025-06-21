@@ -10,3 +10,24 @@
 .exercise-info div {
   text-align: left !important;
 }
+
+@media (max-width: 600px) {
+  #main-frame{
+    height: 90vh;
+  }
+
+#main-frame.exercise-frame{
+  padding-top: 100px;
+}
+
+.timer-container{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 100px;
+}
+
+.exercise-info{
+  margin-left: 20px;
+}
+}

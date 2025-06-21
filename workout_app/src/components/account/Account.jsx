@@ -190,6 +190,7 @@ function Account() {
             </div>
           </ul>
         </div>
+
         <div className="account-main">
           <div className="center">
             <i className="fa fa-user-circle"></i>
@@ -213,6 +214,7 @@ function Account() {
               {loading ? "Saving..." : "Edit"}
             </button>
           </form>
+          <a onClick={logoutHandler} className="mobile-logout">Logout</a>
         </div>
       </div>
     </div>

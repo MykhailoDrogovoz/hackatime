@@ -12,3 +12,12 @@
   height: 100%;
   margin: 10px 10px 10px 5px;
 }
+
+@media (max-width: 600px) {
+  #main-frame{
+    height: 90vh;
+  }
+
+#main-frame.exercise-frame.done{
+  padding-top: 0;
+}}

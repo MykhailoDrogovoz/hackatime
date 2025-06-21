@@ -37,6 +37,11 @@
   color: #000;
 }
 
+.coin-img {
+  width: 40px;
+  height: 40px;
+}
+
 /* .menuItem:hover {
   color: #fff;
   background-color: rgb(255, 255, 255);
@@ -116,4 +121,58 @@ iframe {
   /* position: relative; */
   background: rgba(0, 0, 0, 0.3);
   border-color: transparent;
+}
+
+/* Existing styles here */
+
+.mobile-bottom-nav {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .mobile-bottom-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: #63856a;
+    border-top: 1px solid #ccc;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 1000;
+  }
+
+  .mobile-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 12px;
+    color: #c8d8b9;
+    text-decoration: none;
+  }
+
+  .mobile-nav-item i {
+    font-size: 20px;
+  }
+
+  header .menuItem,
+  #mobile-menu-btn {
+    display: none;
+  }
+
+  .music {
+    margin: 0 20px;
+    display: none;
+  }
+
+  .music .fa-backward, .fa-forward, .fa-volume-up {
+    font-size: 12px;
+  }
+
+  .fa-play-circle, .fa-stop-circle{
+    font-size: 30px;
+  }
+
 }

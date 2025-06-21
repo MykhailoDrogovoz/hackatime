@@ -157,3 +157,116 @@ tr:nth-child(odd) {
   font-size: 20px;
   margin-right: 20px;
 }
+
+.coin-container-cong.full-screen{
+  width: auto;
+  height: auto;
+}
+
+.leaderboar-select-mobile .paragraph-1.clear {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .time-container {
+    gap: 15px;
+    height: auto;
+    padding: 10px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+  }
+
+  .time-container div {
+    padding: 4px 8px;
+    font-size: 14px;
+  }
+
+  .leaderboard-header {
+    width: 100%;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .leaderboard-header .item.sorted {
+    height: auto;
+    padding: 8px;
+    font-size: 16px;
+  }
+
+  .paragraph-1 {
+    font-size: 20px;
+    margin: 0;
+  }
+
+  .sort-dropdown .select__control,
+  .select__menu {
+    font-size: 20px;
+  }
+
+  .top-3 {
+    flex-direction: row;
+    gap: 10px;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+
+  .top-3 .stage-element {
+    width: 100px;
+    height: 300px;
+  }
+
+  .top-3 .stage-element div {
+    font-size: 11px;
+  }
+
+  .top-3 .stage-element .fa-user-circle {
+    font-size: 50px;
+    margin-bottom: 10px;
+  }
+
+  .top-3 .stage-element .fa-crown {
+    font-size: 24px;
+  }
+
+  .leaderboard h2 {
+    font-size: 24px;
+  }
+
+  table {
+    font-size: 14px;
+    margin: 30px 0;
+  }
+
+  td,
+  th {
+    padding: 6px;
+  }
+
+  .buttons {
+    gap: 15px;
+  }
+
+  .buttons i {
+    font-size: 16px;
+    margin-right: 10px;
+  }
+
+  .css-b62m3t-container{
+    padding-top: 0;
+  }
+
+  .leaderboar-select-mobile{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .leaderboar-select-mobile .paragraph-1.clear {
+    display: block;
+  }
+
+  .paragraph-1.clear {
+    display: none;
+  }
+}

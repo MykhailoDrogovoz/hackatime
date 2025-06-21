@@ -135,7 +135,9 @@ const Header = (props) => {
 
   return (
     <header id={props.isGradientPage ? "gradient-bg" : ""} className="header">
-      <a href="/" id="logo"></a>
+      <a href="/" id="logo">
+        <img src="/logo_1.svg" alt="logo" style={{width: "180px", height: "70px", objectFit: "cover"}} />
+      </a>
 
       <nav id="menu" className={menuOpen ? "open" : ""}>
         {coins !== null && (
@@ -204,10 +206,6 @@ const Header = (props) => {
           </div>
         )}
 
-        <button id="mobile-menu-btn" onClick={toggleMenuOpen}>
-          <i className={menuOpen ? "fa fa-times" : "fa fa-bars"}></i>
-        </button>
-
         <Link to="/" className="menuItem">
           Home
         </Link>
@@ -218,12 +216,37 @@ const Header = (props) => {
         {coins !== null && (
           <div id="coin-container">
             <span>{coins}</span>
-            <img src="/coin.png" alt="coins" />
+            <img src="/coin.svg" alt="coins" className="coin-img" />
           </div>
         )}
 
         <Link to="/login" className="menuItem">
           <i className="fa fa-user-circle"></i>
+        </Link>
+      </nav>
+      <nav className="mobile-bottom-nav">
+        <Link to="/" className="mobile-nav-item">
+          <i className="fa fa-home"></i>
+          <span>Home</span>
+        </Link>
+        <Link to="/leaderboard" className="mobile-nav-item">
+          <i className="fa fa-trophy"></i>
+          <span>Top</span>
+        </Link>
+        <div
+          className="mobile-nav-item"
+          onClick={() => {
+            !userData.musicUnlocked
+              ? unlockFeature("music")
+              : navigate("/music-player");
+          }}
+        >
+          <i className="fa fa-music"></i>
+          <span>Music</span>
+        </div>
+        <Link to="/login" className="mobile-nav-item">
+          <i className="fa fa-user-circle"></i>
+          <span>Profile</span>
         </Link>
       </nav>
     </header>

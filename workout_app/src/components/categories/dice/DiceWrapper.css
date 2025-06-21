@@ -31,3 +31,15 @@ canvas {
   max-width: 100%;
   max-height: 80vh;
 }
+
+@media (max-width: 600px) {
+
+#dice-wrapper button{
+  top: 60%;
+  left: 20%;
+}
+
+#dice-wrapper .main-button{
+  top: 70%;
+}
+}

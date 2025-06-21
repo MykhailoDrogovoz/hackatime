@@ -144,7 +144,16 @@ function PieGraph(props) {
         (progress >= 100 || props.name == null ? " disable" : "")
       }
     >
-      <div className="coin">ℭ</div>
+      <img
+        src={
+          progress >= 100 || props.name == null
+            ? "/coin_disable.svg"
+            : "/coin.svg"
+        }
+        alt="coins"
+        className="coin-img coin"
+      />
+
       <div className="pie-graph-container">
         {props.name ? (
           <div>

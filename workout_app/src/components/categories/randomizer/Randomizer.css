@@ -18,3 +18,9 @@
 .randomizer {
   flex-direction: column;
 }
+
+@media (max-width: 768px) {
+  .randomizer{
+    height: 80vh;
+  }
+}
