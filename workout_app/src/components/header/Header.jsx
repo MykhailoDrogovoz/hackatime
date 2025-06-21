@@ -6,20 +6,17 @@ const VITE_API_URL = import.meta.env.VITE_API_URL;
 
 const Header = (props) => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [coins, setCoins] = useState(
-    JSON.parse(localStorage.getItem("userCoins")) !== null &&
-      JSON.parse(localStorage.getItem("userCoins")) !== undefined
-      ? JSON.parse(localStorage.getItem("userCoins"))
-      : null
-  );
+  const [coins, setCoins] = useState(() => {
+    const stored = localStorage.getItem("userCoins");
+    return stored ? JSON.parse(stored) : null;
+  });
 
   const [isPlaying, setIsPlaying] = useState(false);
-  const [volume, setVolume] = useState(true);
   const [userData, setUserData] = useState({});
   const [currentTrack, setCurrentTrack] = useState(null);
   const [muted, setMuted] = useState(false);
-  const navigate = useNavigate()
-  
+  const navigate = useNavigate();
+
   useEffect(() => {
     globalAudioManager.on("muted", setMuted);
     return () => globalAudioManager.off("muted", setMuted);
@@ -136,7 +133,11 @@ const Header = (props) => {
   return (
     <header id={props.isGradientPage ? "gradient-bg" : ""} className="header">
       <a href="/" id="logo">
-        <img src="/logo_1.svg" alt="logo" style={{width: "180px", height: "70px", objectFit: "cover"}} />
+        <img
+          src="/logo_1.svg"
+          alt="logo"
+          style={{ width: "180px", height: "70px", objectFit: "cover" }}
+        />
       </a>
 
       <nav id="menu" className={menuOpen ? "open" : ""}>
