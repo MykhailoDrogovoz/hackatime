@@ -8,6 +8,7 @@ import listRoutes from "./routes/list.js";
 import tagsRoutes from "./routes/tags.js";
 import gameRoutes from "./routes/game.js";
 import trackRoutes from "./routes/track.js";
+import UserExercise from "./models/userexercise.js";
 
 const app = express();
 
@@ -27,6 +28,22 @@ app.use("/lists", listRoutes);
 app.use("/tags", tagsRoutes);
 app.use("/games", gameRoutes);
 app.use("/tracks", trackRoutes);
+
+app.post("/api/clear-exercises", async (req, res) => {
+  const authHeader = req.headers.authorization;
+
+  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+    return res.status(403).json({ error: "Forbidden" });
+  }
+
+  try {
+    await UserExercise.destroy({ where: {} });
+    res.status(200).json({ message: "All exercises cleared" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to clear exercises" });
+  }
+});
 
 sequelize
   .authenticate()
