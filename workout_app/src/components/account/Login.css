@@ -48,14 +48,14 @@
   }
 
   .login label {
-    font-size: 20px;
+    font-size: 16px;
   }
 
-  .login-container{
+  .login-container {
     width: auto;
   }
 
-  .login-container .chart-container{
+  .login-container .chart-container {
     width: 80%;
   }
 
