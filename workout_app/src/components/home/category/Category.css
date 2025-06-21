@@ -56,9 +56,3 @@ path {
 .recharts-layer text {
   font-size: 10px;
 }
-
-@media (max-width: 600px) {
-  .full-screen{
-    height: 90vh;
-  }
-}

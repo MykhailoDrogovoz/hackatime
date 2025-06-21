@@ -136,7 +136,11 @@ const Header = (props) => {
   return (
     <header id={props.isGradientPage ? "gradient-bg" : ""} className="header">
       <a href="/" id="logo">
-        <img src="/logo_1.svg" alt="logo" style={{width: "180px", height: "70px", objectFit: "cover"}} />
+        <img
+          src={props.isGradientPage ? "/logo_light.svg" : "/logo.svg"}
+          alt="logo"
+          style={{ width: "180px", height: "70px", objectFit: "cover" }}
+        />
       </a>
 
       <nav id="menu" className={menuOpen ? "open" : ""}>
