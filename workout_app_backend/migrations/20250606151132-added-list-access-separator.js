@@ -10,7 +10,6 @@ module.exports = {
 
     await queryInterface.addColumn("Lists", "userId", {
       type: Sequelize.INTEGER,
-      allowNull: false,
       references: {
         model: "Users",
         key: "userId",
