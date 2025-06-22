@@ -145,22 +145,18 @@ Example:
           const [newTag, created] = await Tags.findOrCreate({
             where: { name: tag.name.trim() },
           });
-        } else {
-          // 👇 Get metadata from AI
-          const aiData = await this.getExerciseDataFromAI(tag.name.trim());
 
-          // Optional: validate aiData here before saving
+          if (created) {
+            const aiData = await this.getExerciseDataFromAI(tag.name.trim());
 
-          const newTag = await Tags.create({
-            name: tag.name.trim(),
-            totalSets: aiData?.totalSets || 0,
-            coins: aiData?.coins || 0,
-            calories: aiData?.calories || 0,
-            totalSeconds: aiData?.totalSeconds || null,
-            secondsPerSet: aiData?.secondsPerSet || 0,
-          });
-
-          tagIds.push(newTag.tagId);
+            await newTag.update({
+              totalSets: aiData?.totalSets || 0,
+              coins: aiData?.coins || 0,
+              calories: aiData?.calories || 0,
+              totalSeconds: aiData?.totalSeconds || null,
+              secondsPerSet: aiData?.secondsPerSet || 0,
+            });
+          }
         }
       }
 
@@ -280,20 +276,22 @@ Example:
       for (const tag of tags) {
         if (tag.tagId) {
           tagIds.push(tag.tagId);
-        } else {
-          console.log("sdflfjsd");
-          const aiData = await this.getExerciseDataFromAI(tag.name.trim());
-
-          const newTag = await Tags.create({
-            name: tag.name.trim(),
-            totalSets: aiData?.totalSets || 0,
-            coins: aiData?.coins || 0,
-            calories: aiData?.calories || 0,
-            totalSeconds: aiData?.totalSeconds || null,
-            secondsPerSet: aiData?.secondsPerSet || 0,
+        } else if (tag.name) {
+          const [newTag, created] = await Tags.findOrCreate({
+            where: { name: tag.name.trim() },
           });
 
-          tagIds.push(newTag.tagId);
+          if (created) {
+            const aiData = await this.getExerciseDataFromAI(tag.name.trim());
+
+            await newTag.update({
+              totalSets: aiData?.totalSets || 0,
+              coins: aiData?.coins || 0,
+              calories: aiData?.calories || 0,
+              totalSeconds: aiData?.totalSeconds || null,
+              secondsPerSet: aiData?.secondsPerSet || 0,
+            });
+          }
         }
       }
 
