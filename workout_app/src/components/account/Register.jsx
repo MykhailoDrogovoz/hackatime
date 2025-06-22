@@ -75,6 +75,7 @@ function Register(props) {
           name="username"
           id="username"
           ref={usernameInputRef}
+          required
         />
       </div>
 

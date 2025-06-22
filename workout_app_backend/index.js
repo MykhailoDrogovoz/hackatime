@@ -33,6 +33,7 @@ app.post("/api/clear-exercises", async (req, res) => {
   const authHeader = req.headers.authorization;
 
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+    console.log(authHeader, process.env.CRON_SECRET, req.headers);
     return res.status(403).json({ error: "Forbidden" });
   }
 
