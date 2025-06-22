@@ -53,39 +53,39 @@ function NewList() {
     navigate("/");
   };
 
-   useEffect(() => {
-      const storedToken = localStorage.getItem("authToken");
-  
-      if (!storedToken) {
-        navigate("/login");
-        return; 
-      }
-  
-      const checkAuthorization = async () => {
-        try {
-          const response = await fetch(`${VITE_API_URL}user/profile`, {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${storedToken}`,
-            },
-          });
-  
-          if (!response.ok) {
-            localStorage.removeItem("authToken");
-            navigate("/login");
-          }
-          const data = await response.json();
-          if (!data.user.customMusicUnlocked) {
-            homeRedirect()
-          }
-        } catch (error) {
-          console.error("Authorization check failed:", error);
+  useEffect(() => {
+    const storedToken = localStorage.getItem("authToken");
+
+    if (!storedToken) {
+      navigate("/login");
+      return;
+    }
+
+    const checkAuthorization = async () => {
+      try {
+        const response = await fetch(`${VITE_API_URL}user/profile`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${storedToken}`,
+          },
+        });
+
+        if (!response.ok) {
+          localStorage.removeItem("authToken");
+          navigate("/login");
         }
-      };
-  
-      checkAuthorization();
-    }, []);
+        const data = await response.json();
+        if (!data.user.customListsUnlocked) {
+          homeRedirect();
+        }
+      } catch (error) {
+        console.error("Authorization check failed:", error);
+      }
+    };
+
+    checkAuthorization();
+  }, []);
 
   const NewListHandler = async (event) => {
     event.preventDefault();
