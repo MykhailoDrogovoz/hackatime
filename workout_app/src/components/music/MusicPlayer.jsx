@@ -86,7 +86,7 @@ const MusicPlayer = () => {
       const tracks = await response.json();
 
       setMusicList(tracks.tracks);
-      if (tracks.tracks.length > 0) setCurrentTrack(tracks.tracks[0]);
+      // if (tracks.tracks.length > 0) setCurrentTrack(tracks.tracks[0]);
       setLoaded(true);
     };
 
@@ -106,7 +106,7 @@ const MusicPlayer = () => {
       }
     }
 
-    setCurrentTrack(musicList[0]);
+    // setCurrentTrack(musicList[0]);
   }, [musicList]);
 
   useEffect(() => {
@@ -205,13 +205,11 @@ const MusicPlayer = () => {
         }
         const data = await response.json();
         setUserData(data.user);
-        if (!data.user.customMusicUnlocked) {
-          navigate("/")
+        if (!data.user.musicUnlocked) {
+          navigate("/");
         }
       } catch (error) {
         console.error("Authorization check failed:", error);
-        localStorage.removeItem("authToken");
-        navigate("/login");
       }
     };
 
@@ -243,9 +241,8 @@ const MusicPlayer = () => {
     }
   };
 
-
   return (
-    <div >
+    <div>
       <div
         className={
           "lists chart-container" +
@@ -287,14 +284,7 @@ const MusicPlayer = () => {
             <div key={idx} className="music-song">
               <div className="music-song-left">
                 <div className="music_image">
-                  <img
-                    src={
-                      track.type === "youtube"
-                        ? getYouTubeThumbnail(track.url)
-                        : "https://img.freepik.com/premium-photo/headphones-with-music-notes-headband-purple-background_1204450-18453.jpg?semt=ais_hybrid&w=740"
-                    }
-                    alt="Music Cover"
-                  />
+                  <img src={track?.imgUrl} alt="Music Cover" />
                 </div>
                 <div>
                   <h3>
@@ -324,21 +314,19 @@ const MusicPlayer = () => {
           <div className="music-song main">
             <div className="music-song-left">
               <div className="music_image">
-                <img
-                  src={
-                    currentTrack.type === "youtube"
-                      ? getYouTubeThumbnail(currentTrack.url)
-                      : "https://img.freepik.com/premium-photo/headphones-with-music-notes-headband-purple-background_1204450-18453.jpg?semt=ais_hybrid&w=740"
-                  }
-                  alt="Music Cover"
-                />
+                <img src={currentTrack?.imgUrl} alt="Music Cover" />
               </div>
               <div>
                 <h3>
                   {currentTrack.type === "youtube"
-                    ? `${currentArtist || "Artist"} - ${currentSong || "Song"}`
+                    ? `${currentSong || "Song"}`
                     : "MP3 Track"}
                 </h3>
+                <p>
+                  {currentTrack.type === "youtube"
+                    ? currentArtist || "Artist"
+                    : currentTrack.url}
+                </p>
               </div>
             </div>
             <div className="music-song-icons">

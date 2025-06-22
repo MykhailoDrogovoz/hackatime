@@ -136,7 +136,7 @@ const Header = (props) => {
         <img
           src={props.isGradientPage ? "/logo_light.svg" : "/logo.svg"}
           alt="logo"
-          style={{ width: "180px", height: "70px", objectFit: "cover" }}
+          style={{ width: "180px", height: "90px" }}
         />
       </a>
 
