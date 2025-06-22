@@ -80,7 +80,13 @@ function Register(props) {
 
       <div className="form-group">
         <label htmlFor="">Email:</label>
-        <input type="email" name="email" id="email" ref={emailInputRef} />
+        <input
+          type="email"
+          name="email"
+          id="email"
+          ref={emailInputRef}
+          required
+        />
       </div>
 
       <div className="form-group">
@@ -90,6 +96,7 @@ function Register(props) {
           name="password"
           id="password"
           ref={passwordInputRef}
+          required
         />
       </div>
 
@@ -100,6 +107,7 @@ function Register(props) {
           name="confirmPassword"
           id="confirmPassword"
           ref={passwordConfInputRef}
+          required
         />
       </div>
 

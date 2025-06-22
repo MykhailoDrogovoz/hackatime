@@ -45,11 +45,11 @@ function Login(props) {
     <form onSubmit={submitHandler}>
       <div className="form-group">
         <label htmlFor="">Email:</label>
-        <input type="email" ref={emailInputRef} />
+        <input type="email" ref={emailInputRef} required />
       </div>
       <div className="form-group">
         <label htmlFor="">Password:</label>
-        <input type="password" ref={passwordInputRef} />
+        <input type="password" ref={passwordInputRef} required />
       </div>
       <div className="form-group">
         <p>

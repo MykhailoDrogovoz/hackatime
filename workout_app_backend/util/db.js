@@ -11,11 +11,6 @@ const sequelize = new Sequelize(
     host: process.env.DATABASE_HOST,
     port: process.env.DB_PORT,
     dialect: process.env.DATABASE_DIALECT,
-    logging: (msg) => {
-      if (!msg.startsWith("Executing (default):")) {
-        console.log(msg);
-      }
-    },
   }
 );
 
