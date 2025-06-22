@@ -157,6 +157,7 @@ Example:
               secondsPerSet: aiData?.secondsPerSet || 0,
             });
           }
+          tagIds.push(newTag.id);
         }
       }
 
@@ -292,6 +293,7 @@ Example:
               secondsPerSet: aiData?.secondsPerSet || 0,
             });
           }
+          tagIds.push(newTag.id);
         }
       }
 
