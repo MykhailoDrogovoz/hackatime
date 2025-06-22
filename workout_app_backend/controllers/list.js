@@ -9,7 +9,6 @@ import dotenv from "dotenv";
 dotenv.config();
 import OpenAI from "openai";
 
-
 class listController {
   constructor() {
     this.HOTELS = [];
@@ -60,7 +59,7 @@ class listController {
     }
   };
 
-   getExerciseDataFromAI = async (exerciseName) => {
+  getExerciseDataFromAI = async (exerciseName) => {
     const prompt = `You are an assistant generating structured exercise metadata.
 
 Return a strict JSON object describing the exercise "${exerciseName}" with these fields:
@@ -84,29 +83,27 @@ Example:
   "totalSeconds": null,
   "secondsPerSet": 2
 }`;
-  
+
     try {
       const token = process.env.GITHUB_API_KEY_TOKEN;
       const endpoint = "https://models.github.ai/inference";
       const modelName = "openai/gpt-4.1-mini";
 
-        const client = new OpenAI({ baseURL: endpoint, apiKey: token });
+      const client = new OpenAI({ baseURL: endpoint, apiKey: token });
 
       const response = await client.chat.completions.create({
-        messages: [
-          { role: "user", content: prompt },
-        ],
+        messages: [{ role: "user", content: prompt }],
         model: modelName,
       });
-  
+
       const json = response.choices[0].message.content;
-      console.log("Reponse: ",json)
+      console.log("Reponse: ", json);
       return JSON.parse(json);
     } catch (err) {
       console.error("[AI Error]:", err.message);
       return null;
     }
-  }
+  };
 
   getListById = async (req, res) => {
     try {
@@ -144,12 +141,16 @@ Example:
       for (const tag of tags) {
         if (tag.tagId) {
           tagIds.push(tag.tagId);
+        } else if (tag.name) {
+          const [newTag, created] = await Tags.findOrCreate({
+            where: { name: tag.name.trim() },
+          });
         } else {
           // 👇 Get metadata from AI
           const aiData = await this.getExerciseDataFromAI(tag.name.trim());
-    
+
           // Optional: validate aiData here before saving
-    
+
           const newTag = await Tags.create({
             name: tag.name.trim(),
             totalSets: aiData?.totalSets || 0,
@@ -158,11 +159,10 @@ Example:
             totalSeconds: aiData?.totalSeconds || null,
             secondsPerSet: aiData?.secondsPerSet || 0,
           });
-    
+
           tagIds.push(newTag.tagId);
         }
       }
-        
 
       const newList = await List.create({
         listName,
@@ -281,9 +281,8 @@ Example:
         if (tag.tagId) {
           tagIds.push(tag.tagId);
         } else {
-          console.log("sdflfjsd")
+          console.log("sdflfjsd");
           const aiData = await this.getExerciseDataFromAI(tag.name.trim());
-
 
           const newTag = await Tags.create({
             name: tag.name.trim(),
