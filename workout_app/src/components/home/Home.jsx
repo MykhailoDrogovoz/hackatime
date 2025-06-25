@@ -29,7 +29,6 @@ function Home() {
   });
 
   const handleClick = (exType) => {
-    console.log(exType);
     // setExType(exType);
     navigate("/options", {
       state: { exType: exType },
@@ -60,7 +59,6 @@ function Home() {
         );
 
         const data = await response.json();
-        // console.log(data);
         setCompletedExercises(data.userExercises);
       } catch (error) {
         console.log(error);
@@ -91,7 +89,14 @@ function Home() {
   });
 
   const getTagsToRender = () => {
-    console.log(completedExercises);
+    if (!localStorage.getItem("taskList")) {
+      return (
+        <div id="charts" className="no-exercises">
+          <p>You did not select any list. First of all select a list.</p>
+        </div>
+      );
+    }
+
     const filteredTags = tags.Tags.filter(
       (tag) =>
         !completedExercises.some((completed) => completed.tagId === tag.tagId)
@@ -101,7 +106,6 @@ function Home() {
       )
     );
 
-    console.log(filteredTags);
     const tagsArray = filteredTags || [];
     const placeholderTags = Array(6 - tagsArray.length).fill({
       name: null,
@@ -111,7 +115,6 @@ function Home() {
 
   let allPlaceholders = false;
   const tagsToRender = getTagsToRender();
-  console.log(userId);
 
   if (userId !== tags.userId) {
     allPlaceholders =
@@ -120,7 +123,6 @@ function Home() {
   }
 
   if (allPlaceholders) {
-    console.log("asd");
     return (
       <div className="home">
         <h1 className="main-title">Exercises</h1>
@@ -128,9 +130,6 @@ function Home() {
           <p>
             This list does not consist of any exercises, please use another one
           </p>
-        </div>
-        <div className="full-screen">
-          <Category />
         </div>
         <div className="full-screen">
           <List />
@@ -143,28 +142,36 @@ function Home() {
     <div className="home">
       <h1 className="main-title">Excercises</h1>
       <div id="charts">
-        {getTagsToRender().map((tag, index) => (
+        {Array.isArray(getTagsToRender()) ? (
           <>
-            {console.log(tag)}
-            <PieGraph
-              key={tag.name || `placeholder-${index}`}
-              percentage={0}
-              handleClick={() => handleClick(tag.name)}
-              name={tag.name}
-              totalSets={tag.totalSets}
-              setIsExerciseDone={(bool) => {
-                setIsExerciseDone(bool);
-              }}
-              secondsPerSet={tag.secondsPerSet}
-              totalSeconds={tag.totalSeconds}
-              calories={tag.calories}
-            />
+            {getTagsToRender().map((tag, index) => (
+              <>
+                <PieGraph
+                  key={tag.name || `placeholder-${index}`}
+                  percentage={0}
+                  handleClick={() => handleClick(tag.name)}
+                  name={tag.name}
+                  totalSets={tag.totalSets}
+                  setIsExerciseDone={(bool) => {
+                    setIsExerciseDone(bool);
+                  }}
+                  secondsPerSet={tag.secondsPerSet}
+                  totalSeconds={tag.totalSeconds}
+                  calories={tag.calories}
+                />
+              </>
+            ))}
           </>
-        ))}
+        ) : (
+          getTagsToRender()
+        )}
       </div>
-      <div className="full-screen">
-        <Category />
-      </div>
+      {localStorage.getItem("taskList") && (
+        <div className="full-screen">
+          <Category />
+        </div>
+      )}
+
       <div className="full-screen">
         <List />
       </div>
