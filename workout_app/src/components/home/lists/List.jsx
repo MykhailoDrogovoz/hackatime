@@ -92,7 +92,7 @@ function List() {
       {userData ? (
         <>
           <div className="new-list-button">
-            <h2>Your lists</h2>
+            <h2>Available lists</h2>
             {!userData.customListsUnlocked ? (
               <button
                 className="locked"

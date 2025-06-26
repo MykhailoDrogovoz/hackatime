@@ -140,7 +140,7 @@ function Home() {
 
   return (
     <div className="home">
-      <h1 className="main-title">Excercises</h1>
+      <h1 className="main-title">Exercises</h1>
       <div id="charts">
         {Array.isArray(getTagsToRender()) ? (
           <>

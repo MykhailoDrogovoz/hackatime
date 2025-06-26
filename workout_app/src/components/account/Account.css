@@ -90,7 +90,7 @@ ul div {
   width: 100%;
 }
 
-ul div a {
+.logout {
   text-decoration: none;
   color: #ff8d8f;
   font-size: 20px;

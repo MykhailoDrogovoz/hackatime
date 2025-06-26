@@ -25,7 +25,8 @@ function Category() {
     if (!response.ok) return 0;
 
     const data = await response.json();
-    return data.userExercise?.setsCompleted || 0.5;
+    const setsCompleted = data.userExercise?.setsCompleted;
+    return setsCompleted === undefined ? 0.01 : setsCompleted;
   };
 
   useEffect(() => {
@@ -55,7 +56,14 @@ function Category() {
 
       <ResponsiveContainer width="100%" height={200}>
         <BarChart data={data} layout="vertical">
-          <XAxis type="number" axisLine={false} tick={false} label={false} />
+          <XAxis
+            type="number"
+            domain={[0, "dataMax + 1"]}
+            hide
+            axisLine={false}
+            tick={false}
+            label={false}
+          />
           <YAxis
             dataKey="category"
             type="category"
@@ -75,7 +83,7 @@ function Category() {
                   fill="black"
                   textAnchor="start"
                   dominantBaseline="middle"
-                  fontSize={12}
+                  fontSize={24}
                 >
                   {label.split(" ").map((word, i) => (
                     <tspan key={i} x={7} dy={i === 0 ? 0 : "1.2em"}>

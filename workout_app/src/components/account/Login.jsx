@@ -2,14 +2,10 @@ import { useRef, useState } from "react";
 import "./Login.css";
 
 function Login(props) {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  const usernameInputRef = useRef();
   const emailInputRef = useRef();
   const passwordInputRef = useRef();
+  const [loading, setLoading] = useState(false);
 
   const saveUserDataHandler = (enteredUserData) => {
     const userData = {
@@ -58,8 +54,8 @@ function Login(props) {
       </div>
       <div className="buttons-white-theme">
         <button>Home</button>
-        <button className="main-button" type="submit">
-          Next
+        <button className="main-button" type="submit" disabled={props.loading}>
+          {props.loading ? "Loading..." : "Next"}
         </button>
       </div>
     </form>

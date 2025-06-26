@@ -6,8 +6,6 @@ import { useNavigate } from "react-router-dom";
 const VITE_API_URL = import.meta.env.VITE_API_URL;
 
 function LoginContainer() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(null);
@@ -19,6 +17,7 @@ function LoginContainer() {
 
   const handleRegister = (user) => {
     const addUser = async () => {
+      setLoading(true);
       try {
         const response = await fetch(`${VITE_API_URL}user/register`, {
           method: "POST",
@@ -28,59 +27,58 @@ function LoginContainer() {
           },
         });
 
-        if (response.ok) {
-          const data = await response.json();
-          console.log(data.accessToken);
+        const data = await response.json();
 
+        if (response.ok) {
           setIsRegister(false);
           setIsAuthenticated(true);
           localStorage.setItem("authToken", data.accessToken);
           localStorage.setItem("userCoins", data.newUser.coins);
           navigate("/account");
         } else {
-          setError(data.error);
+          setError(data.error || "Registration failed.");
         }
       } catch (error) {
         console.error(error);
+        setError("Server error, please try again later.");
+      } finally {
+        setLoading(false);
       }
     };
     addUser();
   };
 
   const handleLogin = async (user) => {
-    const getUser = async () => {
-      try {
-        const response = await fetch(`${VITE_API_URL}user/login`, {
-          method: "POST",
-          body: JSON.stringify(user),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        const data = await response.json();
+    setLoading(true);
+    try {
+      const response = await fetch(`${VITE_API_URL}user/login`, {
+        method: "POST",
+        body: JSON.stringify(user),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await response.json();
 
-        if (!response.ok) {
-          const errorMessage = await response.text();
-          console.log(errorMessage);
-
-          setError({
-            title: "An error occurred",
-            message: errorMessage || "Invalid email or password.",
-          });
-          return;
-        }
-        localStorage.setItem("authToken", data.accessToken);
-        localStorage.setItem("userCoins", data.user.coins);
-        navigate("/account");
-      } catch (error) {
-        console.log(error);
-        setError({
-          title: "Server Unreachable",
-          message: "Failed to add user, please try again later.",
-        });
+      if (!response.ok) {
+        const errorMessage = data.error;
+        setError(errorMessage || "Invalid email or password.");
+        setLoading(false);
+        return;
       }
-    };
-    getUser(user);
+
+      localStorage.setItem("authToken", data.accessToken);
+      localStorage.setItem("userCoins", data.user.coins);
+      navigate("/account");
+    } catch (error) {
+      console.log(error);
+      setError({
+        title: "Server Unreachable",
+        message: "Password is not correct.",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -90,6 +88,12 @@ function LoginContainer() {
       navigate("/account");
     }
   }, []);
+
+  useEffect(() => {
+    if (error) {
+      alert(error.message);
+    }
+  }, [error]);
 
   return (
     <div className="full-screen login-container">
@@ -120,9 +124,17 @@ function LoginContainer() {
           })}
         </div>
         {isRegister ? (
-          <Register onAddUser={handleRegister} />
+          <Register
+            onAddUser={handleRegister}
+            loading={loading}
+            setLoading={setLoading}
+          />
         ) : (
-          <Login onLoginUser={handleLogin} />
+          <Login
+            onLoginUser={handleLogin}
+            loading={loading}
+            setLoading={setLoading}
+          />
         )}
       </div>
     </div>

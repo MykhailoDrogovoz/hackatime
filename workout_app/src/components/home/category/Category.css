@@ -48,11 +48,3 @@ path {
 .recharts-wrapper {
   height: 200px !important;
 }
-
-.recharts-text tspan {
-  font-size: 10px !important;
-}
-
-.recharts-layer text {
-  font-size: 10px;
-}

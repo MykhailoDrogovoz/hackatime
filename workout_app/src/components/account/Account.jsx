@@ -7,17 +7,31 @@ const VITE_API_URL = import.meta.env.VITE_API_URL;
 function Account() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState("account");
 
   const [token, setToken] = useState("");
   const navigate = useNavigate();
 
   const [fields, setFields] = useState([
-    { id: 1, label: "Username", name: "username", type: "name", value: "", required: true },
+    {
+      id: 1,
+      label: "Username",
+      name: "username",
+      type: "name",
+      value: "",
+      required: true,
+    },
     { id: 2, label: "Name", name: "firstName", type: "text", value: "" },
     { id: 3, label: "Surname", name: "lastName", type: "text", value: "" },
-    { id: 4, label: "Email", name: "email", type: "email", value: "", required: true },
+    {
+      id: 4,
+      label: "Email",
+      name: "email",
+      type: "email",
+      value: "",
+      required: true,
+    },
   ]);
-  
 
   const [userData, setUserData] = useState(null);
 
@@ -173,48 +187,69 @@ function Account() {
             </div>
           </div>
           <ul className="center">
-            <div className="main">
+            <div
+              className={activeTab === "account" ? "main active" : ""}
+              onClick={() => setActiveTab("account")}
+            >
               <h5>Account</h5>
               <i className="fa fa-chevron-right"></i>
             </div>
-            <div>
+            <div
+              className={activeTab === "settings" ? "main active" : ""}
+              onClick={() => setActiveTab("settings")}
+            >
               <h5>Settings</h5>
               <i className="fa fa-chevron-right"></i>
             </div>
-            <div>
-              <h5>Settings</h5>
-              <i className="fa fa-chevron-right"></i>
-            </div>
-            <div>
-              <a onClick={logoutHandler}>Logout</a>
+            <div onClick={logoutHandler} className="logout-tab logout">
+              <h5>Logout</h5>
+              <i className="fa fa-sign-out-alt"></i>
             </div>
           </ul>
         </div>
 
         <div className="account-main">
-          <div className="center">
-            <i className="fa fa-user-circle"></i>
-            <i className="fa fa-pen"></i>
-          </div>
-
-          <form onSubmit={handleSubmit}>
-            {fields.map((field) => (
-              <div key={field.id} className="field">
-                <label htmlFor={field.name}>{field.label}:</label>
-                <input
-                  type={field.type}
-                  name={field.name}
-                  value={field.value}
-                  required={field.required}
-                  onChange={(e) => handleChange(field.id, e.target.value)}
-                />
+          {activeTab === "account" && (
+            <>
+              <div className="center">
+                <i className="fa fa-user-circle"></i>
+                <i className="fa fa-pen"></i>
               </div>
-            ))}
-            <button className="main-button" type="submit" disabled={loading}>
-              {loading ? "Saving..." : "Edit"}
-            </button>
-          </form>
-          <a onClick={logoutHandler} className="mobile-logout">Logout</a>
+
+              <form onSubmit={handleSubmit}>
+                {fields.map((field) => (
+                  <div key={field.id} className="field">
+                    <label htmlFor={field.name}>{field.label}:</label>
+                    <input
+                      type={field.type}
+                      name={field.name}
+                      value={field.value}
+                      required={field.required}
+                      onChange={(e) => handleChange(field.id, e.target.value)}
+                    />
+                  </div>
+                ))}
+                <button
+                  className="main-button"
+                  type="submit"
+                  disabled={loading}
+                >
+                  {loading ? "Saving..." : "Edit"}
+                </button>
+              </form>
+            </>
+          )}
+
+          {activeTab === "settings" && (
+            <div className="settings-tab">
+              <h3>Settings</h3>
+              <p>Settings content goes here...</p>
+            </div>
+          )}
+
+          <a onClick={logoutHandler} className="mobile-logout">
+            Logout
+          </a>
         </div>
       </div>
     </div>

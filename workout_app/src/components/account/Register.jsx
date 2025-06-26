@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./Login.css";
 import { useRef } from "react";
 
@@ -9,10 +9,6 @@ function Register(props) {
   const passwordConfInputRef = useRef();
 
   const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const saveUserDataHandler = (enteredUserData) => {
     const userData = {
@@ -66,6 +62,12 @@ function Register(props) {
     passwordConfInputRef.current.value = "";
   };
 
+  useEffect(() => {
+    if (error) {
+      alert(error.message);
+    }
+  }, [error]);
+
   return (
     <form onSubmit={sumbitHandler}>
       <div className="form-group">
@@ -114,8 +116,8 @@ function Register(props) {
 
       <div className="buttons-white-theme">
         <button>Home</button>
-        <button className="main-button" type="submit">
-          Next
+        <button className="main-button" type="submit" disabled={props.loading}>
+          {props.loading ? "Loading..." : "Next"}
         </button>
       </div>
     </form>
