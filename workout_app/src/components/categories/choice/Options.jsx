@@ -20,20 +20,18 @@ function Options() {
   const [userOptions, setUserOptions] = useState([]);
   const [userCoins, setUserCoins] = useState(0);
 
-  // Joyride control
   const [runTour, setRunTour] = useState(false);
 
   const steps = [
     {
       target: ".options_list",
-      content:
-        "There are option that will define how many times/seconds you should do proper exercise",
+      content: "Choose how long or how often you’ll do an exercise.",
       disableBeacon: true,
     },
     {
       target: ".options_list .fa-lock",
       content:
-        "Locked options cost coins. You can unlock them by earning coins!",
+        "Locked options cost coins to unlock. Earn coins by completing exercises!",
       disableBeacon: true,
     },
   ];

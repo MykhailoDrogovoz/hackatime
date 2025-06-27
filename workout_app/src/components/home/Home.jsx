@@ -24,23 +24,21 @@ function Home() {
 
   const steps = hasTaskList
     ? hasListTourSeen
-      ? [] // Don't run any steps if already seen
+      ? []
       : [
           {
             target: "#charts",
-            content: "Welcome! Let's take a quick tour of your dashboard.",
+            content: "Welcome! Let's quickly look at your dashboard.",
             disableBeacon: true,
           },
           {
             target: ".pie-graph-container",
-            content:
-              "Here are your exercises data. You can view the pie chart to see the distribution of your exercises.",
+            content: "This pie chart shows how your exercises are divided.",
             disableBeacon: true,
           },
           {
             target: ".chart-container",
-            content:
-              "This section shows your progress in different exercise in this list.",
+            content: "Here you can see your progress on different exercises.",
             disableBeacon: true,
           },
         ]
@@ -50,18 +48,17 @@ function Home() {
         {
           target: ".list-wrapper",
           content:
-            "To begin, you need to select or create a list. Please click on a list to activate it.",
+            "Before you can use a list, let's walk through how everything works.",
           disableBeacon: true,
         },
         {
           target: ".add-list",
-          content:
-            "Don’t see a list you like? You can create your own for 100 coins.",
+          content: "You can create a custom list later for 100 coins.",
           disableBeacon: true,
         },
         {
           target: ".first-list",
-          content: "Select a list to start",
+          content: "Click a list to begin.",
           disableBeacon: true,
         },
       ];
