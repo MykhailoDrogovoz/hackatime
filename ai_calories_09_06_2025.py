@@ -1,55 +1,67 @@
 from sklearn.feature_extraction.text import TfidfVectorizer
 import pandas as pd
-
 from sklearn.ensemble import RandomForestRegressor
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import mean_squared_error
 
-# Combine TF-IDF features with user weight
-import numpy as np
-
+# Sample data
 data = {
-    'exercise_name': ['Running', 'Swimming', 'Jump Rope', 'Weightlifting', 'Yoga'],
-    'calories_burned': [10, 8, 12, 6, 3],
-    'user_weight': [70, 70, 75, 80, 65]
+    'exercise_name': ['Push-up', 'Crunch', 'Squat', 'Lunge', 'Plank', 'Burpee',
+                      'Mountain Climber', 'Jumping Jack', 'Deadlift', 'Pull-up',
+                      'Deadlift', 'Running'],
+    'calories': [0.30, 0.40, 0.50, 0.70, 2.00, 1.20, 0.90, 0.50, 1.00, 0.80, 0.40, 0.20],
+    'totalSets': [30, 15, 30, 30, 2, 2, 3, 4, 50, 50, 30, 2],
+    'coins': [3, 2, 3, 3, 5, 5, 3, 2, 5, 5, 4, 5],
+    'totalSeconds': ["NULL", "NULL", "NULL", "NULL", 60, 60, 40, 20, "NULL", "NULL", "NULL", 600],
+    'secondsPerSet': [2, 3, 3, 4, 1, 1, 1, 1, 6, 4, 2, 1],
 }
 
-# Create a DataFrame
+# Create DataFrame
 df = pd.DataFrame(data)
 
-# TF-IDF Vectorization
+# Preprocess totalSeconds
+df['totalSeconds'] = pd.to_numeric(df['totalSeconds'], errors='coerce').fillna(0)
+df['is_duration_based'] = df['totalSeconds'].apply(lambda x: 1 if x > 0 else 0)
+
+# Split datasets
+df_duration = df[df['is_duration_based'] == 1]
+df_reps = df[df['is_duration_based'] == 0]
+
+# TF-IDF
 vectorizer = TfidfVectorizer()
-X_exercise = vectorizer.fit_transform(df['exercise_name'])
+X_all = vectorizer.fit_transform(df['exercise_name'])
 
-X_combined = np.hstack([X_exercise.toarray(), df[['user_weight']].values])
+# Re-align TF-IDF with subsets
+X_duration = X_all[df['is_duration_based'] == 1].toarray()
+X_reps = X_all[df['is_duration_based'] == 0].toarray()
 
-# Target variable: calories burned
-y = df['calories_burned']
+# Targets
+y_duration = df_duration[['calories', 'coins', 'totalSets', 'totalSeconds', 'secondsPerSet']]
+y_reps = df_reps[['calories', 'coins', 'totalSets', 'totalSeconds', 'secondsPerSet']]
 
-# Split the data into training and test sets
-X_train, X_test, y_train, y_test = train_test_split(X_combined, y, test_size=0.2, random_state=42)
+# Train both models
+model_duration = RandomForestRegressor(n_estimators=100, random_state=42)
+model_reps = RandomForestRegressor(n_estimators=100, random_state=42)
 
-# Train the model
-model = RandomForestRegressor(n_estimators=100)
-model.fit(X_train, y_train)
+model_duration.fit(X_duration, y_duration)
+model_reps.fit(X_reps, y_reps)
 
-# Predict the calories for the test set
-y_pred = model.predict(X_test)
+# Prediction function
+def predict_exercise(exercise_name: str):
+    vec = vectorizer.transform([exercise_name]).toarray()
 
-# Evaluate the model
-mse = mean_squared_error(y_test, y_pred)
-print(f'Mean Squared Error: {mse}')
+    # Heuristic for duration-based vs rep-based
+    duration_based_exercises = ['Running', 'Plank', 'Jump Rope', 'Cycling', 'Swimming', 'Crunch', 'Mountain Climber']
+    if exercise_name.lower() in [e.lower() for e in duration_based_exercises]:
+        pred = model_duration.predict(vec)[0]
+    else:
+        pred = model_reps.predict(vec)[0]
 
-# Make predictions
-exercise_name = "Running"
-user_weight = 70
+    labels = ['calories', 'coins', 'totalSets', 'totalSeconds', 'secondsPerSet']
+    return dict(zip(labels, pred))
 
-# Transform the exercise name into TF-IDF vector
-exercise_vector = vectorizer.transform([exercise_name])
+# Use input or hardcoded test
+new_exercise = input("Enter exercise name: ")
+predicted = predict_exercise(new_exercise)
 
-# Combine with user weight
-input_features = np.hstack([exercise_vector.toarray(), np.array([[user_weight]])])
-
-# Predict calories burned
-predicted_calories = model.predict(input_features)
-print(f'Predicted calories burned for {exercise_name} with weight {user_weight}: {predicted_calories[0]}')
+print(f"\nPredicted values for '{new_exercise}':")
+for key, val in predicted.items():
+    print(f"{key}: {val:.2f}")
