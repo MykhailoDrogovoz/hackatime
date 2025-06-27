@@ -103,7 +103,7 @@
 
 .top-3 .stage-element {
   width: 200px;
-  height: 600px;
+  height: 550px;
   display: flex;
   flex-direction: column;
   justify-content: end;
@@ -158,13 +158,20 @@ tr:nth-child(odd) {
   margin-right: 20px;
 }
 
-.coin-container-cong.full-screen{
-  width: auto;
+.coin-container-cong.full-screen {
   height: auto;
 }
 
 .leaderboar-select-mobile .paragraph-1.clear {
   display: none;
+}
+
+.top-3 .stage-element div {
+  font-size: 14px;
+}
+
+.leaderboard h2 {
+  font-size: 30px;
 }
 
 @media (max-width: 768px) {
@@ -251,11 +258,11 @@ tr:nth-child(odd) {
     margin-right: 10px;
   }
 
-  .css-b62m3t-container{
+  .css-b62m3t-container {
     padding-top: 0;
   }
 
-  .leaderboar-select-mobile{
+  .leaderboar-select-mobile {
     display: flex;
     align-items: center;
     justify-content: space-between;
