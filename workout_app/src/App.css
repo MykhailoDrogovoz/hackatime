@@ -21,6 +21,11 @@
 
 .App.gradient-bg {
   background: radial-gradient(ellipse at center, #63856a 1%, #3c5a40 100%);
+  color: #fff;
+}
+
+.App.gradient-bg button {
+  color: #000;
 }
 
 @media (max-width: 600px) {

@@ -95,7 +95,7 @@ function List() {
             <h2>Available lists</h2>
             {!userData.customListsUnlocked ? (
               <button
-                className="locked"
+                className="locked add-list"
                 onClick={() => unlockFeature("customLists")}
               >
                 <i className="fas fa-lock"></i>
@@ -109,7 +109,10 @@ function List() {
           </div>
           <div className="lists-container">
             {lists?.map((list, index) => (
-              <div className="list" key={index}>
+              <div
+                className={"list" + (index === 0 ? " first-list" : "")}
+                key={index}
+              >
                 <div className="list-header">
                   {userData.userId === list.userId ? (
                     <div>

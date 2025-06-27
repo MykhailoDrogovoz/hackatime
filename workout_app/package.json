@@ -15,6 +15,7 @@
     "animejs": "^3.2.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-joyride": "^2.9.3",
     "react-router-dom": "^7.6.0",
     "react-select": "^5.10.1",
     "reactjs-popup": "^2.0.6",

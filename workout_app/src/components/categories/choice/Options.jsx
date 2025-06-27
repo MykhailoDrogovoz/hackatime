@@ -5,7 +5,9 @@ import DiceWrapper from "../dice/DiceWrapper";
 import Randomizer from "../randomizer/Randomizer";
 import Card from "../card/CardWrapper";
 import Exercise from "../../exercise/Exercise";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import Joyride from "react-joyride";
+
 const VITE_API_URL = import.meta.env.VITE_API_URL;
 
 function Options() {
@@ -18,17 +20,35 @@ function Options() {
   const [userOptions, setUserOptions] = useState([]);
   const [userCoins, setUserCoins] = useState(0);
 
-  const handleBack = () => {
-    setShowOptions(true);
-  };
+  // Joyride control
+  const [runTour, setRunTour] = useState(false);
 
-  const handleTake = (exNumber) => {
-    navigate("/exercise", { state: { exType: exType, exNumber: exNumber } });
-  };
+  const steps = [
+    {
+      target: ".options_list",
+      content:
+        "There are option that will define how many times/seconds you should do proper exercise",
+      disableBeacon: true,
+    },
+    {
+      target: ".options_list .fa-lock",
+      content:
+        "Locked options cost coins. You can unlock them by earning coins!",
+      disableBeacon: true,
+    },
+  ];
 
   useEffect(() => {
     if (!localStorage.getItem("authToken")) {
       navigate("/login");
+    }
+  }, []);
+
+  useEffect(() => {
+    const hasSeenTour = localStorage.getItem("seenOptionsTour");
+    if (!hasSeenTour) {
+      setRunTour(true);
+      localStorage.setItem("seenOptionsTour", "true");
     }
   }, []);
 
@@ -44,7 +64,9 @@ function Options() {
       if (response.status === 401) {
         navigate(
           "/login/" +
-            (response.json().message ? `?error=${response.json().message}` : "")
+            ((await response.json().message)
+              ? `?error=${(await response.json()).message}`
+              : "")
         );
       }
       const data = await response.json();
@@ -68,8 +90,8 @@ function Options() {
         if (response.status === 401) {
           navigate(
             "/login/" +
-              (response.json().message
-                ? `?error=${response.json().message}`
+              ((await response.json().message)
+                ? `?error=${(await response.json()).message}`
                 : "")
           );
         }
@@ -77,7 +99,6 @@ function Options() {
         if (response.ok) {
           const data = await response.json();
           const sortedData = data.sort((a, b) => a.coin_cost - b.coin_cost);
-
           setOptions(sortedData);
         } else {
           console.log("Error fetching options " + response.status);
@@ -113,6 +134,14 @@ function Options() {
     receivedUserOptions();
   }, []);
 
+  const handleBack = () => {
+    setShowOptions(true);
+  };
+
+  const handleTake = (exNumber) => {
+    navigate("/exercise", { state: { exType: exType, exNumber: exNumber } });
+  };
+
   const buyOption = async (gameName) => {
     const response = await fetch(`${VITE_API_URL}games/buy-game/${gameName}`, {
       method: "POST",
@@ -145,6 +174,48 @@ function Options() {
 
   return (
     <div id="main-frame" className="options">
+      <Joyride
+        steps={steps}
+        run={runTour}
+        showSkipButton
+        continuous
+        styles={{
+          buttonNext: {
+            backgroundColor: "#ff4d4f",
+            color: "#fff",
+            padding: "8px 16px",
+            borderRadius: "6px",
+            cursor: "pointer",
+            boxShadow: "none",
+            height: "auto",
+            width: "auto",
+          },
+          buttonBack: {
+            color: "#999",
+            marginRight: "10px",
+            cursor: "pointer",
+            boxShadow: "none",
+            height: "auto",
+            width: "auto",
+          },
+          buttonSkip: {
+            color: "#bbb",
+            cursor: "pointer",
+            boxShadow: "none",
+            height: "auto",
+            width: "auto",
+            margin: 0,
+          },
+          buttonClose: {
+            color: "#ff4d4f",
+            cursor: "pointer",
+            boxShadow: "none",
+            margin: 0,
+            fontSize: "16px",
+            textAlign: "right",
+          },
+        }}
+      />
       {showOptions ? (
         <>
           <h2 className="options_title">Options</h2>
@@ -159,10 +230,10 @@ function Options() {
                     !userOptions.some((u) => u.gameId === option.id)
                   ) {
                     if (userCoins >= option.coin_cost) {
-                      alert(
+                      const confirmBuy = window.confirm(
                         `Are you sure you want to spend ${option.coin_cost} coins?`
                       );
-                      buyOption(option.name);
+                      if (confirmBuy) buyOption(option.name);
                     } else {
                       alert("You do not have enough coins!");
                     }
@@ -171,9 +242,7 @@ function Options() {
                   setActiveTab(option.name);
                   setShowOptions(false);
                 }}
-                style={{
-                  cursor: "pointer",
-                }}
+                style={{ cursor: "pointer" }}
               >
                 {option.name}
                 {option.iconClass ? (
@@ -186,50 +255,10 @@ function Options() {
                 ) : null}
                 {option.coin_cost > 0 &&
                 !userOptions.some((u) => u.gameId === option.id) ? (
-                  <i class="fas fa-lock"></i>
+                  <i className="fas fa-lock"></i>
                 ) : null}
               </li>
             ))}
-            {/* <li
-              className={activeTab === "roulette" ? "active" : ""}
-              onClick={() => {
-                setActiveTab("roulette");
-                setShowOptions(false);
-              }}
-              style={{ cursor: "pointer" }}
-            >
-              Roulette <i className="fas fa-bullseye"></i>
-            </li>
-            <li
-              className={activeTab === "dice" ? "active" : ""}
-              onClick={() => {
-                setActiveTab("dice");
-                setShowOptions(false);
-              }}
-              style={{ cursor: "pointer" }}
-            >
-              Dice <i className="fas fa-dice"></i>
-            </li>
-            <li
-              className={activeTab === "randomizer" ? "active" : ""}
-              onClick={() => {
-                setActiveTab("randomizer");
-                setShowOptions(false);
-              }}
-              style={{ cursor: "pointer" }}
-            >
-              Randomizer <i className="fas fa-random"></i>
-            </li>*/}
-            {/* <li
-              className={activeTab === "randomizer" ? "active" : ""}
-              onClick={() => {
-                setActiveTab("card");
-                setShowOptions(false);
-              }}
-              style={{ cursor: "pointer" }}
-            >
-              Card <span className="fas">&#127136;</span>
-            </li> */}
           </ol>
         </>
       ) : (

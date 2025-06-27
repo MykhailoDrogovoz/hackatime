@@ -50,7 +50,7 @@
   display: flex;
   gap: 50px;
   overflow-x: auto;
-  overflow-y: hidden;
+  overflow-y: hidden !important;
   padding-bottom: 20px;
 }
 
@@ -75,9 +75,8 @@
 }
 
 @media (max-width: 600px) {
-
-
-.list .list-body {
-  width: 200px;
-  display: block;
-}}
+  .list .list-body {
+    width: 200px;
+    display: block;
+  }
+}

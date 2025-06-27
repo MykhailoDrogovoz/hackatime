@@ -49,8 +49,9 @@
   padding: 30px;
 }
 
-.account-list ul li {
+.account-list ul div {
   list-style: none;
+  cursor: pointer;
 }
 
 .account-list ul {
@@ -80,7 +81,10 @@ ul.center {
 }
 
 .account .main {
-  color: #c8d8b9;
+  color: #63856a;
+  background: #c8d8b9;
+  padding: 0 10px;
+  border-radius: 20px;
 }
 
 ul div {
