@@ -122,7 +122,14 @@ const Leaderboard = () => {
               All time
             </div>
           </div>
-          <p className="paragraph-1 clear">Clear</p>
+          <p
+            className="paragraph-1 clear"
+            onClick={() => {
+              alert("We are working on it");
+            }}
+          >
+            Clear
+          </p>
         </div>
         <div className="top-3">
           {thirdPlace && (

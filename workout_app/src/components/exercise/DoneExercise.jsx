@@ -42,13 +42,20 @@ function Exercise() {
     receivedExercises();
   }, []);
 
-  // Check if reward has been claimed (use localStorage to persist across refreshes)
   useEffect(() => {
-    if (localStorage.getItem(`rewardClaimed_${exType}`)) {
-      setReward(false);
-    } else {
-      if (exNumber && !hasCompleted) {
+    if (exNumber && !hasCompleted) {
+      const taskList = JSON.parse(localStorage.getItem("taskList"));
+      const tagId = taskList?.Tags.find((tag) => tag.name === exType)?.tagId;
+
+      const alreadyClaimed = completedExercises.some(
+        (ex) => ex.tagId === tagId && ex.rewardClaimed === true
+      );
+
+      if (!alreadyClaimed) {
         completeSet(exNumber, exType);
+      } else {
+        setReward(false);
+        setHasCompleted(true);
       }
     }
   }, [exType, exNumber, hasCompleted]);
@@ -121,17 +128,17 @@ function Exercise() {
     }
   };
 
-  // Reward coins for completing all sets
   const handleCoinReward = async () => {
     const newCoinBalance = coins + exerciseCoins;
     setCoins(newCoinBalance);
-
     localStorage.setItem("userCoins", JSON.stringify(newCoinBalance));
 
     const storedToken = localStorage.getItem("authToken");
+    const taskList = JSON.parse(localStorage.getItem("taskList"));
+    const tagId = taskList?.Tags.find((tag) => tag.name === exType)?.tagId;
 
-    if (!storedToken) {
-      console.error("User is not authenticated!");
+    if (!storedToken || !tagId) {
+      console.error("Missing auth token or tagId.");
       return;
     }
 
@@ -142,13 +149,12 @@ function Exercise() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${storedToken}`,
         },
-        body: JSON.stringify({ coins: exerciseCoins }),
+        body: JSON.stringify({ coins: exerciseCoins, tagId }),
       });
 
       if (response.ok) {
         const data = await response.json();
         setReward(false);
-        localStorage.setItem(`rewardClaimed_${exType}`, "true");
         window.dispatchEvent(new Event("coinsUpdated"));
         console.log("Coins successfully updated:", data);
       } else {
@@ -163,6 +169,7 @@ function Exercise() {
   };
 
   const handleNext = () => {
+    reward && handleCoinReward();
     const taskList = JSON.parse(localStorage.getItem("taskList"));
     const tags = taskList?.Tags || [];
 

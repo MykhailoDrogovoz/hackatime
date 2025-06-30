@@ -16,6 +16,7 @@ export default {
     database: process.env.DATABASE_NAME,
     host: process.env.DATABASE_HOST,
     dialect: process.env.DATABASE_DIALECT,
-    logging: false,
+    ssl: true,
+    port: process.env.DB_PORT,
   },
 };

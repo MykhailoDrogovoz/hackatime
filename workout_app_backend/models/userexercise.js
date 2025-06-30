@@ -36,6 +36,11 @@ UserExercise.init(
       type: DataTypes.DATE,
       allowNull: true,
     },
+    rewardClaimed: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: false,
+    },
   },
   {
     sequelize,

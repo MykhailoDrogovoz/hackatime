@@ -34,7 +34,7 @@
 .icon-button {
   background: transparent;
   box-shadow: none;
-  color: #fff;
+  color: #fff !important;
   font-size: 50px;
 }
 
@@ -57,7 +57,6 @@
   color: #f86e6e;
 }
 
-
 @media (max-width: 600px) {
   .options_list {
     padding: 0;
@@ -68,15 +67,15 @@
     height: 120px;
   }
 
-  .fas.fa-lock{
+  .fas.fa-lock {
     font-size: 20px;
   }
 
-  .icon-button{
+  .icon-button {
     font-size: 35px;
   }
-  
-  .icon-bar{
+
+  .icon-bar {
     margin: 0;
   }
 }

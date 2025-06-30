@@ -359,6 +359,35 @@ class userController {
       res.status(500).json({ error: "Server error" });
     }
   }
+
+  async requestPasswordReset(req, res) {
+    const { email } = req.body;
+
+    const user = await User.findOne({ where: { email } });
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const token = crypto.randomBytes(20).toString("hex");
+    user.resetToken = token;
+    await user.save();
+
+    console.log("Reset token:", token);
+
+    res.json({ message: "Reset token generated", token });
+  }
+
+  async resetPassword(req, res) {
+    const { token, newPassword } = req.body;
+
+    const user = await User.findOne({ where: { resetToken: token } });
+    if (!user) return res.status(400).json({ message: "Invalid token" });
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+    user.resetToken = null;
+    await user.save();
+
+    res.json({ message: "Password has been reset" });
+  }
 }
 
 export const UserController = new userController();

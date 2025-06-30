@@ -135,7 +135,6 @@ class tagController {
         where: { userId: userId, tagId: tag.tagId },
       });
 
-
       if (!userExercise) {
         return res.status(200).json({ userExercise: 0 });
       }
@@ -153,19 +152,35 @@ class tagController {
 
   rewardCoins = async (req, res) => {
     try {
-      const coins = req.body.coins;
-
+      const { coins, tagId } = req.body;
       const userId = req.user.userId;
-      const user = await User.findByPk(userId);
 
+      const user = await User.findByPk(userId);
       if (!user) {
-        throw new Error("User not found.");
+        return res.status(404).json({ error: "User not found." });
+      }
+
+      const userExercise = await UserExercise.findOne({
+        where: { userId, tagId },
+      });
+
+      if (!userExercise) {
+        return res.status(404).json({ error: "Exercise not found." });
+      }
+
+      if (userExercise.rewardClaimed) {
+        return res.status(400).json({ error: "Reward already claimed." });
       }
 
       user.coins += coins;
       await user.save();
-
-      console.log("[Server]: Coins rewarded to the user!");
+      console.log(userExercise.rewardClaimed);
+      console.log(
+        "RewardClaimed Type:",
+        typeof userExercise.rewardClaimed,
+        userExercise.rewardClaimed
+      );
+      await userExercise.save();
 
       return res.json({
         message: "Reward claimed!",
@@ -173,7 +188,7 @@ class tagController {
       });
     } catch (error) {
       console.error("Error rewarding coins:", error);
-      throw error;
+      return res.status(500).json({ error: "Internal server error." });
     }
   };
 
