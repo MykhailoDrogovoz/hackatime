@@ -37,7 +37,7 @@ UserExercise.init(
       allowNull: true,
     },
     rewardClaimed: {
-      type: DataTypes.DATE,
+      type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: false,
     },

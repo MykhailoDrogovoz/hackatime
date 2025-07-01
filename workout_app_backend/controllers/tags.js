@@ -46,12 +46,19 @@ class tagController {
 
       const [userExercise, created] = await UserExercise.findOrCreate({
         where: { userId: userId, tagId: tagId },
+        defaults: {
+          rewardClaimed: false, 
+        },
       });
 
       if (!userExercise) {
         return res
           .status(404)
           .json({ message: "User exercise entry not found." });
+      }
+
+      if (userExercise.rewardClaimed){
+        return res.json({ message: "Reward is already claimed." });
       }
 
       const user = await models.User.findByPk(userId);
@@ -63,6 +70,7 @@ class tagController {
       const newSetsCompleted = userExercise.setsCompleted + setsCompleted;
 
       if (exercise.totalSeconds) {
+        console.log("ajsdlkaklsjdlajsjdl", userExercise.rewardClaimed);
         if (newSetsCompleted >= exercise.totalSeconds * exercise.totalSets) {
           user.calories =
             Number(user.calories) + setsCompleted * Number(exercise.calories);
@@ -100,6 +108,8 @@ class tagController {
           });
         }
       }
+      console.log("ajsdlkaklsjdlajsjdl", userExercise.rewardClaimed);
+
       user.totalTime = user.totalTime + setsCompleted * exercise.secondsPerSet;
 
       user.calories =
@@ -180,6 +190,7 @@ class tagController {
         typeof userExercise.rewardClaimed,
         userExercise.rewardClaimed
       );
+      userExercise.rewardClaimed = true;
       await userExercise.save();
 
       return res.json({
