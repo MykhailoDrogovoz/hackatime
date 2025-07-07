@@ -6,8 +6,8 @@ import Settings from "./Settings";
 import { useRef } from "react";
 import Popup from "reactjs-popup";
 const VITE_API_URL = import.meta.env.VITE_API_URL;
-const cloudName = import.meta.env.VITE_API_URL;
-const unsignedUploadPreset = import.meta.env.unsignedUploadPreset;
+const cloudName = import.meta.env.VITE_cloudName;
+const unsignedUploadPreset = import.meta.env.VITE_unsignedUploadPreset;
 
 function Account() {
   const [error, setError] = useState(null);
@@ -279,6 +279,7 @@ function Account() {
                   height: 100,
                   borderRadius: "50%",
                   objectFit: "cover",
+                  border: "2px solid #fff",
                 }}
               />
             ) : (

@@ -16,6 +16,7 @@ const Leaderboard = () => {
   const [sortedBy, setSortedBy] = useState("calories");
 
   useEffect(() => {
+    console.log("useEffect triggered with time:", time);
     const fetchLeaderboard = async () => {
       setLoading(true);
       try {
@@ -42,7 +43,6 @@ const Leaderboard = () => {
     setSortedBy(sortBy);
   };
 
-  // Options for react-select
   const options = [
     { value: "calories", label: "Calories" },
     { value: "totalTime", label: "Total Time" },
@@ -74,9 +74,14 @@ const Leaderboard = () => {
     }),
   };
 
-  // Handle change from react-select
   const handleSortChange = (selectedOption) => {
     sortLeaderboard(selectedOption.value);
+  };
+
+  const handleClear = () => {
+    setTime("all-time");
+    setSortedBy("calories");
+    setError(null);
   };
 
   return (
@@ -125,7 +130,7 @@ const Leaderboard = () => {
           <p
             className="paragraph-1 clear"
             onClick={() => {
-              alert("We are working on it");
+              handleClear();
             }}
           >
             Clear
@@ -134,7 +139,22 @@ const Leaderboard = () => {
         <div className="top-3">
           {thirdPlace && (
             <div className="stage-element third">
-              <i className="fa fa-user-circle"></i>
+              {thirdPlace.profileImage ? (
+                <img
+                  src={thirdPlace.profileImage}
+                  alt=""
+                  style={{
+                    width: 100,
+                    height: 100,
+                    borderRadius: "50%",
+                    objectFit: "cover",
+                    margin: "20px auto",
+                    border: "2px solid #fff",
+                  }}
+                />
+              ) : (
+                <i className="fa fa-user-circle"></i>
+              )}
               <div>
                 <h2>3</h2>
                 <h3>{thirdPlace.username}</h3>
@@ -149,7 +169,22 @@ const Leaderboard = () => {
           {firstPlace && (
             <div className="stage-element first">
               <i className="fa fa-crown"></i>
-              <i className="fa fa-user-circle"></i>
+              {firstPlace.profileImage ? (
+                <img
+                  src={firstPlace.profileImage}
+                  alt=""
+                  style={{
+                    width: 100,
+                    height: 150,
+                    borderRadius: "50%",
+                    objectFit: "cover",
+                    margin: "10px auto 20px",
+                    border: "2px solid #fff",
+                  }}
+                />
+              ) : (
+                <i className="fa fa-user-circle"></i>
+              )}
               <div>
                 <h2>1</h2>
                 <h3>{firstPlace.username}</h3>
@@ -164,7 +199,23 @@ const Leaderboard = () => {
 
           {secondPlace && (
             <div className="stage-element second">
-              <i className="fa fa-user-circle"></i>
+              {console.log(secondPlace)}
+              {secondPlace.profileImage ? (
+                <img
+                  src={secondPlace.profileImage}
+                  alt=""
+                  style={{
+                    width: 100,
+                    height: 100,
+                    borderRadius: "50%",
+                    objectFit: "cover",
+                    margin: "20px auto",
+                    border: "2px solid #fff",
+                  }}
+                />
+              ) : (
+                <i className="fa fa-user-circle"></i>
+              )}
               <div>
                 <h2>2</h2>
                 <h3>{secondPlace.username}</h3>

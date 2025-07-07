@@ -76,6 +76,11 @@
   cursor: pointer;
 }
 
+.gradient-bg .sort-dropdown .select__control,
+.gradient-bg .select__menu {
+  background: #c8d8b9;
+}
+
 .select__menu .select__value-container {
   background: #000 !important;
 }
