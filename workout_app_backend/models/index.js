@@ -11,6 +11,7 @@ import UserExercise from "./userexercise.js";
 import Game from "./games.js";
 import UserGame from "./usergame.js";
 import Track from "./track.js";
+import UserStats from "./userstats.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -25,6 +26,7 @@ db.UserExercise = UserExercise;
 db.Game = Game;
 db.UserGame = UserGame;
 db.Track = Track;
+db.UserStats = UserStats;
 
 Object.keys(db).forEach((modelName) => {
   if (db[modelName].associate) {

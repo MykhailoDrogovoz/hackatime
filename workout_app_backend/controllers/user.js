@@ -5,6 +5,7 @@ import Tags from "../models/tags.js";
 import { Op } from "sequelize";
 import jwt from "jsonwebtoken";
 import authConfig from "../config/auth.config.js";
+import UserStats from "../models/userstats.js";
 import UserExercise from "../models/userexercise.js";
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
@@ -311,21 +312,60 @@ class userController {
     }, 0);
   }
 
+  async calculateTotalTime(userId, startDate, endDate) {
+    const exercises = await UserExercise.findAll({
+      where: {
+        userId,
+        createdAt: {
+          [Op.gte]: startDate,
+          [Op.lte]: endDate,
+        },
+      },
+      include: [
+        {
+          model: Tags,
+          attributes: ["totalSeconds", "secondsPerSet"],
+        },
+      ],
+    });
+
+    return exercises.reduce((total, exercise) => {
+      const timePerSet = exercise.Tag.totalSeconds ?? 1;
+      const sets = exercise.setsCompleted || 0;
+      const time = sets * timePerSet * exercise.Tag.secondsPerSet;
+      return total + time;
+    }, 0);
+  }
+
   async getDailyLeaderboard(req, res) {
     try {
-      const yesterday = new Date();
-      yesterday.setDate(yesterday.getDate() - 1);
+      const todayStart = new Date();
+      todayStart.setHours(0, 0, 0, 0);
 
-      const users = await User.findAll({
-        attributes: ["userId", "username", "calories", "totalTime"],
-      });
+      const todayEnd = new Date();
+      todayEnd.setHours(23, 59, 59, 999);
 
+      const users = await User.findAll();
       const leaderboard = [];
+
       for (const user of users) {
+        const totalCalories = await this.calculateTotalCalories(
+          user.userId,
+          todayStart,
+          todayEnd
+        );
+
+        const totalTime = await this.calculateTotalTime(
+          user.userId,
+          todayStart,
+          todayEnd
+        );
+
         leaderboard.push({
           username: user.username,
-          calories: user.calories,
-          totalTime: user.totalTime,
+          profileImage: user.profileImage,
+          calories: totalCalories,
+          totalTime: totalTime,
         });
       }
 
@@ -343,23 +383,36 @@ class userController {
       const lastWeek = new Date();
       lastWeek.setDate(lastWeek.getDate() - 7);
 
-      const users = await User.findAll();
+      const stats = await UserStats.findAll({
+        where: {
+          date: {
+            [Op.gte]: lastWeek,
+            [Op.lte]: new Date(),
+          },
+        },
+        include: [{ model: User, attributes: ["username", "profileImage"] }],
+      });
 
-      const leaderboard = [];
-      for (const user of users) {
-        const totalCalories = await this.calculateTotalCalories(
-          user.userId,
-          lastWeek,
-          new Date()
-        );
-        leaderboard.push({
-          username: user.username,
-          calories: totalCalories,
-          totalTime: user.totalTime,
-        });
+      const userMap = {};
+
+      for (const stat of stats) {
+        const id = stat.userId;
+        if (!userMap[id]) {
+          userMap[id] = {
+            username: stat.User.username,
+            profileImage: stat.User.profileImage,
+            calories: 0,
+            totalTime: 0,
+          };
+        }
+
+        userMap[id].calories += stat.calories;
+        userMap[id].totalTime += stat.totalTime;
       }
 
-      leaderboard.sort((a, b) => b.calories - a.calories);
+      const leaderboard = Object.values(userMap).sort(
+        (a, b) => b.calories - a.calories
+      );
 
       res.status(200).json({ leaderboard });
     } catch (error) {
@@ -370,18 +423,25 @@ class userController {
 
   async getAllTimeLeaderboard(req, res) {
     try {
-      const users = await User.findAll();
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+
+      const users = await User.findAll({
+        attributes: [
+          "userId",
+          "username",
+          "calories",
+          "totalTime",
+          "profileImage",
+        ],
+      });
 
       const leaderboard = [];
       for (const user of users) {
-        const totalCalories = await this.calculateTotalCalories(
-          user.userId,
-          new Date(0),
-          new Date()
-        );
         leaderboard.push({
           username: user.username,
-          calories: totalCalories,
+          profileImage: user.profileImage,
+          calories: user.calories,
           totalTime: user.totalTime,
         });
       }
@@ -390,8 +450,39 @@ class userController {
 
       res.status(200).json({ leaderboard });
     } catch (error) {
-      console.error("Error fetching all-time leaderboard:", error);
+      console.error("Error fetching daily leaderboard:", error);
       res.status(500).json({ message: "Internal server error." });
+    }
+  }
+
+  async updateUserStatsDaily() {
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    yesterday.setHours(0, 0, 0, 0);
+    const users = await User.findAll({
+      attributes: ["userId", "calories", "totalTime", "profileImage"],
+    });
+
+    for (const user of users) {
+      const existingStat = await UserStats.findOne({
+        where: {
+          userId: user.userId,
+          date: yesterday,
+        },
+      });
+
+      if (existingStat) {
+        existingStat.calories += user.calories;
+        existingStat.totalTime += user.totalTime;
+        await existingStat.save();
+      } else {
+        await UserStats.create({
+          userId: user.userId,
+          date: yesterday,
+          calories: user.calories,
+          totalTime: user.totalTime,
+        });
+      }
     }
   }
 

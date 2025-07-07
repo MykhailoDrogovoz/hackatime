@@ -51,4 +51,8 @@ router.post("/reset-password", (req, res) => {
   UserController.resetPassword(req, res);
 });
 
+router.post("/update-user-stats", (req, res) => {
+  UserController.updateUserStatsDaily(req, res);
+});
+
 export default router;
