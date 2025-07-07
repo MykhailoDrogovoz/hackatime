@@ -7,7 +7,7 @@
 .timer {
   width: 200px;
   height: 200px;
-  border: 2px dashed #ffffff;
+  border: 2px dashed #000;
   border-radius: 50%;
   display: flex;
   justify-content: center;
@@ -17,12 +17,16 @@
   z-index: 1;
 }
 
+.gradient-bg .timer {
+  border: 2px dashed #ffffff;
+}
+
 .progress-arc {
   position: absolute;
   width: 200px;
   height: 200px;
   border-radius: 50%;
-  border: solid rgb(60, 194, 105);
+  border: solid #63856a;
   border-width: var(--borderWidth, 6px);
   z-index: 2;
   pointer-events: none;
@@ -30,11 +34,15 @@
   -webkit-mask: conic-gradient(#000 var(--progress), transparent 0);
 }
 
+.gradient-bg .progress-arc {
+  border-color: rgb(60, 194, 105);
+}
+
 .timer-top-1 {
   position: absolute;
   left: 0;
   top: -45px;
-  border: #ff8a8a solid 5px;
+  border: #f21f22 solid 5px;
   border-bottom: none;
   border-radius: 50%;
   width: 50%;
@@ -44,11 +52,16 @@
   clip-path: circle(60px at 40% 31%);
 }
 
+.gradient-bg .timer-top-1,
+.gradient-bg .timer-top-2 {
+  border-color: #ff8a8a;
+}
+
 .timer-top-2 {
   position: absolute;
   left: 50%;
   top: -45px;
-  border: #ff8a8a solid 5px;
+  border: #f21f22 solid 5px;
   border-bottom: none;
   border-radius: 50%;
   width: 50%;

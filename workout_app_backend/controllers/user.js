@@ -6,6 +6,19 @@ import { Op } from "sequelize";
 import jwt from "jsonwebtoken";
 import authConfig from "../config/auth.config.js";
 import UserExercise from "../models/userexercise.js";
+import nodemailer from "nodemailer";
+import dotenv from "dotenv";
+dotenv.config();
+
+const emailTransporter = nodemailer.createTransport({
+  host: "smtp-relay.sendinblue.com",
+  port: 587,
+  secure: false,
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASSWORD,
+  },
+});
 
 class userController {
   constructor() {
@@ -36,7 +49,51 @@ class userController {
     }
   };
 
-  addUser(req, res) {
+  verifyEmail = async (req, res) => {
+    const { username, password, token } = req.body;
+
+    try {
+      const decoded = jwt.verify(token, authConfig.secret);
+      const email = decoded.email;
+
+      const existingUser = await User.findOne({ where: { email } });
+
+      if (existingUser) {
+        return res.status(409).json({
+          message:
+            "This verification link has already been used or is no longer valid.",
+        });
+      }
+
+      const newUser = await User.create({
+        username,
+        email,
+        password,
+      });
+
+      const accessToken = jwt.sign(
+        { userId: newUser.userId },
+        authConfig.secret,
+        { expiresIn: "2h" }
+      );
+
+      console.log(`[Server]: ${newUser.username} signed up`);
+
+      res.status(201).json({
+        message: "User created and verified successfully",
+        newUser,
+        token: accessToken,
+      });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({
+        message: "Verification failed.",
+        error: err.message,
+      });
+    }
+  };
+
+  addUser = async (req, res) => {
     const saltRounds = 10;
     const username = req.body.username;
     const email = req.body.email;
@@ -45,7 +102,15 @@ class userController {
     if (username == null || email == null || password == null) {
       return res.status(400).json({ message: "Fill all required fields" });
     }
-    // Use bcrypt to hash the password first
+
+    const emailToken = jwt.sign(
+      {
+        email: email,
+      },
+      authConfig.secret,
+      { expiresIn: "1h" }
+    );
+
     bcrypt.genSalt(saltRounds, (err, salt) => {
       if (err) {
         return res.status(500).json({ message: "Error generating salt" });
@@ -59,39 +124,49 @@ class userController {
           return res.status(500).json({ message: "Error hashing password" });
         }
 
-        console.log("[Server]: Hashed password:", hash);
+        const encodedHash = encodeURIComponent(hash);
+        const verificationUrl = `${process.env.FRONTEND_URL}verify-email?token=${emailToken}&username=${username}&password=${encodedHash}`;
 
-        // Create the new user with the hashed password
-        User.create({
-          username: username,
-          email: email,
-          password: hash,
-        })
-          .then((newUser) => {
-            // Generate token immediately after signup
-            const token = jwt.sign(
-              { userId: newUser.userId },
-              authConfig.secret,
-              { expiresIn: "2h" }
-            );
+        const mailOptions = {
+          from: process.env.EMAIL,
+          to: email,
+          subject: "Verify Your Email",
+          html: `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; background-color: #f9f9f9; padding: 30px; border-radius: 10px; border: 1px solid #ddd;">
+  <h2 style="color: #333;">Hi ${username}!</h2>
 
-            // Send back user data and token
-            res.status(201).json({
-              message: "Created new user",
-              newUser: newUser,
-              accessToken: token,
-            });
+  <p style="font-size: 16px; color: #555;">
+    Thank you for signing up. Please verify your email address by clicking the button below:
+  </p>
 
-            console.log(`[Server]: ${newUser.username} signed up`);
-          })
-          .catch((err) => {
-            res
-              .status(500)
-              .json({ message: "Error creating user", error: err.message });
-          });
+  <div style="text-align: center; margin: 30px 0;">
+    <a href="${verificationUrl}" 
+       style="background-color: #4CAF50; color: white; padding: 14px 24px; text-decoration: none; font-size: 16px; border-radius: 5px; display: inline-block;">
+      Verify Email
+    </a>
+  </div>
+
+  <p style="font-size: 14px; color: #888;">
+    Or copy and paste this link into your browser:<br>
+    <a href="${verificationUrl}" style="color: #4CAF50;">${verificationUrl}</a>
+  </p>
+
+  <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
+
+  <p style="font-size: 12px; color: #aaa;">
+    If you did not request this, please ignore this email.
+  </p>
+</div>
+`,
+        };
+
+        emailTransporter.sendMail(mailOptions);
+        console.log("Registration successful, please verify your email.");
+        res.status(201).json({
+          message: "Registration successful, please verify your email.",
+        });
       });
     });
-  }
+  };
 
   getUser(req, res) {
     if (req.body.email == null || req.body.password == null) {
@@ -141,7 +216,8 @@ class userController {
         (req.body.username && typeof req.body.username !== "string") ||
         (req.body.firstName && typeof req.body.firstName !== "string") ||
         (req.body.lastName && typeof req.body.lastName !== "string") ||
-        (req.body.email && typeof req.body.email !== "string")
+        (req.body.email && typeof req.body.email !== "string") ||
+        (req.body.profileImage && typeof req.body.profileImage !== "string")
       ) {
         return res.status(400).json({ error: "Invalid types of data" });
       }
@@ -152,6 +228,7 @@ class userController {
           lastName: req.body.lastName || null,
           email: req.body.email,
           username: req.body.username,
+          profileImage: req.body.profileImage || null,
         },
         {
           where: {
@@ -174,7 +251,7 @@ class userController {
 
       res.json({ message: "User updated successfully" });
     } catch (err) {
-      console.error("Error fetching user profile:", err);
+      console.error("Error updating user profile:", err);
       res.status(500).json({ message: "Server error", error: err.message });
     }
   };
@@ -239,18 +316,15 @@ class userController {
       const yesterday = new Date();
       yesterday.setDate(yesterday.getDate() - 1);
 
-      const users = await User.findAll();
+      const users = await User.findAll({
+        attributes: ["userId", "username", "calories", "totalTime"],
+      });
 
       const leaderboard = [];
       for (const user of users) {
-        const totalCalories = await this.calculateTotalCalories(
-          user.userId,
-          yesterday,
-          new Date()
-        );
         leaderboard.push({
           username: user.username,
-          calories: totalCalories,
+          calories: user.calories,
           totalTime: user.totalTime,
         });
       }
@@ -364,29 +438,97 @@ class userController {
     const { email } = req.body;
 
     const user = await User.findOne({ where: { email } });
-    if (!user) return res.status(404).json({ message: "User not found" });
+    if (!user) {
+      return res.status(400).json({ error: "User not found" });
+    }
 
-    const token = crypto.randomBytes(20).toString("hex");
-    user.resetToken = token;
-    await user.save();
+    const resetToken = jwt.sign(
+      {
+        email: email,
+      },
+      authConfig.secret,
+      { expiresIn: "1h" }
+    );
 
-    console.log("Reset token:", token);
+    const resetLink = `${process.env.FRONTEND_URL}reset-password/${resetToken}`;
 
-    res.json({ message: "Reset token generated", token });
+    const mailOptions = {
+      from: process.env.EMAIL,
+      to: email,
+      subject: "Password Reset Request",
+      html: `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; background-color: #f9f9f9; padding: 30px; border-radius: 10px; border: 1px solid #ddd;">
+  <h2 style="color: #333;">Hi ${user.username || "there"}!</h2>
+
+  <p style="font-size: 16px; color: #555;">
+    We received a request to reset your password. Click the button below to set a new password:
+  </p>
+
+  <div style="text-align: center; margin: 30px 0;">
+    <a href="${resetLink}" 
+       style="background-color: #4CAF50; color: white; padding: 14px 24px; text-decoration: none; font-size: 16px; border-radius: 5px; display: inline-block;">
+      Reset Password
+    </a>
+  </div>
+
+  <p style="font-size: 14px; color: #888;">
+    Or copy and paste this link into your browser:<br>
+    <a href="${resetLink}" style="color: #4CAF50;">${resetLink}</a>
+  </p>
+
+  <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
+
+  <p style="font-size: 12px; color: #aaa;">
+    If you didn’t request a password reset, you can safely ignore this email. Your password will remain unchanged.
+  </p>
+</div>`,
+    };
+
+    try {
+      user.resetToken = resetToken;
+      await user.save();
+      await emailTransporter.sendMail(mailOptions);
+      return res.status(200).json({ message: "Password reset link sent!" });
+    } catch (error) {
+      return res.status(500).json({ error: "Error sending email" });
+    }
   }
 
   async resetPassword(req, res) {
-    const { token, newPassword } = req.body;
+    const saltRounds = 10;
+    const { token, password } = req.body;
 
-    const user = await User.findOne({ where: { resetToken: token } });
-    if (!user) return res.status(400).json({ message: "Invalid token" });
+    if (!password || typeof password !== "string") {
+      return res.status(400).json({
+        message: "Password must be a string.",
+      });
+    }
 
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
-    user.password = hashedPassword;
-    user.resetToken = null;
-    await user.save();
+    try {
+      const decoded = jwt.verify(token, authConfig.secret);
 
-    res.json({ message: "Password has been reset" });
+      const email = decoded.email;
+      const user = await User.findOne({ where: { email } });
+
+      if (!user || user.resetToken !== token) {
+        return res
+          .status(400)
+          .json({ message: "Invalid reset link or token." });
+      }
+
+      const hashedPassword = await bcrypt.hash(password, saltRounds);
+      user.password = hashedPassword;
+      user.resetToken = null;
+
+      await user.save();
+
+      return res.json({ message: "Password has been reset successfully." });
+    } catch (err) {
+      if (err.name === "TokenExpiredError") {
+        return res.status(400).json({
+          message: "This link has expired. Please request a new one.",
+        });
+      }
+    }
   }
 }
 

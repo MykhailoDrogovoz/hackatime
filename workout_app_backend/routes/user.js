@@ -15,6 +15,10 @@ router.patch("/edit", verifyToken, (req, res) => {
   UserController.editUser(req, res);
 });
 
+router.post("/verify-email", (req, res) => {
+  UserController.verifyEmail(req, res);
+});
+
 router.post("/update-coins", verifyToken, (req, res) => {
   UserController.setCoins(req, res);
 });
@@ -38,5 +42,13 @@ router.get("/leaderboard/all-time", (req, res) =>
 router.post("/unlock-feature", verifyToken, (req, res) =>
   UserController.unlockFeature(req, res)
 );
+
+router.post("/request-password-token", (req, res) => {
+  UserController.requestPasswordReset(req, res);
+});
+
+router.post("/reset-password", (req, res) => {
+  UserController.resetPassword(req, res);
+});
 
 export default router;

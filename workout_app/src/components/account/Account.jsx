@@ -2,14 +2,25 @@ import { useState } from "react";
 import "./Account.css";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import Settings from "./Settings";
+import { useRef } from "react";
+import Popup from "reactjs-popup";
 const VITE_API_URL = import.meta.env.VITE_API_URL;
+const cloudName = import.meta.env.VITE_API_URL;
+const unsignedUploadPreset = import.meta.env.unsignedUploadPreset;
 
 function Account() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("account");
-
   const [token, setToken] = useState("");
+  const [profileImage, setProfileImage] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const [userData, setUserData] = useState(null);
+  const fileInputRef = useRef(null);
+  const [uploadSuccess, setUploadSuccess] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
   const navigate = useNavigate();
 
   const [fields, setFields] = useState([
@@ -33,7 +44,18 @@ function Account() {
     },
   ]);
 
-  const [userData, setUserData] = useState(null);
+  const onPenClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      handleImageUpload(file);
+    }
+  };
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -76,7 +98,6 @@ function Account() {
           });
           localStorage.removeItem("authToken");
           navigate("/login");
-          console.log("jdkajlsd");
           return;
         }
 
@@ -108,6 +129,8 @@ function Account() {
     setToken("");
     localStorage.removeItem("authToken");
     localStorage.removeItem("userCoins");
+    window.dispatchEvent(new Event("coinsUpdated"));
+
     navigate("/login");
   };
 
@@ -144,6 +167,10 @@ function Account() {
         updatedData[field.name] = field.value;
       });
 
+      if (profileImage) {
+        updatedData.profileImage = profileImage;
+      }
+
       const response = await fetch(`${VITE_API_URL}user/edit`, {
         method: "PATCH",
         headers: {
@@ -162,7 +189,8 @@ function Account() {
         });
       } else {
         setUserData((prev) => ({ ...prev, ...updatedData }));
-        alert("Profile updated successfully!");
+        setUploadSuccess(true);
+        setTimeout(() => setUploadSuccess(false), 2000);
       }
     } catch (err) {
       console.error("Error updating user:", err);
@@ -175,12 +203,87 @@ function Account() {
     }
   };
 
+  const handleImageUpload = async (file) => {
+    setIsLoading(true);
+    setUploading(true);
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", unsignedUploadPreset);
+
+    try {
+      const res = await fetch(
+        `https://api.cloudinary.com/v1_1/${cloudName}/upload`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      const data = await res.json();
+
+      if (data.secure_url) {
+        setProfileImage(data.secure_url);
+
+        const response = await fetch(`${VITE_API_URL}user/edit`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ profileImage: data.secure_url }),
+        });
+
+        if (!response.ok) {
+          alert("Image upload failed.");
+        } else {
+          setIsLoading(false);
+
+          setUserData((prev) => ({ ...prev, profileImage: data.secure_url }));
+          setUploadSuccess(true);
+          setTimeout(() => setUploadSuccess(false), 2000);
+        }
+      } else {
+        alert("Image upload failed");
+      }
+    } catch (error) {
+      console.error("Upload error:", error);
+      alert("Error uploading image");
+    } finally {
+      setUploading(false);
+    }
+  };
+
   return (
     <div className="full-screen center">
+      <Popup open={isLoading} closeOnDocumentClick={false} modal>
+        <div className="loading-popup">
+          <h3>Uploading...</h3>
+          <div className="spinner"></div>
+        </div>
+      </Popup>
+
+      <Popup open={uploadSuccess} closeOnDocumentClick={false} modal>
+        <div className="success-popup">
+          <h3>Profile has been updated successfully!</h3>
+        </div>
+      </Popup>
       <div className="account">
         <div className="account-list">
           <div className="account-list-header">
-            <i className="fa fa-user-circle"></i>
+            {userData?.profileImage ? (
+              <img
+                src={userData.profileImage}
+                alt="Profile"
+                style={{
+                  width: 100,
+                  height: 100,
+                  borderRadius: "50%",
+                  objectFit: "cover",
+                }}
+              />
+            ) : (
+              <i className="fa fa-user-circle"></i>
+            )}
             <div>
               <h3>{fields[0].value}</h3>
               <p>{fields[3].value}</p>
@@ -211,9 +314,39 @@ function Account() {
         <div className="account-main">
           {activeTab === "account" && (
             <>
-              <div className="center">
-                <i className="fa fa-user-circle"></i>
-                <i className="fa fa-pen"></i>
+              <div
+                className="center profile-image-container"
+                style={{ position: "relative" }}
+              >
+                {userData?.profileImage ? (
+                  <>
+                    <img
+                      src={userData.profileImage}
+                      alt="Profile"
+                      style={{
+                        width: 150,
+                        height: 150,
+                        borderRadius: "50%",
+                        objectFit: "cover",
+                      }}
+                    />
+
+                    <i className="fa fa-pen" onClick={onPenClick}></i>
+                  </>
+                ) : (
+                  <>
+                    <i className="fa fa-user-circle"></i>
+                    <i className="fa fa-pen" onClick={onPenClick}></i>
+                  </>
+                )}
+
+                <input
+                  type="file"
+                  accept="image/*"
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+                  style={{ display: "none" }}
+                />
               </div>
 
               <form onSubmit={handleSubmit}>
@@ -240,12 +373,7 @@ function Account() {
             </>
           )}
 
-          {activeTab === "settings" && (
-            <div className="settings-tab">
-              <h3>Settings</h3>
-              <p>Settings content goes here...</p>
-            </div>
-          )}
+          {activeTab === "settings" && <Settings />}
 
           <a onClick={logoutHandler} className="mobile-logout">
             Logout

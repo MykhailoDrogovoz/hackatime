@@ -25,6 +25,13 @@ select,
   background: transparent;
 }
 
+.gradient-bg input,
+.gradient-bg select,
+.gradient-bg .new-list form div textarea {
+  border-bottom-color: #fff;
+  color: #fff;
+}
+
 .new-list form div textarea {
   padding-bottom: 0;
 }

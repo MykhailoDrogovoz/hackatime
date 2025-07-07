@@ -84,7 +84,7 @@ const Leaderboard = () => {
       <div className="leaderboard">
         <h2>Leaderboard</h2>
         <div className="leaderboard-header">
-          <div className="leaderboar-select-mobile">
+          <div className="leaderboard-select-mobile">
             <Select
               isSearchable={false}
               value={options.find((option) => option.value === sortedBy)}

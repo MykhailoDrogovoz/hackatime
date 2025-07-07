@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import "./Login.css";
+import { Link } from "react-router-dom";
 
 function Login(props) {
   const [error, setError] = useState(null);
@@ -49,7 +50,7 @@ function Login(props) {
       </div>
       <div className="form-group">
         <p>
-          Forgot your password? <a href="">Reset</a>
+          Forgot your password? <Link to="/reset-password-token">Reset</Link>
         </p>
       </div>
       <div className="buttons-white-theme">

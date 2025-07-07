@@ -5,6 +5,10 @@
   margin-bottom: 40px;
 }
 
+.gradient-bg .leaderboard h2 {
+  color: #c8d8b9;
+}
+
 .time-container {
   display: flex;
   background: #63856a;
@@ -34,6 +38,10 @@
 
 .leaderboard-header .item {
   background: rgba(99, 133, 106, 0.4);
+}
+
+.gradient-bg .leaderboard-header .item {
+  background: #c8d8b9;
 }
 
 .leaderboard-header .item.sorted {
@@ -76,6 +84,10 @@
   color: #b34e4e;
 }
 
+.gradient-bg .clear {
+  color: #ff8d8f;
+}
+
 .top-3 {
   display: flex;
   align-items: center;
@@ -88,6 +100,27 @@
   background: rgba(60, 90, 64, 0.6);
   text-align: center;
   height: 55%;
+}
+
+.gradient-bg .top-3 .stage-element div h2 {
+  color: #000;
+}
+
+.gradient-bg .top-3 .stage-element.first div h2 {
+  color: #fff;
+}
+
+.gradient-bg .top-3 .stage-element div {
+  background: rgba(200, 216, 185, 0.9);
+}
+
+.gradient-bg .top-3 .stage-element.first div {
+  color: #fff;
+  background: rgba(30, 45, 35, 1);
+}
+
+.gradient-bg .top-3 .stage-element.third div {
+  background: rgba(200, 216, 185, 0.75);
 }
 
 .top-3 .stage-element.first div {
@@ -114,6 +147,10 @@
   text-align: center;
   font-size: 100px;
   margin-bottom: 20px;
+}
+
+.gradient-bg .top-3 .stage-element .fa-user-circle {
+  color: #c8d8b9;
 }
 
 .top-3 .stage-element .fa-crown {
@@ -146,6 +183,15 @@ tr:nth-child(odd) {
   color: #fff;
 }
 
+.gradient-bg tr:nth-child(odd) {
+  background-color: #c8d8b9;
+  color: #000;
+}
+
+.gradient-bg tr:nth-child(even) {
+  color: #fff;
+}
+
 .buttons {
   display: flex;
   justify-content: end;
@@ -162,7 +208,7 @@ tr:nth-child(odd) {
   height: auto;
 }
 
-.leaderboar-select-mobile .paragraph-1.clear {
+.leaderboard-select-mobile .paragraph-1.clear {
   display: none;
 }
 
@@ -262,14 +308,14 @@ tr:nth-child(odd) {
     padding-top: 0;
   }
 
-  .leaderboar-select-mobile {
+  .leaderboard-select-mobile {
     display: flex;
     align-items: center;
     justify-content: space-between;
     width: 100%;
   }
 
-  .leaderboar-select-mobile .paragraph-1.clear {
+  .leaderboard-select-mobile .paragraph-1.clear {
     display: block;
   }
 

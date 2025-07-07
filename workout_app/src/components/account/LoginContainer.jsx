@@ -28,13 +28,9 @@ function LoginContainer() {
         });
 
         const data = await response.json();
-
+        console.log(response, response.ok);
         if (response.ok) {
-          setIsRegister(false);
           setIsAuthenticated(true);
-          localStorage.setItem("authToken", data.accessToken);
-          localStorage.setItem("userCoins", data.newUser.coins);
-          navigate("/account");
         } else {
           setError(data.error || "Registration failed.");
         }
@@ -69,7 +65,11 @@ function LoginContainer() {
 
       localStorage.setItem("authToken", data.accessToken);
       localStorage.setItem("userCoins", data.user.coins);
+
       navigate("/account");
+      setTimeout(() => {
+        window.dispatchEvent(new Event("coinsUpdated"));
+      }, 100);
     } catch (error) {
       console.log(error);
       setError({
@@ -128,6 +128,7 @@ function LoginContainer() {
             onAddUser={handleRegister}
             loading={loading}
             setLoading={setLoading}
+            isAuthenticated={isAuthenticated}
           />
         ) : (
           <Login

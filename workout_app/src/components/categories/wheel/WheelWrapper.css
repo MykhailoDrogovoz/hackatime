@@ -29,7 +29,6 @@ button {
 
 .main-button {
   background-color: #7fc388;
-  color: #fff;
 }
 
 @media (max-width: 600px) {

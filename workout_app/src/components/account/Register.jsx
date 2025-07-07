@@ -71,6 +71,15 @@ function Register(props) {
   return (
     <form onSubmit={sumbitHandler}>
       <div className="form-group">
+        {props.isAuthenticated && (
+          <p
+            style={{ color: "green", fontWeight: "bold", marginBottom: "1rem" }}
+          >
+            A verification link has been sent to your email. Please check your
+            inbox.
+          </p>
+        )}
+
         <label htmlFor="username ">Username:</label>
         <input
           type="text"
@@ -80,7 +89,6 @@ function Register(props) {
           required
         />
       </div>
-
       <div className="form-group">
         <label htmlFor="">Email:</label>
         <input
@@ -91,7 +99,6 @@ function Register(props) {
           required
         />
       </div>
-
       <div className="form-group">
         <label htmlFor="password">Password:</label>
         <input
@@ -102,7 +109,6 @@ function Register(props) {
           required
         />
       </div>
-
       <div className="form-group">
         <label htmlFor="confirmPassword">Confirm password:</label>
         <input
@@ -113,7 +119,6 @@ function Register(props) {
           required
         />
       </div>
-
       <div className="buttons-white-theme">
         <button>Home</button>
         <button className="main-button" type="submit" disabled={props.loading}>

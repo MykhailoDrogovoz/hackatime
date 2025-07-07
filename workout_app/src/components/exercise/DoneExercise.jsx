@@ -202,8 +202,10 @@ function Exercise() {
         {reward && (
           <div className="coin-container-cong">
             <p>You have earned {exerciseCoins} coins!</p>
-            <img src="/coin.png" alt="coin" />
-            <p onClick={handleCoinReward}>Take your reward</p>
+            <img src="/coin.svg" alt="coin" />
+            <p className="take-reward" onClick={handleCoinReward}>
+              Take your reward
+            </p>
           </div>
         )}
 

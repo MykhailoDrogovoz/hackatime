@@ -17,11 +17,18 @@ import UpdateList from "./components/home/lists/UpdateList";
 import MusicPlayer from "./components/music/MusicPlayer";
 import { useEffect } from "react";
 import globalAudioManager from "./GlobalAudioManager";
+import VerifyEmail from "./components/account/EmailVerifier";
+import ResetPasswordRequest from "./components/account/ResetPasswordToken";
+import ResetPassword from "./components/account/ResetPassword";
+import { ThemeContext } from "./components/ThemeContext";
+import { useContext } from "react";
 
 function App() {
   const location = useLocation();
-  const isGradientPage =
-    location.pathname === "/options" || location.pathname === "/exercise";
+  const { isGradient } = useContext(ThemeContext);
+
+  // const isGradientPage =
+  //   location.pathname === "/options" || location.pathname === "/exercise";
 
   useEffect(() => {
     if (!window.YT) {
@@ -35,9 +42,9 @@ function App() {
   }, []);
 
   return (
-    <div className={`App ${isGradientPage ? "gradient-bg" : ""}`}>
+    <div className={`App ${isGradient ? "gradient-bg" : ""}`}>
       <div id="yt-player" style={{ display: "none" }}></div>
-      <Header isGradientPage={isGradientPage} />
+      <Header isGradientPage={isGradient} />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/options" element={<Options />} />
@@ -49,6 +56,12 @@ function App() {
         <Route path="/account" element={<Account />} />
         <Route path="/list/:id" element={<UpdateList />} />
         <Route path="/music-player" element={<MusicPlayer />}></Route>
+        <Route path="/verify-email" element={<VerifyEmail />} />
+        <Route
+          path="/reset-password-token"
+          element={<ResetPasswordRequest />}
+        />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
       </Routes>
     </div>
   );

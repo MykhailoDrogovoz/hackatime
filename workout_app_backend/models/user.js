@@ -66,6 +66,14 @@ User.init(
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
+    profileImage: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    resetToken: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
   },
 
   {

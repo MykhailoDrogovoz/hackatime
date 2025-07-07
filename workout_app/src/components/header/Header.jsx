@@ -45,46 +45,53 @@ const Header = (props) => {
 
   useEffect(() => {
     const storedToken = localStorage.getItem("authToken");
+    console.log(storedToken);
 
-    if (!storedToken) {
-      navigate("/login");
-      return;
-    }
+    // if (!storedToken) {
+    //   navigate("/login");
+    //   return;
+    // }
+    if (storedToken) {
+      console.log("second");
 
-    const checkAuthorization = async () => {
-      try {
-        const response = await fetch(`${VITE_API_URL}user/profile`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${storedToken}`,
-          },
-        });
+      const checkAuthorization = async () => {
+        try {
+          const response = await fetch(`${VITE_API_URL}user/profile`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${storedToken}`,
+            },
+          });
 
-        if (!response.ok) {
-          localStorage.removeItem("authToken");
-          navigate("/login");
-          return;
+          console.log("ksjdldsfkljf");
+
+          if (!response.ok) {
+            console.log(response);
+            // localStorage.removeItem("authToken");
+            // navigate("/login");
+            return;
+          }
+
+          const data = await response.json();
+          setUserData(data.user);
+          setCoins(data.user.coins);
+          localStorage.setItem("userCoins", JSON.stringify(data.user.coins));
+        } catch (error) {
+          console.error("Authorization check failed:", error);
         }
+      };
 
-        const data = await response.json();
-        setUserData(data.user);
-        setCoins(data.user.coins);
-        localStorage.setItem("userCoins", JSON.stringify(data.user.coins));
-      } catch (error) {
-        console.error("Authorization check failed:", error);
-      }
-    };
+      const handleCoinsUpdate = () => checkAuthorization();
 
-    const handleCoinsUpdate = () => checkAuthorization();
+      window.addEventListener("coinsUpdated", handleCoinsUpdate);
 
-    window.addEventListener("coinsUpdated", handleCoinsUpdate);
+      checkAuthorization();
 
-    checkAuthorization();
-
-    return () => {
-      window.removeEventListener("coinsUpdated", handleCoinsUpdate);
-    };
+      return () => {
+        window.removeEventListener("coinsUpdated", handleCoinsUpdate);
+      };
+    }
   }, []);
 
   const unlockFeature = async (feature) => {
