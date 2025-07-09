@@ -138,10 +138,15 @@ const Header = (props) => {
   }, []);
 
   return (
-    <header id={props.isGradientPage ? "gradient-bg" : ""} className="header">
+    <header
+      id={props.isGradientPage === "true" ? "gradient-bg" : ""}
+      className="header"
+    >
       <a href="/" id="logo">
         <img
-          src={props.isGradientPage ? "/logo_light.svg" : "/logo.svg"}
+          src={
+            props.isGradientPage === "true" ? "/logo_light.svg" : "/logo.svg"
+          }
           alt="logo"
           style={{ width: "180px", height: "90px" }}
         />

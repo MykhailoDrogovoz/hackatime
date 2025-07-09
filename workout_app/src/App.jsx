@@ -22,10 +22,13 @@ import ResetPasswordRequest from "./components/account/ResetPasswordToken";
 import ResetPassword from "./components/account/ResetPassword";
 import { ThemeContext } from "./components/ThemeContext";
 import { useContext } from "react";
+import LandingPage from "./components/home/LandingPage";
 
 function App() {
   const location = useLocation();
   const { isGradient } = useContext(ThemeContext);
+  console.log(isGradient);
+  const userAuthorized = !!localStorage.getItem("authToken");
 
   // const isGradientPage =
   //   location.pathname === "/options" || location.pathname === "/exercise";
@@ -42,11 +45,16 @@ function App() {
   }, []);
 
   return (
-    <div className={`App ${isGradient ? "gradient-bg" : ""}`}>
+    <div className={`App ${isGradient === "true" ? "gradient-bg" : ""}`}>
+      {console.log(
+        "hello ",
+        isGradient === "true" ? "gradient-bg" : "",
+        isGradient
+      )}
       <div id="yt-player" style={{ display: "none" }}></div>
       <Header isGradientPage={isGradient} />
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={userAuthorized ? <Home /> : <LandingPage />} />
         <Route path="/options" element={<Options />} />
         <Route path="/exercise" element={<Exercise />} />
         <Route path="/exercise-done" element={<DoneExercise />} />
@@ -62,6 +70,7 @@ function App() {
           element={<ResetPasswordRequest />}
         />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
+        <Route path="/main" element={<LandingPage />} />
       </Routes>
     </div>
   );

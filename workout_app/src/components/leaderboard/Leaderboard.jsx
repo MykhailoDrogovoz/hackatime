@@ -160,7 +160,7 @@ const Leaderboard = () => {
                 <h3>{thirdPlace.username}</h3>
                 <h3>
                   {sortedBy === "calories"
-                    ? thirdPlace.calories + " cal"
+                    ? Math.round(thirdPlace.calories) + " cal"
                     : thirdPlace.totalTime + " sec"}
                 </h3>
               </div>
@@ -190,7 +190,7 @@ const Leaderboard = () => {
                 <h3>{firstPlace.username}</h3>
                 <h3>
                   {sortedBy === "calories"
-                    ? firstPlace.calories + " cal"
+                    ? Math.round(firstPlace.calories) + " cal"
                     : firstPlace.totalTime + " sec"}
                 </h3>
               </div>
@@ -221,7 +221,7 @@ const Leaderboard = () => {
                 <h3>{secondPlace.username}</h3>
                 <h3>
                   {sortedBy === "calories"
-                    ? secondPlace.calories + " cal"
+                    ? Math.round(secondPlace.calories) + " cal"
                     : secondPlace.totalTime + " sec"}
                 </h3>
               </div>
@@ -241,7 +241,7 @@ const Leaderboard = () => {
                   <tr key={user.username}>
                     <td>{user.username}</td>
                     <td>{user.totalTime}</td>
-                    <td>{user.calories}</td>
+                    <td>{Math.round(user.calories)}</td>
                   </tr>
                 );
               })}

@@ -24,6 +24,10 @@
   text-align: center;
 }
 
+.gradient-bg .options_title {
+  color: #c8d8b9;
+}
+
 .options_list {
   display: flex;
   flex-wrap: wrap;

@@ -24,10 +24,6 @@
   color: #fff;
 }
 
-.App.gradient-bg button {
-  color: #000;
-}
-
 @media (max-width: 600px) {
   #main-frame {
     display: block;

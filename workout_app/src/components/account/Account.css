@@ -13,6 +13,11 @@
   cursor: pointer;
 }
 
+.gradient-bg .account .fa-user-circle,
+.gradient-bg .account .fa-pen {
+  color: #c8d8b9;
+}
+
 .account {
   color: #000;
   display: grid;

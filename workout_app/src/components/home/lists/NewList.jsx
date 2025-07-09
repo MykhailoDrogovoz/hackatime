@@ -169,7 +169,9 @@ function NewList() {
           </div>
 
           <div className="buttons-white-theme">
-            <button onClick={homeRedirect}>Home</button>
+            <button onClick={homeRedirect} type="reset">
+              Home
+            </button>
             <button className="main-button" type="submit">
               Next
             </button>

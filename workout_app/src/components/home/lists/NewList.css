@@ -25,9 +25,8 @@ select,
   background: transparent;
 }
 
-.gradient-bg input,
-.gradient-bg select,
-.gradient-bg .new-list form div textarea {
+.gradient-bg .account-main input,
+.gradient-bg .account-main select {
   border-bottom-color: #fff;
   color: #fff;
 }
