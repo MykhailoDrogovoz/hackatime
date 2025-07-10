@@ -2,16 +2,17 @@ import { useEffect, useState } from "react";
 import "./Login.css";
 import Login from "./Login";
 import Register from "./Register";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 const VITE_API_URL = import.meta.env.VITE_API_URL;
 
 function LoginContainer() {
+  const location = useLocation();
+  const { isRegisterL } = location.state || {};
+
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isRegister, setIsRegister] = useState(false);
+  const [isRegister, setIsRegister] = useState(isRegisterL);
 
   const navigate = useNavigate();
 

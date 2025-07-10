@@ -52,7 +52,7 @@ const LandingPage = () => {
             here.
           </p>
           <div className="btn-group">
-            <Link to="/register" className="btn">
+            <Link to="/login" state={{ isRegisterL: true }} className="btn">
               Get Started
             </Link>
             <Link to="/login" className="btn outline">
@@ -81,7 +81,7 @@ const LandingPage = () => {
             coins in minutes.
           </p>
           <div className="btn-group">
-            <Link to="/register" className="btn">
+            <Link to="/login" state={{ isRegisterL: true }} className="btn">
               Sign Up Now
             </Link>
             <Link to="/login" className="btn outline">
