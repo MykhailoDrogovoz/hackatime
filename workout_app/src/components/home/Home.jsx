@@ -18,66 +18,119 @@ function Home() {
   const [stepIndex, setStepIndex] = useState(0);
   const taskList = localStorage.getItem("taskList");
   const hasTaskList = !!taskList;
+  const [tourStatus, setTourStatus] = useState(null);
+  const [stepsState, setStepsState] = useState([]);
 
   const noListTourSeen = localStorage.getItem("seenNoListTour");
   const hasListTourSeen = localStorage.getItem("seenHasListTour");
 
-  const steps = hasTaskList
-    ? hasListTourSeen
-      ? []
-      : [
-          {
-            target: "#charts",
-            content: "Welcome! Let's quickly look at your dashboard.",
-            disableBeacon: true,
-          },
-          {
-            target: ".pie-graph-container",
-            content: "This pie chart shows how your exercises are divided.",
-            disableBeacon: true,
-          },
-          {
-            target: ".chart-container",
-            content: "Here you can see your progress on different exercises.",
-            disableBeacon: true,
-          },
-        ]
-    : noListTourSeen
-    ? []
-    : [
-        {
-          target: ".list-wrapper",
-          content:
-            "Before you can use a list, let's walk through how everything works.",
-          disableBeacon: true,
-        },
-        {
-          target: ".add-list",
-          content: "You can create a custom list later for 100 coins.",
-          disableBeacon: true,
-        },
-        {
-          target: ".first-list",
-          content: "Click a list to begin.",
-          disableBeacon: true,
-        },
-      ];
+  useEffect(() => {
+    if (tourStatus === null) return;
 
-  const handleJoyrideCallback = (data) => {
+    const shouldRunTour =
+      (!hasTaskList && !tourStatus.seenNoListTour) ||
+      (hasTaskList && !tourStatus.seenHasListTour);
+
+    if (shouldRunTour) {
+      const steps = hasTaskList
+        ? [
+            {
+              target: "#charts",
+              content: "Welcome! Let's quickly look at your dashboard.",
+              disableBeacon: true,
+            },
+            {
+              target: ".pie-graph-container",
+              content: "This pie chart shows how your exercises are divided.",
+              disableBeacon: true,
+            },
+            {
+              target: ".chart-container",
+              content: "Here you can see your progress on different exercises.",
+              disableBeacon: true,
+            },
+          ]
+        : [
+            {
+              target: ".list-wrapper",
+              content:
+                "Before you can use a list, let's walk through how everything works.",
+              disableBeacon: true,
+            },
+            {
+              target: ".add-list",
+              content: "You can create a custom list later for 100 coins.",
+              disableBeacon: true,
+            },
+            {
+              target: ".first-list",
+              content: "Click a list to begin.",
+              disableBeacon: true,
+            },
+          ];
+
+      setStepsState(steps);
+
+      setTimeout(() => {
+        setRunTour(true);
+      }, 100);
+    }
+  }, [tourStatus, hasTaskList]);
+
+  const handleJoyrideCallback = async (data) => {
     const { status, index, type } = data;
 
     if (["finished", "skipped"].includes(status)) {
       setRunTour(false);
-      if (hasTaskList) {
-        localStorage.setItem("seenHasListTour", true);
-      } else {
-        localStorage.setItem("seenNoListTour", true);
-      }
       setStepIndex(0);
+
+      try {
+        const token = localStorage.getItem("authToken");
+        await fetch(`${VITE_API_URL}user/tour-status`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(
+            hasTaskList ? { seenHasListTour: true } : { seenNoListTour: true }
+          ),
+        });
+      } catch (err) {
+        console.error("Failed to update tour status:", err);
+      }
+
+      // Refresh local state
+      setTourStatus((prev) => ({
+        ...prev,
+        ...(hasTaskList ? { seenHasListTour: true } : { seenNoListTour: true }),
+      }));
     } else if (type === "step:after") {
       setStepIndex(index + 1);
     }
   };
+
+  useEffect(() => {
+    const fetchTourStatus = async () => {
+      try {
+        const token = localStorage.getItem("authToken");
+        const response = await fetch(`${VITE_API_URL}user/tour-status`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const data = await response.json();
+        console.log(data);
+        setTourStatus(data);
+      } catch (error) {
+        console.error("Error fetching tour status:", error);
+      }
+    };
+
+    fetchTourStatus();
+  }, []);
 
   useEffect(() => {
     const storedToken = localStorage.getItem("authToken");
@@ -201,23 +254,23 @@ function Home() {
   }
 
   useEffect(() => {
-    const seenNoListTour = localStorage.getItem("seenNoListTour");
-    const seenHasListTour = localStorage.getItem("seenHasListTour");
+    if (tourStatus === null) return;
 
     const shouldRunTour =
-      (!hasTaskList && !seenNoListTour) || (hasTaskList && !seenHasListTour);
+      (!hasTaskList && !tourStatus.seenNoListTour) ||
+      (hasTaskList && !tourStatus.seenHasListTour);
 
     if (shouldRunTour) {
       setTimeout(() => {
         setRunTour(true);
       }, 100);
     }
-  }, [tags]);
+  }, [tourStatus, hasTaskList]);
 
   return (
     <div className="home">
       <Joyride
-        steps={steps}
+        steps={stepsState}
         run={runTour}
         autoStart={true}
         stepIndex={stepIndex}

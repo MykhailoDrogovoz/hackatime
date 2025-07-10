@@ -45,12 +45,8 @@ function App() {
   }, []);
 
   return (
-    <div className={`App ${isGradient === "true" ? "gradient-bg" : ""}`}>
-      {console.log(
-        "hello ",
-        isGradient === "true" ? "gradient-bg" : "",
-        isGradient
-      )}
+    <div className={`App ${isGradient ? "gradient-bg" : ""}`}>
+      {console.log("hello ", isGradient ? "gradient-bg" : "", isGradient)}
       <div id="yt-player" style={{ display: "none" }}></div>
       <Header isGradientPage={isGradient} />
       <Routes>

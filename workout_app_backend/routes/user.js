@@ -15,6 +15,10 @@ router.patch("/edit", verifyToken, (req, res) => {
   UserController.editUser(req, res);
 });
 
+router.delete("/delete", verifyToken, (req, res) => {
+  UserController.deleteUser(req, res);
+});
+
 router.post("/verify-email", (req, res) => {
   UserController.verifyEmail(req, res);
 });
@@ -53,6 +57,14 @@ router.post("/reset-password", (req, res) => {
 
 router.post("/update-user-stats", (req, res) => {
   UserController.updateUserStatsDaily(req, res);
+});
+
+router.get("/tour-status", verifyToken, (req, res) => {
+  UserController.getTourStatus(req, res);
+});
+
+router.patch("/tour-status", verifyToken, (req, res) => {
+  UserController.updateTourStatus(req, res);
 });
 
 export default router;

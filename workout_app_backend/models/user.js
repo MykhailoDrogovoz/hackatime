@@ -74,6 +74,21 @@ User.init(
       type: DataTypes.STRING,
       allowNull: true,
     },
+    seenNoListTour: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true,
+      defaultValue: false,
+    },
+    seenHasListTour: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true,
+      defaultValue: false,
+    },
+    seenOptionsTour: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true,
+      defaultValue: false,
+    },
   },
 
   {

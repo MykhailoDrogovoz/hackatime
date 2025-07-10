@@ -8,7 +8,7 @@ export const ThemeProvider = ({ children }) => {
   ).matches;
 
   const stored = localStorage.getItem("gradient-theme");
-  const initialIsGradient = stored || systemPrefersDark;
+  const initialIsGradient = stored === "true" || systemPrefersDark;
 
   const [isGradient, setIsGradient] = useState(initialIsGradient);
   console.log("sfdsf ", isGradient);
@@ -22,7 +22,6 @@ export const ThemeProvider = ({ children }) => {
     const handleChange = (e) => {
       setIsDarkMode(e.matches);
       if (!userHasChosen) {
-        // Update theme dynamically if user hasn't chosen yet
         setIsGradient(e.matches);
       }
     };
@@ -30,7 +29,6 @@ export const ThemeProvider = ({ children }) => {
     return () => matchDark.removeEventListener("change", handleChange);
   }, [userHasChosen]);
 
-  // Save only if user has manually toggled
   useEffect(() => {
     if (userHasChosen) {
       localStorage.setItem("gradient-theme", isGradient);
@@ -38,11 +36,22 @@ export const ThemeProvider = ({ children }) => {
   }, [isGradient, userHasChosen]);
 
   const toggleTheme = () => {
-    setUserHasChosen(true); // Now persist future changes
+    setUserHasChosen(true);
     setIsGradient((prev) => !prev);
   };
 
-  console.log("dsfs ", isGradient);
+  useEffect(() => {
+    const className = "gradient-bg";
+    const appElement = document.querySelector(".App");
+    console.log(typeof isGradient);
+    if (appElement) {
+      if (isGradient) {
+        appElement.classList.add(className);
+      } else {
+        appElement.classList.remove(className);
+      }
+    }
+  }, [isGradient]);
 
   return (
     <ThemeContext.Provider value={{ isGradient, toggleTheme }}>

@@ -87,6 +87,15 @@
   color: #63856a;
 }
 
+.delete-account {
+  color: #f21f22;
+  cursor: pointer;
+}
+
+.gradient-bg .delete-account {
+  color: #ff8d8f;
+}
+
 .account-list-header {
   display: flex;
   align-items: center;
@@ -111,7 +120,7 @@ ul.center {
   border-radius: 20px;
 }
 
-.account .main {
+.gradient-bg .account .main {
   background: #63856a;
   color: #fff;
 }
@@ -195,14 +204,12 @@ h5 {
   height: 34px;
 }
 
-/* Hide default HTML checkbox */
 .switch input {
   opacity: 0;
   width: 0;
   height: 0;
 }
 
-/* The slider */
 .slider-1,
 .slider-2 {
   position: absolute;

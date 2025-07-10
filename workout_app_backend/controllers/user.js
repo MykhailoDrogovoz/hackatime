@@ -2,6 +2,7 @@ import * as bcrypt from "bcrypt";
 import "../util/db.js";
 import User from "../models/user.js";
 import Tags from "../models/tags.js";
+import UserGames from "../models/usergame.js";
 import { Op } from "sequelize";
 import jwt from "jsonwebtoken";
 import authConfig from "../config/auth.config.js";
@@ -9,6 +10,7 @@ import UserStats from "../models/userstats.js";
 import UserExercise from "../models/userexercise.js";
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
+import List from "../models/list.js";
 dotenv.config();
 
 const emailTransporter = nodemailer.createTransport({
@@ -211,6 +213,45 @@ class userController {
     });
   }
 
+  getTourStatus = async (req, res) => {
+    try {
+      const user = await User.findByPk(req.user.userId, {
+        attributes: ["seenNoListTour", "seenHasListTour", "seenOptionsTour"],
+      });
+
+      if (!user) return res.status(404).json({ error: "User not found" });
+
+      res.status(200).json({
+        seenNoListTour: user.seenNoListTour,
+        seenHasListTour: user.seenHasListTour,
+        seenOptionsTour: user.seenOptionsTour,
+      });
+    } catch (error) {
+      console.error("Error in getTourStatus:", error);
+      res.status(500).json({ error: "Server error" });
+    }
+  };
+
+  updateTourStatus = async (req, res) => {
+    try {
+      const { seenNoListTour, seenHasListTour, seenOptionsTour } = req.body;
+
+      const user = await User.findByPk(req.user.userId);
+      if (!user) return res.status(404).json({ error: "User not found" });
+
+      await user.update({
+        ...(seenNoListTour !== undefined && { seenNoListTour }),
+        ...(seenHasListTour !== undefined && { seenHasListTour }),
+        ...(seenOptionsTour !== undefined && { seenOptionsTour }),
+      });
+
+      res.status(200).json({ success: true });
+    } catch (error) {
+      console.error("Error in updateTourStatus:", error);
+      res.status(500).json({ error: "Server error" });
+    }
+  };
+
   editUser = async (req, res) => {
     try {
       if (
@@ -253,6 +294,43 @@ class userController {
       res.json({ message: "User updated successfully" });
     } catch (err) {
       console.error("Error updating user profile:", err);
+      res.status(500).json({ message: "Server error", error: err.message });
+    }
+  };
+
+  deleteUser = async (req, res) => {
+    try {
+      const userId = req.user.userId;
+      if (!userId) {
+        return res.status(400).json({ message: "User not authenticated" });
+      }
+
+      await List.destroy({
+        where: { userId, access: "private" },
+      });
+
+      await UserGames.destroy({
+        where: { userId },
+      });
+
+      await List.update(
+        { deletedUser: true, userId: null },
+        {
+          where: { userId, access: "public" },
+        }
+      );
+
+      const deletedRows = await User.destroy({
+        where: { userId },
+      });
+
+      if (deletedRows === 0) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      res.json({ message: "User deleted successfully" });
+    } catch (err) {
+      console.error("Error deleting user:", err);
       res.status(500).json({ message: "Server error", error: err.message });
     }
   };
@@ -410,9 +488,22 @@ class userController {
         userMap[id].totalTime += stat.totalTime;
       }
 
-      const leaderboard = Object.values(userMap).sort(
+      let leaderboard = Object.values(userMap).sort(
         (a, b) => b.calories - a.calories
       );
+
+      if (leaderboard.length === 0) {
+        const users = await User.findAll({
+          attributes: ["username", "profileImage"],
+        });
+
+        leaderboard = users.map((user) => ({
+          username: user.username,
+          profileImage: user.profileImage,
+          calories: 0,
+          totalTime: 0,
+        }));
+      }
 
       res.status(200).json({ leaderboard });
     } catch (error) {

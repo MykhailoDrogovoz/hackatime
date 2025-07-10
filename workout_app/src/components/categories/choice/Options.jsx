@@ -43,11 +43,31 @@ function Options() {
   }, []);
 
   useEffect(() => {
-    const hasSeenTour = localStorage.getItem("seenOptionsTour");
-    if (!hasSeenTour) {
-      setRunTour(true);
-      localStorage.setItem("seenOptionsTour", "true");
-    }
+    const checkTourStatus = async () => {
+      const token = localStorage.getItem("authToken");
+
+      try {
+        const response = await fetch(`${VITE_API_URL}user/tour-status`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          if (!data.seenOptionsTour) {
+            setRunTour(true);
+          }
+        } else {
+          console.error("Failed to get tour status");
+        }
+      } catch (error) {
+        console.error("Error checking tour status", error);
+      }
+    };
+
+    checkTourStatus();
   }, []);
 
   useEffect(() => {
@@ -177,6 +197,27 @@ function Options() {
         run={runTour}
         showSkipButton
         continuous
+        callback={async (data) => {
+          const { status } = data;
+          const finishedStatuses = ["finished", "skipped"];
+
+          if (finishedStatuses.includes(status)) {
+            const token = localStorage.getItem("authToken");
+
+            try {
+              await fetch(`${VITE_API_URL}user/tour-status`, {
+                method: "PATCH",
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ seenOptionsTour: true }),
+              });
+            } catch (err) {
+              console.error("Failed to update tour status:", err);
+            }
+          }
+        }}
         styles={{
           buttonNext: {
             backgroundColor: "#ff4d4f",

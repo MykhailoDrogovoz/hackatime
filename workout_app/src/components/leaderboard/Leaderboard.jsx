@@ -22,6 +22,7 @@ const Leaderboard = () => {
       try {
         const response = await fetch(`${VITE_API_URL}user/leaderboard/${time}`);
         const data = await response.json();
+        console.log("asdlkja ", data, time);
         setFirstPlace(data.leaderboard[0]);
         setSecondPlace(data.leaderboard[1]);
         setThirdPlace(data.leaderboard[2]);

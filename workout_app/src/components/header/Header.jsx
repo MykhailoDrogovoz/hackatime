@@ -47,10 +47,6 @@ const Header = (props) => {
     const storedToken = localStorage.getItem("authToken");
     console.log(storedToken);
 
-    // if (!storedToken) {
-    //   navigate("/login");
-    //   return;
-    // }
     if (storedToken) {
       console.log("second");
 
@@ -68,8 +64,6 @@ const Header = (props) => {
 
           if (!response.ok) {
             console.log(response);
-            // localStorage.removeItem("authToken");
-            // navigate("/login");
             return;
           }
 
@@ -138,15 +132,10 @@ const Header = (props) => {
   }, []);
 
   return (
-    <header
-      id={props.isGradientPage === "true" ? "gradient-bg" : ""}
-      className="header"
-    >
+    <header id={props.isGradientPage ? "gradient-bg" : ""} className="header">
       <a href="/" id="logo">
         <img
-          src={
-            props.isGradientPage === "true" ? "/logo_light.svg" : "/logo.svg"
-          }
+          src={props.isGradientPage ? "/logo_light.svg" : "/logo.svg"}
           alt="logo"
           style={{ width: "180px", height: "90px" }}
         />
@@ -234,7 +223,21 @@ const Header = (props) => {
         )}
 
         <Link to="/login" className="menuItem">
-          <i className="fa fa-user-circle"></i>
+          {userData.profileImage ? (
+            <img
+              src={userData.profileImage}
+              alt="Profile"
+              style={{
+                width: 70,
+                height: 70,
+                borderRadius: "50%",
+                objectFit: "cover",
+                border: "2px solid #fff",
+              }}
+            />
+          ) : (
+            <i className="fa fa-user-circle"></i>
+          )}
         </Link>
       </nav>
       <nav className="mobile-bottom-nav">
