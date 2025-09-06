@@ -41,8 +41,10 @@ Complete exercises, earn coins, unlock features, and challenge the leaderboard �
 
 ### 1️⃣ Clone the Repository
 
+```terminal
 git clone https://github.com/mishadrogovoz/sportvana.git
 cd sportvana
+```
 ### 2️⃣ Setup Environment Variables
 
 Create .env files for both backend and frontend:
@@ -75,23 +77,27 @@ secret="yourSecretForJWT"
 ### 3️⃣ Install Dependencies
 
 #### Frontend
-
+```terminal
 cd workout_app
 npm install
+```
 #### Backend
-
+```terminal
 cd workout_app_backend
 npm install
+```
 ### 4️⃣ Run the App
 
 #### Backend (Express server)
-
+```terminal
 cd workout_app_backend
 node index.js
+```
 #### Frontend (React + Vite)
-
+```terminal
 cd frontend
 npm run dev
+```
 ---
 
 ## 📸 Demo Screenshot
