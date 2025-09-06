@@ -95,7 +95,7 @@ node index.js
 ```
 #### Frontend (React + Vite)
 ```terminal
-cd frontend
+cd workout_app
 npm run dev
 ```
 ---
