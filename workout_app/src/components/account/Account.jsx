@@ -102,7 +102,6 @@ function Account() {
         }
 
         const data = await response.json();
-        console.log("Fetched user:", data);
         setToken(storedToken);
 
         setUserData(data.user);

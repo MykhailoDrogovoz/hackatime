@@ -58,6 +58,7 @@
   background: #63856a;
   border-radius: 20px;
   padding: 5px 10px;
+  cursor: pointer;
 }
 
 #coin-container span {
@@ -167,12 +168,14 @@ iframe {
     display: none;
   }
 
-  .music .fa-backward, .fa-forward, .fa-volume-up {
+  .music .fa-backward,
+  .fa-forward,
+  .fa-volume-up {
     font-size: 12px;
   }
 
-  .fa-play-circle, .fa-stop-circle{
+  .fa-play-circle,
+  .fa-stop-circle {
     font-size: 30px;
   }
-
 }

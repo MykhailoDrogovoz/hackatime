@@ -31,8 +31,6 @@ function Register(props) {
       enteredPassword.trim().length == 0 ||
       enteredPasswordConf.trim().length == 0
     ) {
-      console.log(enteredPasswordConf);
-      console.log(enteredPassword);
       setError({
         title: "Invalid input",
         message:

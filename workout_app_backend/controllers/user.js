@@ -171,46 +171,56 @@ class userController {
     });
   };
 
-  getUser(req, res) {
-    if (req.body.email == null || req.body.password == null) {
+  async getUser(req, res) {
+    if (!req.body.email || !req.body.password) {
       return res.status(400).json({ message: "Fill all required fields" });
     }
 
-    User.findOne({ where: { email: req.body.email } }).then((newUser) => {
+    try {
+      const startTotal = Date.now();
+
+      const startDB = Date.now();
+      const newUser = await User.findOne({ where: { email: req.body.email } });
+      const dbDuration = Date.now() - startDB;
+      console.log(`DB query duration: ${dbDuration} ms`);
+
       if (!newUser) {
-        return res.status(404).json({
-          error: "User not found",
-        });
+        return res.status(404).json({ error: "User not found" });
       }
 
-      const storedHashedPassword = newUser.password;
-      const userInputPassword = req.body.password;
+      const startBcrypt = Date.now();
+      const passwordMatch = await bcrypt.compare(
+        req.body.password,
+        newUser.password
+      );
+      const bcryptDuration = Date.now() - startBcrypt;
+      console.log(`bcrypt compare duration: ${bcryptDuration} ms`);
 
-      bcrypt.compare(userInputPassword, storedHashedPassword, (err, result) => {
-        if (err) {
-          console.error("Error comparing passwords: ", err);
-          return;
-        }
+      if (!passwordMatch) {
+        console.log("[Server]: Passwords do not match! Auth failed.");
+        return res.status(401).send("Invalid credentials");
+      }
 
-        const token = jwt.sign(
-          { userId: newUser.userId },
-          authConfig.secret,
-
-          { expiresIn: "2h" }
-        );
-
-        if (result) {
-          console.log(`[Server]: ${newUser.username} logged in`);
-          return res.json({
-            user: newUser,
-            accessToken: token,
-          });
-        } else {
-          console.log("[Server]: Passwords do not match! Auth failed.");
-          res.status(401).send("Invalid credentials");
-        }
+      const startJWT = Date.now();
+      const token = jwt.sign({ userId: newUser.userId }, authConfig.secret, {
+        expiresIn: "2h",
       });
-    });
+      const jwtDuration = Date.now() - startJWT;
+      console.log(`JWT sign duration: ${jwtDuration} ms`);
+
+      console.log(`[Server]: ${newUser.username} logged in`);
+
+      const totalDuration = Date.now() - startTotal;
+      console.log(`Total login duration: ${totalDuration} ms`);
+
+      return res.json({
+        user: newUser,
+        accessToken: token,
+      });
+    } catch (error) {
+      console.error("Login error:", error);
+      return res.status(500).json({ error: "Internal server error" });
+    }
   }
 
   getTourStatus = async (req, res) => {

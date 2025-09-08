@@ -23,6 +23,7 @@ import ResetPassword from "./components/account/ResetPassword";
 import { ThemeContext } from "./components/ThemeContext";
 import { useContext } from "react";
 import LandingPage from "./components/home/LandingPage";
+import StorePage from "./components/store/StorePage";
 
 function App() {
   const location = useLocation();
@@ -67,6 +68,7 @@ function App() {
         />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route path="/main" element={<LandingPage />} />
+        <Route path="/store" element={<StorePage />} />
       </Routes>
     </div>
   );

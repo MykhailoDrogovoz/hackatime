@@ -29,7 +29,6 @@ function LoginContainer() {
         });
 
         const data = await response.json();
-        console.log(response, response.ok);
         if (response.ok) {
           setIsAuthenticated(true);
         } else {
@@ -72,7 +71,7 @@ function LoginContainer() {
         window.dispatchEvent(new Event("coinsUpdated"));
       }, 100);
     } catch (error) {
-      console.log(error);
+      console.error(error);
       setError({
         title: "Server Unreachable",
         message: "Password is not correct.",

@@ -34,7 +34,6 @@ function Login(props) {
       password: enteredPassword,
     };
 
-    console.log(userData);
     saveUserDataHandler(userData);
   };
 
