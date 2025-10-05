@@ -216,12 +216,7 @@ const Header = (props) => {
         </Link>
 
         {coins !== null && (
-          <div
-            id="coin-container"
-            onClick={() => {
-              navigate("/store");
-            }}
-          >
+          <div id="coin-container">
             <span>{coins}</span>
             <img src="/coin.svg" alt="coins" className="coin-img" />
           </div>
