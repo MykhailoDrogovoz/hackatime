@@ -67,9 +67,8 @@ function LoginContainer() {
       localStorage.setItem("userCoins", data.user.coins);
 
       navigate("/account");
-      setTimeout(() => {
-        window.dispatchEvent(new Event("coinsUpdated"));
-      }, 100);
+      window.dispatchEvent(new Event("coinsUpdated"));
+      console.log("Coins successfully updated:", data.user.coins);
     } catch (error) {
       console.error(error);
       setError({

@@ -45,12 +45,9 @@ const Header = (props) => {
 
   useEffect(() => {
     const storedToken = localStorage.getItem("authToken");
-    console.log(storedToken);
 
     if (storedToken) {
-      console.log("second");
-
-      const checkAuthorization = async () => {
+      async () => {
         try {
           const response = await fetch(`${VITE_API_URL}user/profile`, {
             method: "GET",
@@ -59,8 +56,6 @@ const Header = (props) => {
               Authorization: `Bearer ${storedToken}`,
             },
           });
-
-          console.log("ksjdldsfkljf");
 
           if (!response.ok) {
             console.log(response);
@@ -75,17 +70,21 @@ const Header = (props) => {
           console.error("Authorization check failed:", error);
         }
       };
-
-      const handleCoinsUpdate = () => checkAuthorization();
-
-      window.addEventListener("coinsUpdated", handleCoinsUpdate);
-
-      checkAuthorization();
-
-      return () => {
-        window.removeEventListener("coinsUpdated", handleCoinsUpdate);
-      };
     }
+  }, []);
+
+  useEffect(() => {
+    const handleCoinsUpdate = () => {
+      const updatedCoins = localStorage.getItem("userCoins");
+      setCoins(updatedCoins ? JSON.parse(updatedCoins) : null);
+    };
+
+    window.addEventListener("coinsUpdated", handleCoinsUpdate);
+    console.log("IT WORKS!!!");
+
+    return () => {
+      window.removeEventListener("coinsUpdated", handleCoinsUpdate);
+    };
   }, []);
 
   const unlockFeature = async (feature) => {

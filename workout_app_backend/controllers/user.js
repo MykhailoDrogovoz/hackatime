@@ -11,6 +11,7 @@ import UserExercise from "../models/userexercise.js";
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 import List from "../models/list.js";
+import redisClient from "../util/redisClient.js";
 dotenv.config();
 
 const emailTransporter = nodemailer.createTransport({
@@ -177,7 +178,17 @@ class userController {
     }
 
     try {
-      const startTotal = Date.now();
+      const cachedUser = await redisClient.get(`user:${req.body.email}`);
+
+      if (cachedUser) {
+        const userData = JSON.parse(cachedUser);
+        console.log("[Server]: used redis");
+        return res.json({
+          user: userData.user,
+          accessToken: userData.token,
+          cached: true,
+        });
+      }
 
       const startDB = Date.now();
       const newUser = await User.findOne({ where: { email: req.body.email } });
@@ -205,13 +216,17 @@ class userController {
       const token = jwt.sign({ userId: newUser.userId }, authConfig.secret, {
         expiresIn: "2h",
       });
-      const jwtDuration = Date.now() - startJWT;
-      console.log(`JWT sign duration: ${jwtDuration} ms`);
+      try {
+        await redisClient.setEx(
+          `user:${req.body.email}`,
+          2 * 60 * 60,
+          JSON.stringify({ user: newUser, token })
+        );
+      } catch (redisError) {
+        console.error("[Server]: Redis cache set failed", redisError);
+      }
 
       console.log(`[Server]: ${newUser.username} logged in`);
-
-      const totalDuration = Date.now() - startTotal;
-      console.log(`Total login duration: ${totalDuration} ms`);
 
       return res.json({
         user: newUser,
@@ -433,6 +448,17 @@ class userController {
       const todayEnd = new Date();
       todayEnd.setHours(23, 59, 59, 999);
 
+      const cacheKey = "dailyLeaderboard";
+
+      const cachedLeaderboard = await redisClient.get(cacheKey);
+
+      if (cachedLeaderboard) {
+        console.log("[Server]: Returning cached daily leaderboard.");
+        return res
+          .status(200)
+          .json({ leaderboard: JSON.parse(cachedLeaderboard) });
+      }
+
       const users = await User.findAll();
       const leaderboard = [];
 
@@ -455,9 +481,21 @@ class userController {
           calories: totalCalories,
           totalTime: totalTime,
         });
+
+        await redisClient.zAdd("dailyLeaderboard", {
+          score: totalCalories,
+          value: JSON.stringify({
+            userId: user.userId,
+            username: user.username,
+            profileImage: user.profileImage,
+            totalTime,
+          }),
+        });
       }
 
       leaderboard.sort((a, b) => b.calories - a.calories);
+
+      await redisClient.setEx(cacheKey, 60 * 60, JSON.stringify(leaderboard));
 
       res.status(200).json({ leaderboard });
     } catch (error) {
@@ -470,6 +508,16 @@ class userController {
     try {
       const lastWeek = new Date();
       lastWeek.setDate(lastWeek.getDate() - 7);
+
+      const cacheKey = "lastWeekLeaderboard";
+      const cachedLeaderboard = await redisClient.get(cacheKey);
+
+      if (cachedLeaderboard) {
+        console.log("[Server]: Returning cached last-week leaderboard.");
+        return res
+          .status(200)
+          .json({ leaderboard: JSON.parse(cachedLeaderboard) });
+      }
 
       const stats = await UserStats.findAll({
         where: {
@@ -515,6 +563,12 @@ class userController {
         }));
       }
 
+      await redisClient.setEx(
+        cacheKey,
+        7 * 24 * 60 * 60,
+        JSON.stringify(leaderboard)
+      );
+
       res.status(200).json({ leaderboard });
     } catch (error) {
       console.error("Error fetching last-week leaderboard:", error);
@@ -524,6 +578,16 @@ class userController {
 
   async getAllTimeLeaderboard(req, res) {
     try {
+      const cacheKey = "allTimeLeaderboard";
+      const cachedLeaderboard = await redisClient.get(cacheKey);
+
+      if (cachedLeaderboard) {
+        console.log("[Server]: Returning cached all-time leaderboard.");
+        return res
+          .status(200)
+          .json({ leaderboard: JSON.parse(cachedLeaderboard) });
+      }
+
       const yesterday = new Date();
       yesterday.setDate(yesterday.getDate() - 1);
 
@@ -548,6 +612,12 @@ class userController {
       }
 
       leaderboard.sort((a, b) => b.calories - a.calories);
+
+      await redisClient.setEx(
+        cacheKey,
+        24 * 60 * 60,
+        JSON.stringify(leaderboard)
+      );
 
       res.status(200).json({ leaderboard });
     } catch (error) {
