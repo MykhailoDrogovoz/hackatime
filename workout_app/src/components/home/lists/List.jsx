@@ -5,7 +5,6 @@ const VITE_API_URL = import.meta.env.VITE_API_URL;
 
 function List() {
   const [lists, setLists] = useState(null);
-  // const [userId, setUserId] = useState(null);
   const [userData, setUserData] = useState(null);
   const navigate = useNavigate();
 
@@ -30,9 +29,7 @@ function List() {
           );
         }
         const data = await response.json();
-        console.log(data);
         setLists(data.lists);
-        // setUserId(data.userId);
         setUserData(data.user);
       } catch (error) {
         console.error(error);
@@ -50,7 +47,6 @@ function List() {
         },
       });
       const data = await response.json();
-      console.log("Delete response:", data);
       window.location.reload();
     } catch (error) {
       console.error("Error deleting list:", error);

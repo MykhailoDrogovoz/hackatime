@@ -68,7 +68,6 @@ function LoginContainer() {
 
       navigate("/account");
       window.dispatchEvent(new Event("coinsUpdated"));
-      console.log("Coins successfully updated:", data.user.coins);
     } catch (error) {
       console.error(error);
       setError({

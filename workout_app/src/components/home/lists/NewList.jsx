@@ -27,8 +27,6 @@ function NewList() {
           label: tag.name,
         }));
 
-        console.log(formattedOptions);
-
         setOptions(formattedOptions);
       } catch (error) {
         console.error(error);
@@ -106,8 +104,6 @@ function NewList() {
       tags: value.map((v) => ({ name: v.label })),
     };
 
-    console.log(newList);
-
     try {
       const storedToken = localStorage.getItem("authToken");
 
@@ -123,7 +119,6 @@ function NewList() {
       if (!response.ok) throw new Error("Failed to create list");
 
       const data = await response.json();
-      console.log("Created list:", data);
 
       navigate("/");
     } catch (error) {

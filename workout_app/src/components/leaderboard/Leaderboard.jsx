@@ -16,13 +16,11 @@ const Leaderboard = () => {
   const [sortedBy, setSortedBy] = useState("calories");
 
   useEffect(() => {
-    console.log("useEffect triggered with time:", time);
     const fetchLeaderboard = async () => {
       setLoading(true);
       try {
         const response = await fetch(`${VITE_API_URL}user/leaderboard/${time}`);
         const data = await response.json();
-        console.log("asdlkja ", data, time);
         setFirstPlace(data.leaderboard[0]);
         setSecondPlace(data.leaderboard[1]);
         setThirdPlace(data.leaderboard[2]);
@@ -51,8 +49,6 @@ const Leaderboard = () => {
 
   const colourStyles = {
     option: (styles, { data, isDisabled, isFocused, isSelected }) => {
-      console.log({ data, isDisabled, isFocused, isSelected });
-
       return {
         ...styles,
         backgroundColor: isFocused
@@ -200,7 +196,6 @@ const Leaderboard = () => {
 
           {secondPlace && (
             <div className="stage-element second">
-              {console.log(secondPlace)}
               {secondPlace.profileImage ? (
                 <img
                   src={secondPlace.profileImage}

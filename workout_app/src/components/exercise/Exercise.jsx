@@ -10,7 +10,6 @@ function Exercise() {
   const navigate = useNavigate();
   const { exType, exNumber } = location.state || {};
 
-  console.log(JSON.parse(localStorage.getItem("taskList")).Tags, exType);
   const exerciseData = JSON.parse(localStorage.getItem("taskList")).Tags.find(
     (ex) => ex.name === exType
   );
@@ -68,7 +67,6 @@ function Exercise() {
         onDone={handleDone}
       ></Timer>
       <div className="exercise-info">
-        {console.log(exerciseData)}
         <h1>
           Task completed: {doneSets}/
           {exerciseData.totalSeconds

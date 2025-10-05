@@ -30,7 +30,6 @@ const VerifyEmail = () => {
       const data = await response.json();
       if (response.status === 201) {
         setStatusMessage({ type: "success", text: data.message });
-        console.log(data);
         if (data.token) {
           localStorage.setItem("authToken", data.token);
           localStorage.setItem("userCoins", data.newUser.coins);
@@ -56,7 +55,7 @@ const VerifyEmail = () => {
         type: "error",
         text: "Something went wrong. Please try again.",
       });
-      console.log(error);
+      console.error(error);
     } finally {
       setIsVerifying(false);
     }

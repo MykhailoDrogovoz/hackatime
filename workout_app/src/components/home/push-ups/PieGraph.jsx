@@ -64,7 +64,6 @@ function PieGraph(props) {
           label: tag.name,
         }));
 
-        // console.log(formattedOptions);
         setTags(formattedOptions);
       } catch (error) {
         console.error(error);

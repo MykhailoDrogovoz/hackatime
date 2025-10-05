@@ -35,7 +35,7 @@ function Exercise() {
         const data = await response.json();
         setCompletedExercises(data.userExercises);
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     };
 
@@ -117,7 +117,6 @@ function Exercise() {
       }
 
       const data = await response.json();
-      console.log("Set completed:", data);
       if (data.coins) {
         setReward(true);
         setExerciseCoins(data.coins);
@@ -156,7 +155,6 @@ function Exercise() {
         const data = await response.json();
         setReward(false);
         window.dispatchEvent(new Event("coinsUpdated"));
-        console.log("Coins successfully updated:", data);
       } else {
         console.error(
           "Failed to update coins in the database:",
@@ -178,12 +176,10 @@ function Exercise() {
         !completedExercises.some((completed) => completed.tagId === tag.tagId)
     );
 
-    console.log(filteredTags);
     const currentIndex = filteredTags.findIndex((tag) => tag.name === exType);
 
     if (currentIndex !== -1 && currentIndex < filteredTags.length - 1) {
       const nextExercise = filteredTags[currentIndex + 1];
-      console.log(nextExercise);
       // Redirect to the next exercise
       navigate("/options", {
         state: { exType: nextExercise.name },

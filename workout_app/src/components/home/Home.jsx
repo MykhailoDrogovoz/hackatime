@@ -122,7 +122,6 @@ function Home() {
         });
 
         const data = await response.json();
-        console.log(data);
         setTourStatus(data);
       } catch (error) {
         console.error("Error fetching tour status:", error);
@@ -176,7 +175,7 @@ function Home() {
         const data = await response.json();
         setCompletedExercises(data.userExercises);
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     };
 
