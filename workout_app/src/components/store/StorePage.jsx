@@ -7,6 +7,8 @@ const VITE_API_URL = import.meta.env.VITE_API_URL;
 import "./Store.css";
 
 function StorePage() {
+  const [storeItems, setStoreItems] = useState([]);
+
   return (
     <div className="full-screen list-wrapper" id="store">
       <div className="lists chart-container">
