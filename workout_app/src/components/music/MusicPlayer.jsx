@@ -135,6 +135,22 @@ const MusicPlayer = () => {
   }, [currentTrack]);
 
   useEffect(() => {
+    const updateTrackInfo = () => {
+      setCurrentTrack(globalAudioManager.getCurrentTrack());
+    };
+
+    globalAudioManager.on("play", updateTrackInfo);
+    globalAudioManager.on("trackChanged", updateTrackInfo);
+
+    updateTrackInfo();
+
+    return () => {
+      globalAudioManager.off("play", updateTrackInfo);
+      globalAudioManager.off("trackChanged", updateTrackInfo);
+    };
+  }, []);
+
+  useEffect(() => {
     const onPlay = () => setMusicPlay(true);
     const onPause = () => setMusicPlay(false);
     const onEnd = () => goToNextTrack();
@@ -148,7 +164,7 @@ const MusicPlayer = () => {
       globalAudioManager.off("pause", onPause);
       globalAudioManager.off("ended", onEnd);
     };
-  }, [musicList, currentTrack]);
+  }, []);
 
   useEffect(() => {
     if (!currentTrack) return;

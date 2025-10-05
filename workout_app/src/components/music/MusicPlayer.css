@@ -10,6 +10,12 @@
   align-items: center;
 }
 
+.fa-backward,
+.fa-forward,
+.fa-volume-up {
+  cursor: pointer;
+}
+
 .music-song .music-song-left .music_image {
   margin-right: 20px;
   height: 100px;

@@ -47,7 +47,7 @@ const Header = (props) => {
     const storedToken = localStorage.getItem("authToken");
 
     if (storedToken) {
-      async () => {
+      const fetchUserData = async () => {
         try {
           const response = await fetch(`${VITE_API_URL}user/profile`, {
             method: "GET",
@@ -58,11 +58,12 @@ const Header = (props) => {
           });
 
           if (!response.ok) {
-            console.log(response);
+            console.error(response);
             return;
           }
 
           const data = await response.json();
+
           setUserData(data.user);
           setCoins(data.user.coins);
           localStorage.setItem("userCoins", JSON.stringify(data.user.coins));
@@ -70,6 +71,7 @@ const Header = (props) => {
           console.error("Authorization check failed:", error);
         }
       };
+      fetchUserData();
     }
   }, []);
 
@@ -80,7 +82,6 @@ const Header = (props) => {
     };
 
     window.addEventListener("coinsUpdated", handleCoinsUpdate);
-    console.log("IT WORKS!!!");
 
     return () => {
       window.removeEventListener("coinsUpdated", handleCoinsUpdate);
